@@ -38,11 +38,9 @@ def genObjdump():
     subprocess.call('riscv{0}-unknown-elf-objdump -D output.riscv > disaassembled.txt'.format(bitwidth),shell=True)
     subprocess.call('riscv{0}-unknown-elf-objdump -s output.riscv > objdump.txt'.format(bitwidth),shell=True)
     subprocess.call('elf2hex {0} 65536 output.riscv 2147483648 > code.mem'.format(bitwidth/8),shell=True);
-    subprocess.call('ln -s ../../../bin/* ./',shell=True)
+    subprocess.call('ln -s {0}/bin/* ./'.format(os.getenv("SHAKTI_HOME")),shell=True)
     subprocess.call('cut -c1-8 code.mem > code.mem.MSB',shell=True)
     subprocess.call('cut -c9-16 code.mem > code.mem.LSB',shell=True)
-    subprocess.call('cut -c1-8 ../../../config_string64.hex > boot.MSB',shell=True)
-    subprocess.call('cut -c9-16 ../../../config_string64.hex > boot.LSB',shell=True)
 
 def runSpike():
     #subprocess.call('spike -s --isa=RV{0}IMAFDC output.riscv'.format(bitwidth),shell=True)
@@ -81,9 +79,9 @@ try:
       runRTLSim();
       stdoutdata=subprocess.getoutput("diff -qiw spike.dump rtl.dump")
       if not stdoutdata:
-        print("Results Match")
+        print("--- TEST PASSED ----- ")
       else:
-        print(" *!*!*!*!*! Results DO NOT Match *!*!*!*!*!")
+        print(" ----- TEST FAILED -----")
         break
       #if(percentSPFloat!=0):
       #	stdoutdata=subprocess.getoutput("diff -qiw rtl_fregister_dump.txt spike_fregister_dump.txt")
