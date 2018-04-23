@@ -78,9 +78,11 @@ endif
 ifeq ($(VME),enable)
   define_macros += -D VME=True
 endif
+ifeq ($(FlexBus_verify),enable)
+  define_macros += -D FlexBus_verify=True
+endif
 ifeq ($(FlexBus),enable)
   define_macros += -D FlexBus=True
-  define_macros += -D FlexBus_verify=True
   ifeq ($(VERBOSE),enable)
   	define_macros += -D verbose_debug=True
   	define_macros += -D verbose_debug_ver=True

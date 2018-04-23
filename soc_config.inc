@@ -23,5 +23,6 @@ TCM=disable
 CLINT=enable
 VME=disable
 FlexBus=enable
+FlexBus_verify=disable
 SYNTH=SIM
 FLASHMODEL=cypress
