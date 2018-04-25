@@ -176,7 +176,7 @@ elsif ($testType =~ /^p$/) {
   if ($testSuite =~ /csmith-run/) {
     my $csmithInc = "$shaktiHome/verification/tools/csmith_run";
     systemCmd("riscv64-unknown-elf-gcc -march=rv64imafd  -mcmodel=medany -static -std=gnu99 -O2 -ffast-math -fno-common -fno-builtin-printf -D__ASSEMBLY__=1 -c -I /tools/csmith/runtime $csmithInc/crt.S -o crt.o");
-    systemCmd("riscv64-unknown-elf-gcc -march=rv64imafd  -mcmodel=medany -static -std=gnu99 -O2 -ffast-math -fno-common -fno-builtin-printf  -c -I /tools/csmith/runtime $csmithInc/syscalls_shakti.c -o syscalls.o");
+    systemCmd("riscv64-unknown-elf-gcc -march=rv64imafd  -mcmodel=medany -static -std=gnu99 -O2 -ffast-math -fno-common -fno-builtin-printf  -c -I /tools/csmith/runtime $csmithInc/syscalls_spike.c -o syscalls.o");
     systemCmd("riscv64-unknown-elf-gcc -w -Os -mcmodel=medany -static -std=gnu99 -O2 -ffast-math -fno-common -fno-builtin-printf  -c -I /tools/csmith/runtime $shaktiHome/verification/tests/$test_suite/$testName.c  -march=rv64imafd -o $testName.o");
     systemCmd("riscv64-unknown-elf-gcc -T $csmithInc/link.ld -I /tools/csmith/runtime $testName.o syscalls.o crt.o -static -nostdlib -nostartfiles -lgcc -lm -o $testName.elf");
   }
@@ -235,7 +235,7 @@ if ($simulator =~ /^ncverilog$/) {
 if ($simulator =~ /^bluespec$/) {
   my $timeout="30m";
   if ($testSuite =~ /riscv-tests/) {
-    $timeout="10s";
+    $timeout="1m";
   }
   elsif ($testSuite =~ /riscv-torture/) {
     $timeout="10m";

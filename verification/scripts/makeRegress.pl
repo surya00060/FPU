@@ -300,7 +300,7 @@ if ($submit) {
   my $refreshCount = 0;
 
   while (@tempTests) {
-    my $line = pop @tempTests;
+    my $line = shift @tempTests;
     my @line = split(" ", $line);
     my $test = $line[0];
     my $tSuite = $line[1];
