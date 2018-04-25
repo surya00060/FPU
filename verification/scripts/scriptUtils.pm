@@ -45,12 +45,12 @@ our $shaktiHome;
 our $workdir;
 
 sub checkSetup {
-  if (defined $ENV{'SHAKTI_HOME'}) {
-    $shaktiHome = $ENV{'SHAKTI_HOME'};
-    doDebugPrint("SHAKTI_HOME: $shaktiHome\n");
+  if (defined $ENV{'SHAKTI_C_HOME'}) {
+    $shaktiHome = $ENV{'SHAKTI_C_HOME'};
+    doDebugPrint("SHAKTI_C_HOME: $shaktiHome\n");
   }
   else {
-    doPrint("ERROR: SHAKTI_HOME not defined\n");
+    doPrint("ERROR: SHAKTI_C_HOME not defined\n");
     exit(1);
   }
 

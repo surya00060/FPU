@@ -39,7 +39,7 @@ bmarks = median \
 # Build rules
 #--------------------------------------------------------------------
 check-env:
-	@if test -z "$$SHAKTI_HOME"; then echo "SHAKTI_HOME variable not set"; exit 1; fi;
+	@if test -z "$$SHAKTI_C_HOME"; then echo "SHAKTI_C_HOME variable not set"; exit 1; fi;
 
 RISCV_PREFIX ?= riscv$(XLEN)-unknown-elf-
 RISCV_GCC ?= $(RISCV_PREFIX)gcc
@@ -99,9 +99,9 @@ spike: copy_spike riscv install
 regress: check-env shakti
 	@echo "Starting regression"
 	@mkdir -p $(simdir);
-	@cut -c1-8 ${SHAKTI_HOME}/verification/dts/boot.hex > $(simdir)/boot.MSB;
-	@cut -c9-16 ${SHAKTI_HOME}/verification/dts/boot.hex > $(simdir)/boot.LSB;
-	@cd $(simdir); ln -f -s ${SHAKTI_HOME}/bin/out* .;
+	@cut -c1-8 ${SHAKTI_C_HOME}/verification/dts/boot.hex > $(simdir)/boot.MSB;
+	@cut -c9-16 ${SHAKTI_C_HOME}/verification/dts/boot.hex > $(simdir)/boot.LSB;
+	@cd $(simdir); ln -f -s ${SHAKTI_C_HOME}/bin/out* .;
 	@touch $(simdir)/regression.log
 	@$(foreach bench, $(bmarks),\
 		echo '===================== Running BENCHMARK: $(bench) ==================='>> $(simdir)/regression.log;	\

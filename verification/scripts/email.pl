@@ -35,7 +35,38 @@ use List::Util;
 
 checkSetup();
 setEnvConfig();
-  
+
+# Parse options
+GetOptions(
+          qw(class=s)  => \my $class,
+          qw(regress=s) => \my $regress,
+          qw(sim=s)   => \my $simulator,
+          qw(to=s)   => \my $to,
+          qw(help)    => \my $help,
+          qw(clean)   => \my $clean
+);
+ 
+if (!$class) {
+  doPrint("ERROR: Core class [c-class|e-class] should be specified\n");
+  exit(1);
+}
+if (!$regress) {
+  doPrint("ERROR: Regress type [nightly|smoke] should be specified\n");
+  exit(1);
+}
+if (!$simulator) {
+  doPrint("ERROR: Simulator [bsim|ncverilog|vcs] should be specified\n");
+  exit(1);
+}
+if (!$to) {
+  doPrint("ERROR: Senders email should be specified\n");
+  exit(1);
+}
+else {
+  chomp($to);
+}
+
+my $subject = "[$class-class; $regress; $simulator] Regression report";
 my $reportFile = "$shaktiHome/verification/workdir/regress_report.log";
 
 chdir($shaktiHome);
@@ -122,8 +153,10 @@ if (-e $reportFile) {
     print HTML "</body>\n";
     print HTML "</html>\n";
     close HTML;
-    print "Mailed the regression status to: @ARGV\n";
-    `cat $shaktiHome/verification/workdir/regress_report.html | mail -s \"[c-class] Smoke regress report\" -a\'Content-Type: text/html\' -a\'From: Shakti Bot <shaktibot\@gmail.com>\' @ARGV`;
+    my @toList = split(/\s+/, $to);
+    print "Mailed the regression status to: @toList\n";
+    #print "cat $shaktiHome/verification/workdir/regress_report.html | mail -s \"$subject\" -a\'Content-Type: text/html\' -a\'From: Shakti Bot <shaktibot\@gmail.com>\' @toList";
+    `cat $shaktiHome/verification/workdir/regress_report.html | mail -s \"$subject\" -a\'Content-Type: text/html\' -a\'From: Shakti Bot <shaktibot\@gmail.com>\' @ARGV`;
 }
 else {
   print "ERROR: Nothing to report. please run regression\n";

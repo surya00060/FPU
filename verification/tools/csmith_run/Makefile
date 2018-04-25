@@ -4,7 +4,7 @@ include ./Makefile.inc
 CSMITH_INCDIR = /tools/csmith/runtime
 RUNS=10
 all:
-	@ln -f -s $(SHAKTI_HOME)/bin/* .
+	@ln -f -s $(SHAKTI_C_HOME)/bin/* .
 	@n=1 ; while [[ $$n -le $(RUNS) ]] ; do \
 	echo "----------------Test $$n ----------------";\
 	make spike || { echo SKIP; make remove; continue; } ;\
