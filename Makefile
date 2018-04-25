@@ -4,7 +4,7 @@
 include ./old_vars
 include soc_config.inc
 
-export SHAKTI_HOME=$$PWD
+export SHAKTI_C_HOME=$$PWD
 
 TOP_MODULE:=mkTbSoc
 TOP_FILE:=TbSoc.bsv
@@ -134,7 +134,7 @@ default: compile_bluesim link_bluesim
 
 check-blue:
 	@if test -z "$$BLUESPECDIR"; then echo "BLUESPECDIR variable not set"; exit 1; fi; 
-	@if test -z "$$SHAKTI_HOME"; then echo "SHAKTI_HOME variable not set"; exit 1; fi;
+	@if test -z "$$SHAKTI_C_HOME"; then echo "SHAKTI_C_HOME variable not set"; exit 1; fi;
 
 check-py:
 	@if ! [ -a /usr/bin/python3 ] ; then echo "Python3 is required in /usr/bin to run AAPG" ; exit 1; fi;
@@ -252,15 +252,15 @@ linux_bsim: compile_bluesim link_bluesim generate_boot_files
 
 .PHONY: regress 
 regress:  
-	SHAKTI_HOME=$$PWD perl -I$(SHAKTI_HOME)/verification/scripts $(SHAKTI_HOME)/verification/scripts/makeRegress.pl $(opts)
+	SHAKTI_C_HOME=$$PWD perl -I$(SHAKTI_C_HOME)/verification/scripts $(SHAKTI_C_HOME)/verification/scripts/makeRegress.pl $(opts)
 
 .PHONY: test
 test:  
-	SHAKTI_HOME=$$PWD perl -I$(SHAKTI_HOME)/verification/scripts $(SHAKTI_HOME)/verification/scripts/makeTest.pl $(opts)
+	SHAKTI_C_HOME=$$PWD perl -I$(SHAKTI_C_HOME)/verification/scripts $(SHAKTI_C_HOME)/verification/scripts/makeTest.pl $(opts)
 
 .PHONY: torture
 torture:  
-	SHAKTI_HOME=$$PWD perl -I$(SHAKTI_HOME)/verification/scripts $(SHAKTI_HOME)/verification/scripts/makeTorture.pl $(opts)
+	SHAKTI_C_HOME=$$PWD perl -I$(SHAKTI_C_HOME)/verification/scripts $(SHAKTI_C_HOME)/verification/scripts/makeTorture.pl $(opts)
 
 .PHONY: clean
 clean:

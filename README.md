@@ -29,9 +29,9 @@ Follow the below steps before using the code-line:
     
               $ git clone https://bitbucket.org/casl/c-class.git
               $ cd c-class
-              $ export SHAKTI_HOME=$(pwd)
+              $ export SHAKTI_C_HOME=$(pwd)
               
-It is important to set the SHAKTI_HOME variable for regression tests to work.
+It is important to set the SHAKTI_C_HOME variable for regression tests to work.
 
 ### Directory Structure ###
 
@@ -135,7 +135,7 @@ To run linux on shakti follow the below steps (for the first time)
             $ make -j16 ISA=rv64imafd
             
     To run the kernel on simulation
-            $ cd $SHAKTI_HOME
+            $ cd $SHAKTI_C_HOME
             $ make linux_bsim
             
     The make linux_bsim command will begin running the bluesim simulation. The log of the kernel execution will be in the file: app_log 
