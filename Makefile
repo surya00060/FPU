@@ -80,6 +80,16 @@ endif
 ifeq ($(VME),enable)
   define_macros += -D VME=True
 endif
+ifeq ($(FlexBus_verify),enable)
+  define_macros += -D FlexBus_verify=True
+endif
+ifeq ($(FlexBus),enable)
+  define_macros += -D FlexBus=True
+  ifeq ($(VERBOSE),enable)
+  	define_macros += -D verbose_debug=True
+  	define_macros += -D verbose_debug_ver=True
+  endif
+endif
 ifeq ($(BOOTROM),enable)
   define_macros += -D BOOTROM=True
 endif
@@ -123,7 +133,7 @@ ifeq ($(PWM),AXI4)
   define_macros += -D PWM=True -D PWM_AXI4=True
 endif
 
-PERIPHERALS:=src/peripherals/bootrom:src/peripherals/clint:./src/peripherals/vme:src/peripherals/plic:./src/peripherals/uart/:./src/peripherals/tcm/:./src/peripherals/jtagdtm:./src/peripherals/gpio:./src/peripherals/qspi:./src/peripherals/i2c/:./src/peripherals/sdram:./src/peripherals/axiexp:./src/peripherals/dma:./src/peripherals/pwm
+PERIPHERALS:=src/peripherals/bootrom:src/peripherals/clint:./src/peripherals/vme:src/peripherals/plic:./src/peripherals/uart/:./src/peripherals/tcm/:./src/peripherals/jtagdtm:./src/peripherals/gpio:./src/peripherals/qspi:./src/peripherals/i2c/:./src/peripherals/sdram:./src/peripherals/axiexp:./src/peripherals/dma:./src/peripherals/pwm:./src/peripherals/flexbus
 UNCORE:=./src/uncore:./src/uncore/axi4:./src/uncore/debug:./src/uncore/axi4lite
 CORE:=./src/core/fpu:./src/core/
 TESTBENCH:=./src/testbench/
@@ -170,7 +180,7 @@ link_bluesim:check-blue
 .PHONY: simulate
 simulate:
 	@echo Simulation...
-	@exec ./$(BSVOUTDIR)/out
+	@exec ./$(BSVOUTDIR)/out | tee sim.log
 	@echo Simulation finished
 ########################################################################################
 

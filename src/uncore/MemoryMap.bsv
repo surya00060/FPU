@@ -42,6 +42,10 @@ function Tuple2 #(Bool, Bit#(TLog#(Num_Slaves))) fn_addr_to_slave_num  (Bit#(`PA
 			else if(addr>=`VMEBase && addr<=`VMEEnd)
 				return tuple2(True,fromInteger(valueOf(VME_slave_num)));
 		`endif
+		`ifdef FlexBus
+			else if(addr>=`FlexBusBase && addr<=`FlexBusEnd)
+				return tuple2(True,fromInteger(valueOf(FlexBus_slave_num)));
+		`endif
 
 		`ifdef TCMemory
 			else if(addr>=`TCMBase && addr<=`TCMEnd)
@@ -55,7 +59,11 @@ function Bool is_IO_Addr(Bit#(`PADDR) addr); // TODO Shuold be PADDR
 		if(addr>=`DebugBase && addr<=`DebugEnd)
 			return (True);
 		else if(addr>=`SDRAMMemBase && addr<=`SDRAMMemEnd)
-			return (False);
+        `ifdef FlexBus
+	    		return (True);
+        `else
+	     	return (False);
+		`endif
 		`ifdef BOOTROM
 			else if(addr>=`BootRomBase && addr<=`BootRomEnd)
 				return (False);
