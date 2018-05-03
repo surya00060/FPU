@@ -105,6 +105,7 @@ package decode_func;
                                                                                CSRtoDecode csrs);
     let {prv, mip, csr_mie, mideleg, misa, counteren, mie}=csrs;
 
+    // ------- Default declarations of all local variables -----------//
     Trap_type exception = tagged None;
     Trap_type interrupt = chk_interrupt(prv, mip, csr_mie, mideleg, mie);
 
@@ -125,12 +126,7 @@ package decode_func;
       Bit#(5) rs3=inst[31:27];
   		Op3type rs3type=FloatingRF;
     `endif
-
-
-		//memory access type
-		Access_type mem_access=Load;
-		if(opcode[3]=='b1 && opcode[1]==0)
-			mem_access=Store;
+    // ------------------------------------------------------------------
 
     //---------------- Decoding the immediate values-------------------------------------
 
@@ -141,6 +137,11 @@ package decode_func;
     Bool jtype= (opcode=='b11011);
     Bool r4type= (opcode[4:2]=='b100);
 
+    // refer to section 2.3 (Immediate Encoding Variants) of the risc-v iser spec for more details
+    // on the following logic.
+    // The default values are chosen such that in case of FPU,  the immediate encoding will hold the
+    // upper 7-bit for further decoding.
+    // The default values also enable capturing the encoding for atomic operations as well.
     Bit#(1) bit0 = inst[20]; // because of I-type instructions
     if(stype)
       bit0=inst[7];
@@ -175,6 +176,15 @@ package decode_func;
     Bit#(1) bit31=inst[31];
     Bit#(32) immediate_value={bit31, bit20_30, bit12_19, bit11, bit5_10, bit1_4, bit0};
     // ----------------------------------------------------------------------------------
+		
+    //memory access type
+		Access_type mem_access=Load;
+		if(stype)
+			mem_access=Store;
+    `ifdef atomic
+      else if(opcode=='b01011)
+        mem_access=Atomic;
+    `endif
     
 
     // Following table describes what the ALU will need for some critical operations. Based on this
@@ -197,7 +207,8 @@ package decode_func;
         (opcode==`SYSTEM_INSTR_op && funct3[2]==1))	
 			rs1=0;
 		if (opcode==`SYSTEM_INSTR_op || opcode[4:2]=='b000 || opcode==`LUI_op // CSR or (Load) or LUI 
-  			 ||opcode == `AUIPC_op || opcode==`JAL_op || opcode==`JALR_op)	// AUIPC or JAL or JALR
+  			 ||opcode == `AUIPC_op || opcode==`JAL_op || opcode==`JALR_op	// AUIPC or JAL or JALR
+         `ifdef spfpu || (opcode[4:2]=='b101 && funct7[5]==1) `endif )
 			rs2=0;
 		if (opcode==`BRANCH_op || opcode[4:1]=='b0100)	
 			rd=0;
@@ -220,23 +231,28 @@ package decode_func;
 	  `endif
 
     `ifdef spfpu
+      // if the instruction does not require rs3 then set it to point to integer register 0. This
+      // will avoid any stalls on instructions not using rs3.
       if(!r4type)begin
         rs3=0;
         rs3type=IntegerRF;
       end
     `endif
+
 		//instructions which support word lenght operation in RV64 are to be added in Alu
 		//need to be edited according to the supported instruction
-
     `ifdef RV64
   		if(opcode==`IMM_ARITHW_op || opcode==`MULDIVW_op ||  opcode==`ARITHW_op ||
-          (opcode[4:3]=='b10 && funct7[0]==0)|| (opcode[4:1]=='b0101 && funct3[0]==0)) 
+          `ifdef spfpu (opcode[4:3]=='b10 && funct7[0]==0)|| `endif 
+          (opcode[4:1]=='b0101 && funct3[0]==0)) 
       	word32=True;
     `endif
     			
-
+    
+    // The following instructions define the type of execution to be performed by the following
+    // stages.
     Instruction_type inst_type=ALU;
-    if(opcode[4:3]=='b11)begin
+    if(opcode[4:3]=='b11)begin // Jumps,  Branch and CSRs
     	case(opcode[2:0])
     		'b001:inst_type=JALR; 
         'b011:inst_type=JAL;
@@ -244,21 +260,39 @@ package decode_func;
     		'b100:inst_type=SYSTEM_INSTR;
     	endcase
     end
-    else if(opcode[4:3]=='b01)begin 
+    else if(opcode[4:3]=='b01)begin // Stores,  LUIs,  MulDiv,  Register Arithmetic
       case (opcode[2:0])  
          'b000: `ifdef RV32 if(funct3!='b011) `endif inst_type=MEMORY; // STORE
          'b101:inst_type=ALU;      // LUI 
-         'b100,'b110:inst_type=(funct7[0]==1)?MULDIV:ALU; 
+         'b100,'b110: begin 
+            if(funct7[0]==0)
+              inst_type=ALU;
+            `ifdef muldiv 
+              else
+                inst_type=MULDIV; 
+            `endif
+          end
       endcase 
     end 
-    else if(opcode[4:3]=='b00)begin
+    else if(opcode[4:3]=='b00)begin // Immediate,  Loads,  Fence,  Fence.i
     	case(opcode[2:0])
     		'b000: `ifdef RV32 if(funct3!='b011) `endif inst_type=MEMORY;
     		'b101,'b100,'b110:inst_type=ALU;
+        'b011:inst_type=FENCE; 
     	endcase
     end
+    `ifdef spfpu
+      else if(opcode[4:3]=='b10)begin
+        inst_type=FLOAT;
+      end
+    `endif
+    // if the none of the supported instructions match then it is an illegal operation
     else
       exception = tagged Exception Illegal_inst;
+
+    // --------- Function for ALU -------------
+    // In case of Atomic operations as well,  the immediate portion will ensure the right opcode is
+    // sent to the cache for operations.
 		Bit#(4) fn=0;
 		if(opcode==`BRANCH_op)begin
 			if(funct3[2]==0)
@@ -285,6 +319,7 @@ package decode_func;
 		end
 		else if(opcode[4:3]=='b10)
 			fn=opcode[3:0];
+    // ---------------------------------------
 
 		Bool address_is_valid=address_valid(inst[31:20]);
 		Bool access_is_valid=valid_csr_access(inst[31:20],inst[19:15], inst[13:12], prv);
@@ -292,6 +327,12 @@ package decode_func;
       exception = tagged Exception Inst_addr_misaligned;
     else if(err)
       exception = tagged Exception Inst_access_fault;
+    else if( `ifdef spfpu (inst_type==FLOAT && funct7[0]==0 && misa[5]==0) || `endif
+             `ifdef dpfpu (inst_type==FLOAT && funct7[0]==1 && misa[3]==0) || `endif
+             `ifdef atomic (inst_type==MEMORY && mem_access==Atomic && misa[0]==0) || `endif 
+             `ifdef muldiv (inst_type==MULDIV && misa[12]==0) || `endif
+             (inst_type==ALU && misa[8]==0) )
+      exception=tagged Exception Illegal_inst; 
     else if(inst_type == SYSTEM_INSTR)begin
       if(funct3 == 0)
         case(inst[31:20])
