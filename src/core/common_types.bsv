@@ -37,8 +37,9 @@ package common_types;
 	typedef Bit #(3)  Funct3;
 
   //------ The follwing contain common tuples across the stages ------------- 
-	typedef enum {ALU, MULDIV, MEMORY, BRANCH, JAL, JALR, SYSTEM_INSTR, FLOAT} Instruction_type 
-                                  deriving(Bits, Eq, FShow); // the type of the decoded instruction.
+	typedef enum {ALU, MEMORY, BRANCH, JAL, JALR, SYSTEM_INSTR, 
+      `ifdef spfpu FLOAT, `endif `ifdef muldiv MULDIV, `endif FENCE} Instruction_type 
+      deriving(Bits, Eq, FShow); // the type of the decoded instruction.
 	typedef enum {Load=0, Store=1 `ifdef atomic ,Atomic=2 `endif } Access_type 
                                                                         deriving (Bits, Eq, FShow);
 	typedef enum {Flush= 1, None= 0} Flush_type deriving (Bits, Eq, FShow);
