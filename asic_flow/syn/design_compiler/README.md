@@ -2,7 +2,7 @@
 
 ## Generating verilog files
 
-Verilog files are generated using the ***generate_verilog*** target of the Makefile available in $SHAKTI_C_HOME. Please refer to the README present in the root-folder $SHAKTI_C_HOME
+Verilog files are generated using the ***generate_verilog*** target of the Makefile available in $SHAKTI_HOME. Please refer to the README present in the root-folder $SHAKTI_HOME
 
 ## Pre-Synthesis setup
 The following files need to be updated before firing a synthesis
@@ -13,7 +13,7 @@ The following files need to be updated before firing a synthesis
 |./constraints/block.sdc   |set the clock constraints here.         |
 
 ## Fire Synthesis
-from the $SHAKTI_C_HOME/asic_flow/syn folder execute the following command:
+from the $SHAKTI_HOME/asic_flow/syn folder execute the following command:
         $dc_shell -f ./scripts/dc.tcl | tee dc.log"
         
 ## Notes and Tips
