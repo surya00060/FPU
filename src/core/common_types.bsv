@@ -30,8 +30,12 @@ Details:
 */
 package common_types;
   `include "common_params.bsv"
-	
-	typedef 64 XLEN;
+
+  `ifdef RV64
+  	typedef 64 XLEN;
+  `else
+    typedef 32 XLEN;
+  `endif
 	typedef 32 PADDR ;
   typedef 32 VADDR ;
 	typedef Bit #(3)  Funct3;
@@ -43,8 +47,8 @@ package common_types;
 	typedef enum {Load=0, Store=1 `ifdef atomic ,Atomic=2 `endif } Access_type 
                                                                         deriving (Bits, Eq, FShow);
 	typedef enum {Flush= 1, None= 0} Flush_type deriving (Bits, Eq, FShow);
-	typedef enum {FloatingRF, IntegerRF, PC} Op1type deriving(Bits, Eq, FShow);
-	typedef enum {FloatingRF, IntegerRF, Immediate, Constant4} Op2type deriving(Bits, Eq, FShow);
+	typedef enum {`ifdef spfpu FloatingRF, `endif IntegerRF, PC} Op1type deriving(Bits, Eq, FShow);
+	typedef enum {`ifdef spfpu FloatingRF, `endif IntegerRF, Immediate, Constant4} Op2type deriving(Bits, Eq, FShow);
   typedef enum {FloatingRF, IntegerRF} Op3type deriving(Bits, Eq, FShow);
   typedef enum {SYSTEM_INSTR, REGULAR} Commit_type deriving(Eq, Bits, FShow);
   typedef enum {Machine=3, `ifdef supervisor Supervisor=1, `endif User=0} Privilege_mode 
@@ -82,6 +86,12 @@ package common_types;
     typedef Tuple4#(OpDecode, DecodeMeta, Trap_type, Bit#(1)) DecodeOut;
   `endif
   // ------------------------------------------------------------------------------------------
+
+  typedef struct{
+	  Bit#(XLEN) rs1;
+  	Bit#(XLEN) rs2;
+    `ifdef spfpu Bit#(XLEN) rs3;`endif
+  } Operands deriving (Bits,Eq);
 
   // define all tuples here
   typedef Tuple3#(Commit_type, Bit#(XLEN), Bit#(TAdd#(PADDR, 1))) ALU_OUT;
@@ -123,4 +133,36 @@ package common_types;
 	  Interrupt_cause Interrupt;
 	  void None;
 	} Trap_type deriving(Bits,Eq,FShow);
+
+// the data stucture for the pipeline FIFO between fetch and decode.
+typedef struct{
+	Bit#(VADDR) program_counter;
+	Bit#(32) instruction;
+	Bit#(VADDR) nextpc; // TODO get rid of this
+	Bit#(2) prediction;
+	Bit#(2) epochs;
+  Bit#(2) accesserr_pagefault;
+}IF_ID_type deriving (Bits,Eq);
+
+typedef struct{
+  OpDecode opaddr;
+  DecodeMeta metadata; // remove Imm
+  Bit#(XLEN) rs1;
+  Bit#(XLEN) rs2;
+  Bit#(XLEN) rs3_or_imm;
+
+} PIPE2 deriving(Bits, Eq, FShow);
+typedef struct{
+	Bit#(`Reg_width) rs3_imm;
+	Trap_type exception;
+	Bit#(`VADDR) nextpc;
+	Bit#(3) funct3;
+	`ifdef spfpu Bool fcsr_rm; `endif
+	`ifdef simulate Bit#(32) instruction ;`endif 
+	Bit#(3) debugcause;
+	Bit#(2) prediction;
+	Bit#(`PERFMONITORS) perfmonitors;
+	Bit#(2) epochs;
+}ID_IE_type deriving (Bits,Eq);
+
 endpackage
