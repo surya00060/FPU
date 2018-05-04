@@ -24,7 +24,15 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 Author: Neel Gala
 Email id: neelgala@gmail.com
-Details:
+Details: 
+This module primarily holds the combo functions to decode the instructions and provide
+various meta data to fetch operands and execute on them.
+
+The module also contains functions to check if a particular csr access is valid or illegal
+
+Interrupt checks are also performed in this package.
+
+The decoder outputs minimal data required to peform operand fetch and executions in the later stage.
 
 --------------------------------------------------------------------------------------------------
 */
