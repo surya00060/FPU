@@ -28,7 +28,7 @@ Details:
 
 --------------------------------------------------------------------------------------------------
 */
-package decoder;
+package decode_func;
   
   // pacakge imports from project
   import common_types::*;
@@ -37,42 +37,9 @@ package decoder;
 	  
   function Bool address_valid(Bit#(12) csr_address);
 		case(csr_address[11:8])
-      `ifdef user
-        'h0: begin
-          if(csr_address[7:0]>'h00 && csr_address[7:0]<'h4)begin 
-            `ifndef spfpu 
-              return False;
-            `else
-              return True;
-            `endif
-          end
-          else if (csr_address[7:0]=='h00 || csr_address[7:0]=='h4 || csr_address[7:0]=='h5 ||
-          (csr_address[7:0]>='h40 && csr_address[7:0]<= 'h44)) begin
-            `ifndef usertraps  
-              return False;
-            `else
-              return True;
-            `endif
-          end
-          else if(csr_address[7:0]>'h5 && csr_address[7:0]<'h40)
-            return False;
-          else
-            return True;
-        end
-      `endif
-      `ifdef supervisor
-        'h1: begin
-          if((csr_address[7:0]>'h6 && csr_address[7:0]<'h40) ||
-             (csr_address[7:0]>'h44 && csr_address[7:0]<'h80) ||
-             (csr_address[7:0]>'h80))
-            return False;
-          else
-            return True;
-        end
-      `endif
 			'h3: begin // machine read-write registers
-				if((csr_address[7:0]>'h6 && csr_address[7:0]<=('h22+ `Counters)) || 
-				  (csr_address[7:0]>('h23+ `Counters) && csr_address[7:0]<'h40) ||
+				if((csr_address[7:0]>'h6 && csr_address[7:0]<'h23) || 
+				  (csr_address[7:0]>'h26 && csr_address[7:0]<'h40) ||
 				  (csr_address[7:0]>'h44 && csr_address[7:0]<='hA0) ||
 				  (csr_address[7:0]>'hA3 && csr_address[7:0]<'hB8) ||
 				  (csr_address[7:0]>'hbf))
@@ -80,31 +47,23 @@ package decoder;
 				else
 					return True;
 			end
-      `ifdef Debug
-        'h7:begin
-          if(csr_address[7:0]<'hA0 || (csr_address[7:0]>'hA3 && csr_address[7:0]<'hb0) ||
-              csr_address[7:0]>'hB2)
-            return False;
-          else
-            return True;
-        end
-      `endif
 			'hB:begin
-				if( (csr_address[7:0]>('h2+ `Counters) `ifndef RV64 && csr_address[7:0]<'h80) ||
-             csr_address[7:0]>('h82+ `Counters)) `else )) `endif 
-					return False; 
+				if((csr_address[7:0]>'h6 && csr_address[7:0]<'h80 && csr_address[7:0]!='h20)||
+				 (csr_address[7:0]>'h86 && csr_address[7:0]<'hA0)||
+				 (csr_address[7:0]>'hA6))
+					return False;
 				else
 					return True;
 			end
 			'hC:begin
-				if( (csr_address[7:0]>('h2+ `Counters) `ifndef RV64 && csr_address[7:0]<'h80) ||
-             csr_address[7:0]>('h82+ `Counters)) `else )) `endif 
+				if((csr_address[7:0]>'h6 && csr_address[7:0]<'h83)|| 
+				 (csr_address[7:0]>'h86))
 					return False; 
 				else
 					return True;
 			end
-			'hF:begin // MAchine MRO registers
-				if(csr_address[7:0]<'h11 || csr_address[7:0]>'h14)
+			'hF:begin
+				if(csr_address[7:0]<'h11 || csr_address[7:0]>'h15)
 					return False;
 				else
 					return True;
@@ -358,7 +317,7 @@ package decoder;
 				default:{1'b0,funct3};
 			endcase;
 		end
-		else if(opcode[4:3]=='b10) // floating point instructions
+		else if(opcode[4:3]=='b10)
 			fn=opcode[3:0];
     // ---------------------------------------
 

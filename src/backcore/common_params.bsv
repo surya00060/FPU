@@ -63,8 +63,6 @@
 `define ICACHE_WORD_SIZE 4		// byte_bits=2
 `define ICACHE_TAG_BITS 20		// tag_bits = 52
 
-`define Counters 2
-
 ////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////// Register Mapping for Machine Mode Regs /////////////////
 `define MSTATUS	'h300 // Machine Status register                                
