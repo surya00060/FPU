@@ -144,25 +144,47 @@ typedef struct{
   Bit#(2) accesserr_pagefault;
 }IF_ID_type deriving (Bits,Eq);
 
-typedef struct{
-  OpDecode opaddr;
-  DecodeMeta metadata; // remove Imm
-  Bit#(XLEN) rs1;
-  Bit#(XLEN) rs2;
-  Bit#(XLEN) rs3_or_imm;
+// ---------- Tuples for the second Pipeline Stage -----------//
+`ifdef spfpu
+  typedef Tuple7#(Bit#(5),     // rs1addr
+                Bit#(5),     // rs2addr
+                Bit#(5),   // rs3addr ifdef spfpu
+                Op1type,     // rs1type,
+                Op2type,     // rs2type,
+                Op3type      // rs3type,
+                Instruction_type // instr_type
+                ) OpTypes;
+`else
+  typedef Tuple5#(Bit#(5),     // rs1addr
+                  Bit#(5),     // rs2addr
+                  Op1type,     // rs1type,
+                  Op2type,     // rs2type,
+                  Instruction_type // instr_type
+                ) OpTypes;
+`endif
 
-} PIPE2 deriving(Bits, Eq, FShow);
-typedef struct{
-	Bit#(`Reg_width) rs3_imm;
-	Trap_type exception;
-	Bit#(`VADDR) nextpc;
-	Bit#(3) funct3;
-	`ifdef spfpu Bool fcsr_rm; `endif
-	`ifdef simulate Bit#(32) instruction ;`endif 
-	Bit#(3) debugcause;
-	Bit#(2) prediction;
-	Bit#(`PERFMONITORS) perfmonitors;
-	Bit#(2) epochs;
-}ID_IE_type deriving (Bits,Eq);
+`ifdef spfpu
+  typedef Tuple4#( Bit#(XLEN) // rs1
+                   Bit#(XLEN) // rs2
+                   Bit#(XLEN) // rs3_imm ifdef spfpu
+                   Bit#(VADDR)// pc
+                 ) OpData;
+`else
+  typedef Tuple4#( Bit#(XLEN) // rs1
+                   Bit#(XLEN) // rs2
+                   Bit#(32) // imm ifdef spfpu
+                   Bit#(VADDR) // pc
+                 ) OpData;
+`endif
 
+typedef Tuple6#(  Bit#(5)     // rd
+                  Bool // word32
+                  Access_type // mem_access
+                  Bit#(4) // fn
+                  Bit#(3) // fucnt3
+                  Bit#(2) // prediction
+                  Bit#(2) // epochs
+                ) MetaData;
+typedef Tuple3#( OpTypes, OpData, MetaData) PIPE2;
+// -------------------------------------------------------------
 endpackage
