@@ -150,7 +150,7 @@ package decoder;
 	endfunction
 
   (*noinline*)
-  function DecodeOut decoder_func(Bit#(32) inst,Bit#(PADDR) shadow_pc, 
+  function DecodeOut decoder_func(Bit#(32) inst,Bit#(2) shadow_pc, 
       `ifdef supervisor Bit#(2) err, `else Bit#(1) err, `endif CSRtoDecode csrs);
     let {prv, mip, csr_mie, mideleg, misa, counteren, mie}=csrs;
 
@@ -165,7 +165,7 @@ package decoder;
 		Bit#(3) funct3= inst[14:12];
     Bit#(7) funct7 = inst[31:25]; 
 		Bool word32 =False;
-		Bit#(PADDR) pc=shadow_pc;
+		Bit#(2) pc=shadow_pc;
     
 		//operand types
 		Op1type rs1type=IntegerRF;
@@ -338,6 +338,9 @@ package decoder;
     // if the none of the supported instructions match then it is an illegal operation
     else
       exception = tagged Exception Illegal_inst;
+    Bool wfi=False;
+    if(inst_type==SYSTEM_INSTR && funct7=='b0001000)
+      wfi=True;
 
     // --------- Function for ALU -------------
     // In case of Atomic operations as well,  the immediate portion will ensure the right opcode is
