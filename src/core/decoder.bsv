@@ -134,29 +134,30 @@ package decoder;
 		return ret;
 	endfunction
   
-	function Trap_type chk_interrupt(Privilege_mode prv, Bit#(12) mip, Bit#(12) csr_mie, 
+	function Tuple2#(Trap_type, Bool) chk_interrupt(Privilege_mode prv, Bit#(12) mip, Bit#(12) csr_mie, 
                                                         Bit#(12) mideleg,  Bit#(1) mie);
 		Bit#(12) pending_interrupts = (truncate(mip)) & truncate(csr_mie) ;
+    Bool resume_wfi=unpack(|pending_interrupts);
 		let pending_machine_interrupts = pending_interrupts & ~truncate(mideleg);
 		let machine_interrupts_enabled = (mie == 1) || (prv != Machine);
 		pending_interrupts =	(machine_interrupts_enabled ? pending_machine_interrupts : 0);
-
+    
 		// format pendingInterrupt value to return
 		Trap_type ret = tagged None;
 		if (pending_interrupts != 0) begin
 			ret = tagged Interrupt unpack(zeroExtend(pack(countZerosLSB(pending_interrupts))));
 		end
-		return ret;
+		return tuple2(ret, resume_wfi);
 	endfunction
 
   (*noinline*)
-  function DecodeOut decoder_func(Bit#(32) inst,Bit#(2) shadow_pc, 
-      `ifdef supervisor Bit#(2) err, `else Bit#(1) err, `endif CSRtoDecode csrs);
+  function DecodeOut decoder_func(Bit#(32) inst `ifdef supervisor Bit#(2) err, `else Bit#(1) err, 
+      `endif CSRtoDecode csrs);
     let {prv, mip, csr_mie, mideleg, misa, counteren, mie}=csrs;
 
     // ------- Default declarations of all local variables -----------//
     Trap_type exception = tagged None;
-    Trap_type interrupt = chk_interrupt(prv, mip, csr_mie, mideleg, mie);
+    let {interrupt, resume_wfi} = chk_interrupt(prv, mip, csr_mie, mideleg, mie);
 
 		Bit#(5) rs1=inst[19:15];
 		Bit#(5) rs2=inst[24:20];
@@ -165,7 +166,6 @@ package decoder;
 		Bit#(3) funct3= inst[14:12];
     Bit#(7) funct7 = inst[31:25]; 
 		Bool word32 =False;
-		Bit#(2) pc=shadow_pc;
     
 		//operand types
 		Op1type rs1type=IntegerRF;
@@ -375,9 +375,7 @@ package decoder;
 
 		Bool address_is_valid=address_valid(inst[31:20]);
 		Bool access_is_valid=valid_csr_access(inst[31:20],inst[19:15], inst[13:12], prv);
-    if(pc[1:0]!=0)
-      exception = tagged Exception Inst_addr_misaligned;
-    else if(err[0]==1)
+    if(err[0]==1)
       exception = tagged Exception Inst_access_fault;
     `ifdef supervisor
       else if(err[1]==1)
@@ -413,15 +411,11 @@ package decoder;
     `endif
 
     `ifdef RV64
-      DecodeMeta t2 = tuple6(fn, inst_type, mem_access, immediate_value, funct3, word32);
+      DecodeMeta t2 = tuple7(fn, inst_type, mem_access, immediate_value, funct3, wfi, word32);
     `else
-      DecodeMeta t2 = tuple5(fn, inst_type, mem_access, immediate_value, funct3);
+      DecodeMeta t2 = tuple6(fn, inst_type, mem_access, immediate_value, funct3, wfi);
     `endif
 
-    `ifdef simulate 
-      return tuple4(t1, t2, interrupt, inst);
-    `else
-      return tuple3(t1, t2, interrupt);
-    `endif
+    return tuple4(t1, t2, interrupt, resume_wfi);
   endfunction
 endpackage

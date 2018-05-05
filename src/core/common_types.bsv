@@ -78,13 +78,8 @@ package common_types;
         DecodeMeta;
   `endif
 
-  `ifdef simulate
-    // the following type is defined as: Operand Data, Decode Meta data,  Trap, epoch, Instr
-    typedef Tuple4#(OpDecode, DecodeMeta, Trap_type, Bit#(32)) DecodeOut ;
-  `else
-    // the following type is defined as: Operand Data, Decode Meta data,  Trap, epoch
-    typedef Tuple3#(OpDecode, DecodeMeta, Trap_type) DecodeOut;
-  `endif
+  // the following type is defined as: Operand Data, Decode Meta data,  Trap, resume_wfi
+  typedef Tuple4#(OpDecode, DecodeMeta, Trap_type, Bool) DecodeOut ;
   // ------------------------------------------------------------------------------------------
 
   `ifdef spfpu
@@ -156,7 +151,7 @@ typedef struct{
                 Bit#(5),   // rs3addr ifdef spfpu
                 Op1type,     // rs1type,
                 Op2type,     // rs2type,
-                Op3type      // rs3type,
+                Op3type,       // rs3type,
                 Instruction_type // instr_type
                 ) OpTypes;
 `else

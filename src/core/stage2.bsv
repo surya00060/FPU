@@ -30,16 +30,30 @@ Details:
 2.  If a csr operation is being decoded, then the next instruction is stalled untill the csr
     completes and commits the instruction.
 
+NOTE0: Handling flushes
+  Flushes in this stage are handled by 2 epoch registers: eEpoch and wEpoch.
 
-NOTE: By handling trap and flushing fetch to jump to the trap routine in this stage saves cycle. One
-might also consider that PC no longer needs to be sent to the subsequent stages. However,  note that
-the load/store exceptions are only captured in the next staged. Including pagefaults. So you will
-anyhow need to handle a trap in that stage as well.
+NOTE1: Handling Traps
+  By handling trap and flushing fetch to jump to the trap routine in this stage saves cycle. One
+  might also consider that PC no longer needs to be sent to the subsequent stages. However,  note that
+  the load/store exceptions are only captured in the next staged. Including pagefaults. So you will
+  any how need to handle a trap in that stage as well.
 
-Additionally, if you have 2 stages handling traps,  you will have prioritize on over the other.
-Suppose you take a trap from the decode stage but there exists an instruction in the subsequent
-pipeline buffers which will generate a memory exception. While taking the trap in the decode stage
-you have corrupted the csrs and this will screw up all further exception handling.
+  Additionally, if you have 2 stages handling traps,  you will have prioritize on over the other.
+  Suppose you take a trap from the decode stage but there exists an instruction in the subsequent
+  pipeline buffers which will generate a memory exception. While taking the trap in the decode stage
+  you have corrupted the csrs and this will screw up all further exception handling.
+
+NOTE2: Handling WFI. 
+  WFI is also handled in this stage. If a wfi instruction is encountered is treated as a NOP and
+  simply dropped. Simultaenously a register is set. When the instruction requests to be decoded and
+  the register is set,  the instruction will only progress if an interrupt has arrived. This will
+  ensure that the interrupt is taken on the next instructions as required by the spec. When this
+  interrupt is taken (under stall mode) then the register is reset and normal functionality resumes.
+
+  If there are n-continous "wfi" instructions,  then n-interrupts will have to be serviced to resume
+  the core.
+
 --------------------------------------------------------------------------------------------------
 */
 package stage2;
@@ -57,7 +71,7 @@ package stage2;
 	/* ====================== */
 
 	interface Ifc_stage2;
-		method Action write_rd (Bit#(5)r, Bit#(XLEN) d `ifdef spfpu ,Operand_type rdtype `endif );
+		method Action write_rd (Bit#(5)r, Bit#(XLEN) d `ifdef spfpu ,Op3type rdtype `endif );
 		/* ===== pipe connections ========= */
 		interface RXe#(IF_ID_type) rx_in;
     (*always_ready*)
@@ -85,8 +99,7 @@ package stage2;
 		Reg#(Bit#(1)) eEpoch <-mkReg(0);
 		Reg#(Bit#(1)) wEpoch <-mkReg(0);
     Reg#(Bool) rg_stall <- mkReg(False);
-
-    // TODO WFI
+    Reg#(Bool) rg_wfi <- mkReg(False);
 
     rule decode_and_fetch(!rg_stall);
 	    let pc=rx.u.first.program_counter;
@@ -95,42 +108,42 @@ package stage2;
 	    let pred=rx.u.first.prediction;
 	    let epochs=rx.u.first.epochs;
       let err=rx.u.first.accesserr_pagefault;
+      let {opdecode, meta, trap, resume_wfi} = decoder_func(inst, err, wr_csrs);
+      `ifdef spfpu
+        let {rs1addr, rs2addr, rd, rs3addr, rs1type, rs2type, rs3type}=opdecode;
+      `else
+        let {rs1addr, rs2addr, rd, rs1type, rs2type} = opdecode;
+      `endif
+
+      `ifdef RV64
+        let {fn, instrType, memaccess, imm, funct3, wfi, word32}=meta;
+      `else
+        let {fn, instrType, memaccess, imm, funct3, wfi}=meta;
+      `endif
+
+      let {rs1, rs2 `ifdef spfpu , rs3 `endif }<-registerfile.opaddress(rs1addr, rs1type, rs2addr, 
+          rs2type, pc, imm `ifdef spfpu , rs3addr, rs3type `endif );
+
+      `ifdef spfpu
+        OpTypes t1 =tuple7(rs1addr, rs2addr, rs3addr, rs1type, rs2type, rs3type, instrType);
+        OpData t2 =tuple4(rs1, rs2, rs3, pc);
+      `else
+        OpTypes t1 =tuple5(rs1addr, rs2addr, rs1type, rs2type, instrType);
+        OpData t2 =tuple4(rs1, rs2, imm, pc);
+      `endif
+
+      MetaData t3 = tuple7(rd, word32, memaccess, fn, funct3, pred, epochs);
+      if(!wfi && {eEpoch, wEpoch}==epochs)
+        tx.u.enq(tuple3(t1, t2, t3));
+        
+      if((rg_wfi && resume_wfi) || (!rg_wfi))
+        rx.u.deq; 
+
       if({eEpoch, wEpoch}!=epochs)begin
-        rx.u.deq;
-      end
-      else begin
-        let {opdecode, meta, trap} = decoder_func(inst, pc[1:0], err, wr_csrs);
-        `ifdef spfpu
-          let {rs1addr, rs2addr, rd, rs3addr, rs1type, rs2type, rs3type}=opdecode;
-        `else
-          let {rs1addr, rs2addr, rd, rs1type, rs2type} = opdecode;
-        `endif
-
-        `ifdef RV64
-          let {fn, instrType, memaccess, imm, funct3, wfi, word32}=meta;
-        `else
-          let {fn, instrType, memaccess, imm, funct3, wfi}=meta;
-        `endif
-
         if(instrType==SYSTEM_INSTR)
           rg_stall<= True;
-
-        let {rs1, rs2 `ifdef spfpu , rs3 `endif }<-registerfile.opaddress(rs1addr, rs1type, rs2addr, 
-            rs2type, pc, imm `ifdef spfpu , rs3addr, rs3type `endif );
-
-        `ifdef spfpu
-          OpTypes t1 =tuple7(rs1addr, rs2addr, rs3addr, rs1type, rs2type, rs3type, instrType);
-          OpData t2 =tuple4(rs1, rs2, rs3, pc);
-        `else
-          OpTypes t1 =tuple5(rs1addr, rs2addr, rs1type, rs2type, instrType);
-          OpData t2 =tuple4(rs1, rs2, imm, pc);
-        `endif
-
-        MetaData t3 = tuple7(rd, word32, memaccess, fn, funct3, pred, epochs);
-
-        tx.u.enq(tuple3(t1, t2, t3));
-        rx.u.deq; 
-      end
+        rg_wfi<=wfi;
+      end  
     endrule
 
 		method tx_out=tx.e;
@@ -138,7 +151,7 @@ package stage2;
     method Action csrs (CSRtoDecode csr);
       wr_csrs<= csr;
     endmethod
-		method Action write_rd (Bit#(5)r, Bit#(XLEN) d `ifdef spfpu , Operand_type rdtype `endif )=
+		method Action write_rd (Bit#(5)r, Bit#(XLEN) d `ifdef spfpu , Op3type rdtype `endif )=
                                     registerfile.write_rd(r,d `ifdef spfpu ,rdtype `endif );
 
     // This method will get activated when there is a flush from the execute stage
