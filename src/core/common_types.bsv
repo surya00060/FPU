@@ -69,12 +69,12 @@ package common_types;
   `endif
 
   `ifdef RV64
-    // the following type is defined as: fn, InstrType, MemAccesstype, Immediate, funct3, word32 
-    typedef Tuple6#(Bit#(4), Instruction_type, Access_type, Bit#(32), Bit#(3), Bool)
+    // the following type is defined as: fn, InstrType, MemAccesstype, Immediate, funct3, wfi, word32 
+    typedef Tuple7#(Bit#(4), Instruction_type, Access_type, Bit#(32), Bit#(3), Bool, Bool)
         DecodeMeta;
   `else
-    // the following type is defined as: fn, InstrType, MemAccesstype, Immediate, funct3 
-    typedef Tuple5#(Bit#(4), Instruction_type, Access_type, Bit#(32), Bit#(3))
+    // the following type is defined as: fn, InstrType, MemAccesstype, Immediate, funct3, wfi 
+    typedef Tuple6#(Bit#(4), Instruction_type, Access_type, Bit#(32), Bit#(3), Bool)
         DecodeMeta;
   `endif
 

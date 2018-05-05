@@ -29,6 +29,17 @@ Details:
     operands from the registerfile.
 2.  If a csr operation is being decoded, then the next instruction is stalled untill the csr
     completes and commits the instruction.
+
+
+NOTE: By handling trap and flushing fetch to jump to the trap routine in this stage saves cycle. One
+might also consider that PC no longer needs to be sent to the subsequent stages. However,  note that
+the load/store exceptions are only captured in the next staged. Including pagefaults. So you will
+anyhow need to handle a trap in that stage as well.
+
+Additionally, if you have 2 stages handling traps,  you will have prioritize on over the other.
+Suppose you take a trap from the decode stage but there exists an instruction in the subsequent
+pipeline buffers which will generate a memory exception. While taking the trap in the decode stage
+you have corrupted the csrs and this will screw up all further exception handling.
 --------------------------------------------------------------------------------------------------
 */
 package stage2;
@@ -56,13 +67,13 @@ package stage2;
       method ActionValue#(Bit#(XLEN)) read_write_gprs(Bit#(5) r, Bit#(XLEN) data 
           `ifdef spfpu ,Op3type rfselect `endif );
 		`endif
-		method Action flush();
     method Action csrs (CSRtoDecode csr);
     method Action csr_updated (Bool upd);
 		method Action update_eEpoch;
 		method Action update_wEpoch;
 	endinterface:Ifc_stage2
 
+  (*synthesize*)
   module mkstage2(Ifc_stage2);
 
     Ifc_registerfile registerfile <-mkregisterfile();
@@ -75,6 +86,8 @@ package stage2;
 		Reg#(Bit#(1)) wEpoch <-mkReg(0);
     Reg#(Bool) rg_stall <- mkReg(False);
 
+    // TODO WFI
+
     rule decode_and_fetch(!rg_stall);
 	    let pc=rx.u.first.program_counter;
 	    let inst=rx.u.first.instruction;
@@ -86,7 +99,7 @@ package stage2;
         rx.u.deq;
       end
       else begin
-        let {opdecode, meta, trap} = decoder_func(inst, pc, err, wr_csrs);
+        let {opdecode, meta, trap} = decoder_func(inst, pc[1:0], err, wr_csrs);
         `ifdef spfpu
           let {rs1addr, rs2addr, rd, rs3addr, rs1type, rs2type, rs3type}=opdecode;
         `else
@@ -94,9 +107,9 @@ package stage2;
         `endif
 
         `ifdef RV64
-          let {fn, instrType, memaccess, imm, funct3, word32}=meta;
+          let {fn, instrType, memaccess, imm, funct3, wfi, word32}=meta;
         `else
-          let {fn, instrType, memaccess, imm, funct3}=meta;
+          let {fn, instrType, memaccess, imm, funct3, wfi}=meta;
         `endif
 
         if(instrType==SYSTEM_INSTR)
