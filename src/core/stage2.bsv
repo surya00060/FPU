@@ -30,8 +30,21 @@ Details:
 2.  If a csr operation is being decoded, then the next instruction is stalled untill the csr
     completes and commits the instruction.
 
+TODO: Check for mispredictions:
+1. The bpu will only train for conditional branches. So the npc will either be PC+4 or a PC+/-4KB.
+We can compare both of these with npc. If neither match then the prediction is absolutely wrong. So
+we need to flush.. but what would the new pc be? - PC+4 or the new jump address. The same can be
+done for JAL/JALR being predicted by RAS.
+The only issue here is this does not remove the npc checking in the execute stage. If the npc
+matches PC+4,  but the execution stage will stil have to make the comparison and confirm if indeed
+the branch is not taken or taken and thus npc is correct or wrong.
+
 NOTE0: Handling flushes
-  Flushes in this stage are handled by 2 epoch registers: eEpoch and wEpoch.
+  Flushes in this stage are handled by 2 epoch registers: eEpoch and wEpoch. This bits are compared
+  to the epochs bits from the fetch unit (status under which they were fetched). If they do not
+  match then the instruction is dropped. The reason for having 2 epoch registers is because both:
+  the execute and the writeback stage can generate a flush of the pipe,  causing instructions to be
+  dropped all over.
 
 NOTE1: Handling Traps
   By handling trap and flushing fetch to jump to the trap routine in this stage saves cycle. One
