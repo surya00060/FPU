@@ -69,29 +69,29 @@ package common_types;
   `endif
 
   `ifdef RV64
-    // the following type is defined as: fn, InstrType, MemAccesstype, PC, Immediate, funct3, word32 
-    typedef Tuple7#(Bit#(4), Instruction_type, Access_type, Bit#(VADDR), Bit#(32), Bit#(3), Bool)
+    // the following type is defined as: fn, InstrType, MemAccesstype, Immediate, funct3, word32 
+    typedef Tuple6#(Bit#(4), Instruction_type, Access_type, Bit#(32), Bit#(3), Bool)
         DecodeMeta;
   `else
-    // the following type is defined as: fn, InstrType, MemAccesstype, PC, Immediate, funct3 
-    typedef Tuple6#(Bit#(4), Instruction_type, Access_type, Bit#(VADDR), Bit#(32), Bit#(3))
+    // the following type is defined as: fn, InstrType, MemAccesstype, Immediate, funct3 
+    typedef Tuple5#(Bit#(4), Instruction_type, Access_type, Bit#(32), Bit#(3))
         DecodeMeta;
   `endif
 
   `ifdef simulate
     // the following type is defined as: Operand Data, Decode Meta data,  Trap, epoch, Instr
-    typedef Tuple5#(OpDecode, DecodeMeta, Trap_type, Bit#(1), Bit#(32)) DecodeOut ;
+    typedef Tuple4#(OpDecode, DecodeMeta, Trap_type, Bit#(32)) DecodeOut ;
   `else
     // the following type is defined as: Operand Data, Decode Meta data,  Trap, epoch
-    typedef Tuple4#(OpDecode, DecodeMeta, Trap_type, Bit#(1)) DecodeOut;
+    typedef Tuple3#(OpDecode, DecodeMeta, Trap_type) DecodeOut;
   `endif
   // ------------------------------------------------------------------------------------------
 
-  typedef struct{
-	  Bit#(XLEN) rs1;
-  	Bit#(XLEN) rs2;
-    `ifdef spfpu Bit#(XLEN) rs3;`endif
-  } Operands deriving (Bits,Eq);
+  `ifdef spfpu
+    typedef Tuple3#(Bit#(XLEN), Bit#(XLEN), Bit#(XLEN)) Operands ;
+  `else
+    typedef Tuple2#(Bit#(XLEN), Bit#(XLEN)) Operands ;
+  `endif
 
   // define all tuples here
   typedef Tuple3#(Commit_type, Bit#(XLEN), Bit#(TAdd#(PADDR, 1))) ALU_OUT;
@@ -117,6 +117,11 @@ package common_types;
 		Store_access_fault=7,
 		Ecall_from_user=8,
 		Ecall_from_machine=11
+    `ifdef supervisor
+      , Inst_page_fault=12
+      , Load_page_fault=13
+      , Store_page_fault=15
+    `endif
 	} Exception_cause deriving (Bits,Eq,FShow);
 
 	typedef enum{
@@ -164,26 +169,26 @@ typedef struct{
 `endif
 
 `ifdef spfpu
-  typedef Tuple4#( Bit#(XLEN) // rs1
-                   Bit#(XLEN) // rs2
-                   Bit#(XLEN) // rs3_imm ifdef spfpu
+  typedef Tuple4#( Bit#(XLEN),  // rs1
+                   Bit#(XLEN),  // rs2
+                   Bit#(XLEN),  // rs3_imm ifdef spfpu
                    Bit#(VADDR)// pc
                  ) OpData;
 `else
-  typedef Tuple4#( Bit#(XLEN) // rs1
-                   Bit#(XLEN) // rs2
-                   Bit#(32) // imm ifdef spfpu
+  typedef Tuple4#( Bit#(XLEN),  // rs1
+                   Bit#(XLEN),  // rs2
+                   Bit#(32),  // imm ifdef spfpu
                    Bit#(VADDR) // pc
                  ) OpData;
 `endif
 
-typedef Tuple6#(  Bit#(5)     // rd
-                  Bool // word32
-                  Access_type // mem_access
-                  Bit#(4) // fn
-                  Bit#(3) // fucnt3
-                  Bit#(2) // prediction
-                  Bit#(2) // epochs
+typedef Tuple7#(  Bit#(5),      // rd
+                  Bool,  // word32
+                  Access_type,  // mem_access
+                  Bit#(4),  // fn
+                  Bit#(3),  // fucnt3
+                  Bit#(2),  // prediction
+                  Bit#(2)  // epochs
                 ) MetaData;
 typedef Tuple3#( OpTypes, OpData, MetaData) PIPE2;
 // -------------------------------------------------------------

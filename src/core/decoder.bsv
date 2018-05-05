@@ -150,8 +150,8 @@ package decoder;
 	endfunction
 
   (*noinline*)
-  function DecodeOut decoder_func(Bit#(32) inst,Bit#(PADDR) shadow_pc, Bit#(1) epoch, Bool err, 
-                                                                               CSRtoDecode csrs);
+  function DecodeOut decoder_func(Bit#(32) inst,Bit#(PADDR) shadow_pc, 
+      `ifdef supervisor Bit#(2) err, `else Bit#(1) err, `endif CSRtoDecode csrs);
     let {prv, mip, csr_mie, mideleg, misa, counteren, mie}=csrs;
 
     // ------- Default declarations of all local variables -----------//
@@ -374,8 +374,12 @@ package decoder;
 		Bool access_is_valid=valid_csr_access(inst[31:20],inst[19:15], inst[13:12], prv);
     if(pc[1:0]!=0)
       exception = tagged Exception Inst_addr_misaligned;
-    else if(err)
+    else if(err[0]==1)
       exception = tagged Exception Inst_access_fault;
+    `ifdef supervisor
+      else if(err[1]==1)
+        exception = tagged Exception Inst_page_fault;
+    `endif
     else if( `ifdef spfpu (inst_type==FLOAT && funct7[0]==0 && misa[5]==0) || `endif
              `ifdef dpfpu (inst_type==FLOAT && funct7[0]==1 && misa[3]==0) || `endif
              `ifdef atomic (inst_type==MEMORY && mem_access==Atomic && misa[0]==0) || `endif 
@@ -406,15 +410,15 @@ package decoder;
     `endif
 
     `ifdef RV64
-      DecodeMeta t2 = tuple7(fn, inst_type, mem_access, pc, immediate_value, funct3, word32);
+      DecodeMeta t2 = tuple6(fn, inst_type, mem_access, immediate_value, funct3, word32);
     `else
-      DecodeMeta t2 = tuple6(fn, inst_type, mem_access, pc, immediate_value, funct3);
+      DecodeMeta t2 = tuple5(fn, inst_type, mem_access, immediate_value, funct3);
     `endif
 
     `ifdef simulate 
-      return tuple5(t1, t2, interrupt, epoch, inst);
+      return tuple4(t1, t2, interrupt, inst);
     `else
-      return tuple4(t1, t2, interrupt, epoch);
+      return tuple3(t1, t2, interrupt);
     `endif
   endfunction
 endpackage

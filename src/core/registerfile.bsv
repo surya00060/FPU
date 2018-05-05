@@ -128,7 +128,7 @@ package registerfile;
         if(rs3type==FloatingRF)
           rs3=rs3frf;
         else
-          rs3=0;
+          rs3=signExtend(imm);
       `endif
         
       `ifdef RV64
@@ -142,7 +142,11 @@ package registerfile;
         $display($time,"\nReg1 :%d(%h) ",rs1addr,rs1,fshow(rs1type),"\nReg2 : %d(%h) ",rs2addr,
           rs2,fshow(rs2type) `ifdef spfpu ,"\nReg3: %d(%h) ; ",rs3addr,rs3,fshow(rs3type) `endif ); 
 
-      return Operands{rs1:rs1,rs2:rs2 `ifdef spfpu ,rs3: rs3 `endif };
+      `ifdef spfpu
+        return tuple3(rs1, rs2, rs3);
+      `else
+        return tuple2(rs1, rs2);
+      `endif
 		endmethod
 
     `ifdef RV64 

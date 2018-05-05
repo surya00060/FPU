@@ -48,8 +48,9 @@ package stage2;
 	interface Ifc_stage2;
 		method Action write_rd (Bit#(5)r, Bit#(XLEN) d `ifdef spfpu ,Operand_type rdtype `endif );
 		/* ===== pipe connections ========= */
-		//interface RXe#(IF_ID_type) rx_in;
-		//interface TXe#(ID_IE_type) tx_out;
+		interface RXe#(IF_ID_type) rx_in;
+    (*always_ready*)
+		interface TXe#(PIPE2) tx_out;
 		/*================================= */
 		`ifdef Debug
       method ActionValue#(Bit#(XLEN)) read_write_gprs(Bit#(5) r, Bit#(XLEN) data 
@@ -65,6 +66,8 @@ package stage2;
   module mkstage2(Ifc_stage2);
 
     Ifc_registerfile registerfile <-mkregisterfile();
+		RX#(IF_ID_type) rx <-mkRX;
+		TX#(PIPE2) tx <-mkTX;
       
     let verbosity = `VERBOSITY ;
     Wire#(CSRtoDecode) wr_csrs <-mkWire();
@@ -72,6 +75,53 @@ package stage2;
 		Reg#(Bit#(1)) wEpoch <-mkReg(0);
     Reg#(Bool) rg_stall <- mkReg(False);
 
+    rule decode_and_fetch(!rg_stall);
+	    let pc=rx.u.first.program_counter;
+	    let inst=rx.u.first.instruction;
+	    let npc=rx.u.first.nextpc; // TODO get rid of this
+	    let pred=rx.u.first.prediction;
+	    let epochs=rx.u.first.epochs;
+      let err=rx.u.first.accesserr_pagefault;
+      if({eEpoch, wEpoch}!=epochs)begin
+        rx.u.deq;
+      end
+      else begin
+        let {opdecode, meta, trap} = decoder_func(inst, pc, err, wr_csrs);
+        `ifdef spfpu
+          let {rs1addr, rs2addr, rd, rs3addr, rs1type, rs2type, rs3type}=opdecode;
+        `else
+          let {rs1addr, rs2addr, rd, rs1type, rs2type} = opdecode;
+        `endif
+
+        `ifdef RV64
+          let {fn, instrType, memaccess, imm, funct3, word32}=meta;
+        `else
+          let {fn, instrType, memaccess, imm, funct3}=meta;
+        `endif
+
+        if(instrType==SYSTEM_INSTR)
+          rg_stall<= True;
+
+        let {rs1, rs2 `ifdef spfpu , rs3 `endif }<-registerfile.opaddress(rs1addr, rs1type, rs2addr, 
+            rs2type, pc, imm `ifdef spfpu , rs3addr, rs3type `endif );
+
+        `ifdef spfpu
+          OpTypes t1 =tuple7(rs1addr, rs2addr, rs3addr, rs1type, rs2type, rs3type, instrType);
+          OpData t2 =tuple4(rs1, rs2, rs3, pc);
+        `else
+          OpTypes t1 =tuple5(rs1addr, rs2addr, rs1type, rs2type, instrType);
+          OpData t2 =tuple4(rs1, rs2, imm, pc);
+        `endif
+
+        MetaData t3 = tuple7(rd, word32, memaccess, fn, funct3, pred, epochs);
+
+        tx.u.enq(tuple3(t1, t2, t3));
+        rx.u.deq; 
+      end
+    endrule
+
+		method tx_out=tx.e;
+		method rx_in=rx.e;
     method Action csrs (CSRtoDecode csr);
       wr_csrs<= csr;
     endmethod
