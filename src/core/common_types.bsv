@@ -39,6 +39,7 @@ package common_types;
 	typedef 32 PADDR ;
   typedef 32 VADDR ;
 	typedef Bit #(3)  Funct3;
+  typedef 6 PRFDEPTH;
 
   //------ The follwing contain common tuples across the stages ------------- 
 	typedef enum {ALU, MEMORY, BRANCH, JAL, JALR, SYSTEM_INSTR, 
@@ -185,4 +186,10 @@ typedef Tuple7#(  Bit#(5),    // rd
                 ) MetaData;
 typedef Tuple3#( OpTypes, OpData, MetaData) PIPE2;
 // -------------------------------------------------------------
+
+// data structure of the fwding data structure
+typedef union tagged{
+  Bit#(width) Present;
+	void Absent;
+} FwdType#(numeric type width) deriving(Bits,Eq,FShow);
 endpackage
