@@ -60,9 +60,6 @@ package registerfile;
           `ifdef spfpu ,Op3type rfselect `endif );
 		`endif
 		method Action write_rd(Bit#(5) r, Bit#(XLEN) d `ifdef spfpu , Op3type rdtype `endif );
-    `ifdef RV64 
-      method Action inferred_xlen (Bool xlen); 
-    `endif // False-32bit,  True-64bit 
 	endinterface
 
 	(*synthesize*)
@@ -74,10 +71,6 @@ package registerfile;
 		`endif
 		Reg#(Bool) initialize<-mkReg(True);
 		Reg#(Bit#(5)) rg_index<-mkReg(0);
-    `ifdef RV64
-      Wire#(Bool) wr_xlen <-mkWire();
-    `endif
-
     // The following rule is fired on system reset and writes all the register values to "0". This
     // rule will never fire otherwise
 		rule initialize_regfile(initialize);
@@ -104,24 +97,18 @@ package registerfile;
 
       Bit#(XLEN) rs1, rs2 `ifdef spfpu , rs3 `endif ;
 
-      if(rs1type==PC)
-        rs1=zeroExtend(pc);
       `ifdef spfpu
-        else if(rs1type==FloatingRF)
+        if(rs1type==FloatingRF)
           rs1=rs1frf;
+        else
       `endif
-      else
         rs1=rs1irf;
 
-      if(rs2type==Constant4)
-        rs2='d4;
-      else if(rs2type==Immediate)
-        rs2=signExtend(imm);
       `ifdef spfpu
-        else if(rs2type==FloatingRF)
+        if(rs2type==FloatingRF)
           rs2=rs2frf;
+        else
       `endif
-      else
         rs2=rs2irf;
 
       `ifdef spfpu
@@ -131,13 +118,6 @@ package registerfile;
           rs3=signExtend(imm);
       `endif
         
-      `ifdef RV64
-        if(!wr_xlen) begin // if XLEN>MXLEN but MXLEN is set to 32
-          rs1=signExtend(rs1[31:0]);
-          rs2=signExtend(rs2[31:0]);
-        end
-      `endif
-
 			if(verbosity>0)
         $display($time,"\nReg1 :%d(%h) ",rs1addr,rs1,fshow(rs1type),"\nReg2 : %d(%h) ",rs2addr,
           rs2,fshow(rs2type) `ifdef spfpu ,"\nReg3: %d(%h) ; ",rs3addr,rs3,fshow(rs3type) `endif ); 
@@ -148,12 +128,6 @@ package registerfile;
         return tuple2(rs1, rs2);
       `endif
 		endmethod
-
-    `ifdef RV64 
-      method Action inferred_xlen (Bool xlen); 
-        wr_xlen<= xlen;
-      endmethod  
-    `endif // False-32bit,  True-64bit 
 
 		method Action write_rd(Bit#(5) r, Bit#(XLEN) d `ifdef spfpu , Op3type rdtype `endif ) 
                                                                                     if(!initialize);

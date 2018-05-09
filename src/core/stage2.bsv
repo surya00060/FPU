@@ -122,6 +122,7 @@ package stage2;
 	    let epochs=rx.u.first.epochs;
       let err=rx.u.first.accesserr_pagefault;
       let {opdecode, meta, trap, resume_wfi} = decoder_func(inst, err, wr_csrs);
+
       `ifdef spfpu
         let {rs1addr, rs2addr, rd, rs3addr, rs1type, rs2type, rs3type}=opdecode;
       `else
@@ -137,12 +138,23 @@ package stage2;
       let {rs1, rs2 `ifdef spfpu , rs3 `endif }<-registerfile.opaddress(rs1addr, rs1type, rs2addr, 
           rs2type, pc, imm `ifdef spfpu , rs3addr, rs3type `endif );
 
+      Bit#(XLEN) op1=(rs1type==PC)?signExtend(pc):rs1;
+      Bit#(XLEN) op2=(rs2type==Constant4)?'d4:(rs2type==Immediate)?signExtend(imm):rs2;
+      Bit#(VADDR) op3=(instrType==MEMORY || instrType==JALR)?truncate(rs1):zeroExtend(pc); 
       `ifdef spfpu
-        OpTypes t1 =tuple7(rs1addr, rs2addr, rs3addr, rs1type, rs2type, rs3type, instrType);
-        OpData t2 =tuple4(rs1, rs2, rs3, pc);
+        Bit#(XLEN) op4=(rs3type==FloatingRF)?rs3:signExtend(imm);
       `else
-        OpTypes t1 =tuple5(rs1addr, rs2addr, rs1type, rs2type, instrType);
-        OpData t2 =tuple4(rs1, rs2, imm, pc);
+        Bit#(VADDR) op4=signExtend(imm);
+      `endif
+
+      OpData t2 =tuple4(op1, op2, op3, op4);
+      `ifdef spfpu
+        Op3type r1type=(rs1type==FloatingRF)?FloatingRF:IntegerRF;
+        Op3type r2type=(rs2type==FloatingRF)?FloatingRF:IntegerRF;
+        Op3type r3type=(rs3type==FloatingRF)?FloatingRF:IntegerRF;
+        OpTypes t1 =tuple7(rs1addr, rs2addr, rs3addr, r1type, r2type, r3type, instrType);
+      `else
+        OpTypes t1 =tuple5(rs1addr, rs2addr, instrType);
       `endif
 
       MetaData t3 = tuple7(rd, word32, memaccess, fn, funct3, pred, epochs);

@@ -149,41 +149,39 @@ typedef struct{
   typedef Tuple7#(Bit#(5),     // rs1addr
                 Bit#(5),     // rs2addr
                 Bit#(5),   // rs3addr ifdef spfpu
-                Op1type,     // rs1type,
-                Op2type,     // rs2type,
+                Op3type,     // rs1type,
+                Op3type,     // rs2type,
                 Op3type,       // rs3type,
                 Instruction_type // instr_type
                 ) OpTypes;
 `else
   typedef Tuple5#(Bit#(5),     // rs1addr
                   Bit#(5),     // rs2addr
-                  Op1type,     // rs1type,
-                  Op2type,     // rs2type,
                   Instruction_type // instr_type
                 ) OpTypes;
 `endif
 
 `ifdef spfpu
-  typedef Tuple4#( Bit#(XLEN),  // rs1
+  typedef Tuple4#( Bit#(XLEN),  // rs1_pc
                    Bit#(XLEN),  // rs2
-                   Bit#(XLEN),  // rs3_imm ifdef spfpu
-                   Bit#(VADDR)// pc
+                   Bit#(VADDR), // pc_rs1
+                   Bit#(XLEN)   // rs3_imm
                  ) OpData;
 `else
-  typedef Tuple4#( Bit#(XLEN),  // rs1
+  typedef Tuple4#( Bit#(XLEN),  // rs1_pc
                    Bit#(XLEN),  // rs2
-                   Bit#(32),  // imm ifdef spfpu
-                   Bit#(VADDR) // pc
+                   Bit#(VADDR), // pc_rs1 
+                   Bit#(VADDR)  // imm
                  ) OpData;
 `endif
 
-typedef Tuple7#(  Bit#(5),      // rd
-                  Bool,  // word32
+typedef Tuple7#(  Bit#(5),    // rd
+                  Bool,       // word32
                   Access_type,  // mem_access
                   Bit#(4),  // fn
-                  Bit#(3),  // fucnt3
+                  Bit#(3),  // funct3
                   Bit#(2),  // prediction
-                  Bit#(2)  // epochs
+                  Bit#(2)   // epochs
                 ) MetaData;
 typedef Tuple3#( OpTypes, OpData, MetaData) PIPE2;
 // -------------------------------------------------------------

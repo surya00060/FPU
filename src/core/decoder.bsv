@@ -151,7 +151,7 @@ package decoder;
 	endfunction
 
   (*noinline*)
-  function DecodeOut decoder_func(Bit#(32) inst `ifdef supervisor Bit#(2) err, `else Bit#(1) err, 
+  function DecodeOut decoder_func(Bit#(32) inst, `ifdef supervisor Bit#(2) err, `else Bit#(1) err, 
       `endif CSRtoDecode csrs);
     let {prv, mip, csr_mie, mideleg, misa, counteren, mie}=csrs;
 
@@ -244,10 +244,9 @@ package decoder;
     // Branch   OP1   OP2   PC    Imm
     // JAL      PC    'd4   PC    Imm   (rs1=0, rs2=0 since neither required)
     // JALR     PC    'd4   op1   Imm   (rs2=0 since not required)
-    // LOAD                 op1   Imm   (rs2=0 since not required)
-    // STORE                op1   Imm   (both required. op2 is the data)
-    // AUIPC    PC    Imm               (rs1=0, rs2=0 since neither required)
-    // LUI      0 Imm                   (rs1=0, rs2=0 since neither required)
+    // LOAD     PC    op2   op1   Imm   (rs2=0 since not required)
+    // STORE    PC    op2   op1   Imm   (both required. op2 is the data)
+    // AUIPC    PC    Imm   PC    Imm   (rs1=0, rs2=0 since neither required)
     /////////////////////////////////////////////////////////////////////////////////
 
 		//instruction following U OR UJ TYPE INSTRUCTION FORMAT	
@@ -262,7 +261,8 @@ package decoder;
 		if (opcode==`BRANCH_op || opcode[4:1]=='b0100)	
 			rd=0;
 
-		if(opcode==`JAL_op || opcode==`JALR_op|| opcode==`AUIPC_op)	
+		if(opcode==`JAL_op || opcode==`JALR_op|| opcode==`AUIPC_op || opcode=='b01000 ||
+    opcode=='b000000 `ifdef atomic || opcode=='b01011 `endif )	 // Store, Load, Atomic
 			rs1type=PC;
     `ifdef spfpu
 	    else if(opcode[4:2]=='b100 || (opcode[4:2]=='b101 && // (F(N)MADD or F(N)SUB)  
@@ -307,6 +307,7 @@ package decoder;
         'b011:inst_type=JAL;
     		'b000:inst_type=BRANCH;
     		'b100:inst_type=SYSTEM_INSTR;
+        default:exception = tagged Exception Illegal_inst;
     	endcase
     end
     else if(opcode[4:3]=='b01)begin // Stores,  LUIs,  MulDiv,  Register Arithmetic
@@ -321,6 +322,7 @@ package decoder;
                 inst_type=MULDIV; 
             `endif
           end
+        default:exception = tagged Exception Illegal_inst;
       endcase 
     end 
     else if(opcode[4:3]=='b00)begin // Immediate,  Loads,  Fence,  Fence.i
@@ -328,6 +330,7 @@ package decoder;
     		'b000: `ifdef RV32 if(funct3!='b011) `endif inst_type=MEMORY;
     		'b101,'b100,'b110:inst_type=ALU;
         'b011:inst_type=FENCE; 
+        default:exception = tagged Exception Illegal_inst;
     	endcase
     end
     `ifdef spfpu
