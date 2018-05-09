@@ -43,8 +43,8 @@ package alu;
   `include "common_params.bsv"
 
 	(*noinline*)
-	function ALU_OUT fn_alu (Bit#(4) fn, Bit#(XLEN) op1, Bit#(XLEN) op2, Bit#(PADDR) imm_value, 
-        Bit#(PADDR) op3, Instruction_type inst_type, Funct3 funct3, 
+	function ALU_OUT fn_alu (Bit#(4) fn, Bit#(XLEN) op1, Bit#(XLEN) op2, Bit#(VADDR) imm_value, 
+        Bit#(VADDR) op3, Instruction_type inst_type, Funct3 funct3, 
         Bool word32);
 
 	  /*========= Perform all the arithmetic ===== */
@@ -98,6 +98,8 @@ package alu;
 		
     // generate the effective address to jump to 
 		Bit#(PADDR) effective_address=op3+ truncate(imm_value);
+    if(inst_type==JALR)
+      effective_address[0]=0;
 		`ifdef simulate
 			if(inst_type==BRANCH)
 				final_output=0;
