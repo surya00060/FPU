@@ -49,7 +49,7 @@ package common_types;
 	typedef enum {Flush= 1, None= 0} Flush_type deriving (Bits, Eq, FShow);
 	typedef enum {`ifdef spfpu FloatingRF, `endif IntegerRF, PC} Op1type deriving(Bits, Eq, FShow);
 	typedef enum {`ifdef spfpu FloatingRF, `endif IntegerRF, Immediate, Constant4} Op2type deriving(Bits, Eq, FShow);
-  typedef enum {FloatingRF, IntegerRF} Op3type deriving(Bits, Eq, FShow);
+  typedef enum {FRF, IRF} Op3type deriving(Bits, Eq, FShow);
   typedef enum {MEMORY, SYSTEM_INSTR, REGULAR} Commit_type deriving(Eq, Bits, FShow);
   typedef enum {Machine=3, `ifdef supervisor Supervisor=1, `endif User=0} Privilege_mode 
                                                                           deriving(Eq, Bits, FShow);

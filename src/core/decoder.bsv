@@ -173,7 +173,7 @@ package decoder;
     
     `ifdef spfpu
       Bit#(5) rs3=inst[31:27];
-  		Op3type rs3type=FloatingRF;
+  		Op3type rs3type=FRF;
     `endif
     // ------------------------------------------------------------------
 
@@ -239,6 +239,9 @@ package decoder;
     // Following table describes what the ALU will need for some critical operations. Based on this
     // the next set of logic is implemented. rs1+ rs2 is a XLEN bit adder. rs3+ rs4 is PADDR bit
     // adder.
+    // Now PC can be present either in rs1 or rs3. This has been done to reduce the mux to the ALU
+    // in the next stage. There will only be a mux in the next stage to identify the PC and send it
+    // to the next stage.
     //
     //          rs1   rs2   rs3   rs4
     // Branch   OP1   OP2   PC    Imm

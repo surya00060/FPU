@@ -149,9 +149,9 @@ package stage2;
 
       OpData t2 =tuple4(op1, op2, op3, op4);
       `ifdef spfpu
-        Op3type r1type=(rs1type==FloatingRF)?FloatingRF:IntegerRF;
-        Op3type r2type=(rs2type==FloatingRF)?FloatingRF:IntegerRF;
-        Op3type r3type=(rs3type==FloatingRF)?FloatingRF:IntegerRF;
+        Op3type r1type=(rs1type==FloatingRF)?FRF:IRF;
+        Op3type r2type=(rs2type==FloatingRF)?FRF:IRF;
+        Op3type r3type=(rs3type==FloatingRF)?FRF:IRF;
         OpTypes t1 =tuple7(rs1addr, rs2addr, rs3addr, r1type, r2type, r3type, instrType);
       `else
         OpTypes t1 =tuple3(rs1addr, rs2addr, instrType);

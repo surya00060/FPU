@@ -112,7 +112,7 @@ package registerfile;
         rs2=rs2irf;
 
       `ifdef spfpu
-        if(rs3type==FloatingRF)
+        if(rs3type==FRF)
           rs3=rs3frf;
         else
           rs3=signExtend(imm);
@@ -135,7 +135,7 @@ package registerfile;
         $display($time,"\tRF: Writing Rd: %d(%h) ",r,d `ifdef spfpu ,fshow(rdtype) `endif ); 
 
       `ifdef spfpu
-        if(rdtype==FloatingRF)begin
+        if(rdtype==FRF)begin
 				  floating_rf.upd(r,d);
         end
         else
@@ -150,7 +150,7 @@ package registerfile;
           Bit#(XLEN) resultop=0;
           if(rw) begin // write_operation
             `ifdef spfpu
-              if(rfselect==FloatingRF)
+              if(rfselect==FRF)
                 floating_rf.upd(r, data);
               else
             `endif
@@ -158,7 +158,7 @@ package registerfile;
           end
           else begin // read operation
             `ifdef spfpu
-              if(rfselect==FloatingRF)
+              if(rfselect==FRF)
                 resultop=floating_rf.sub(r);
               else
             `endif
