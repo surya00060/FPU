@@ -57,7 +57,7 @@ package stage3;
 
       // Put forwarding logic and stall logic here
 
-      let reslt = fn_alu(fn, op1, op2, op3, op4, instrtype, funct3, word32);
+      let reslt = fn_alu(fn, op1, op2, op3, truncate(op4), instrtype, funct3, word32);
       rx.u.deq;
     endrule
 		interface rx_in = rx.e;
