@@ -155,7 +155,7 @@ typedef struct{
                 Instruction_type // instr_type
                 ) OpTypes;
 `else
-  typedef Tuple5#(Bit#(5),     // rs1addr
+  typedef Tuple3#(Bit#(5),     // rs1addr
                   Bit#(5),     // rs2addr
                   Instruction_type // instr_type
                 ) OpTypes;

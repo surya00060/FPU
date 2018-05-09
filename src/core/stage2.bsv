@@ -154,7 +154,7 @@ package stage2;
         Op3type r3type=(rs3type==FloatingRF)?FloatingRF:IntegerRF;
         OpTypes t1 =tuple7(rs1addr, rs2addr, rs3addr, r1type, r2type, r3type, instrType);
       `else
-        OpTypes t1 =tuple5(rs1addr, rs2addr, instrType);
+        OpTypes t1 =tuple3(rs1addr, rs2addr, instrType);
       `endif
 
       MetaData t3 = tuple7(rd, word32, memaccess, fn, funct3, pred, epochs);
