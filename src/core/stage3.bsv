@@ -46,29 +46,20 @@ package stage3;
     
     rule execute_operation;
       let {optypes, opdata, metadata } = rx.u.first;
+      let {op1, op2, op3, op4}=opdata;
+      let {rd, word32, memaccess, fn, funct3, pred, epochs}=metadata;
       `ifdef spfpu
         let { rs1addr, rs2addr, rs3addr, rs1type, rs2type, rs3type, instrtype}=optypes;
-        let {rs1, rs2, rs3_imm, , pc}=opdata;
       `else
-        let { rs1addr, rs2addr, rs1type, rs2type, instrtype}=optypes;
-        let {rs1, rs2, rs3_imm, , pc}=opdata;
+        let { rs1addr, rs2addr, instrtype}=optypes;
       `endif
-      let {rd, word32, memaccess, fn, funct3, pred, epochs}=metadata;
+      Bit#(VADDR) pc = (instrtype==MEMORY || instrtype==JALR)?truncate(op1):truncate(op3);
 
       // Put forwarding logic and stall logic here
 
-      Bit#(VADDR) op3=pc;
-      if(instrtype==MEMORY || instrtype==JALR)
-        op3=rs1;
-
-      if(rs1type==PC)
-        rs1=signExtend(pc);
-        
-      let reslt = fn_alu(fn, rs1, rs2, rs3_imm, op3, instrtype, funct3, word32);
-	function ALU_OUT fn_alu (Bit#(4) fn, Bit#(XLEN) op1, Bit#(XLEN) op2, Bit#(PADDR) imm_value, 
-        Bit#(PADDR) op3, Instruction_type inst_type, Funct3 funct3, 
-        Bool word32);
+      let reslt = fn_alu(fn, op1, op2, op3, op4, instrtype, funct3, word32);
       rx.u.deq;
     endrule
+		interface rx_in = rx.e;
   endmodule
 endpackage
