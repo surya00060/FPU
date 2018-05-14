@@ -42,6 +42,7 @@ package decode_opfetch;
 		method Action misa(Bit#(`Reg_width) val);
 		method Action update_eEpoch;
 		method Action update_wEpoch;
+    method Action inferred_xlen(Bit#(2) mxl);
 	endinterface:Ifc_decode_opfetch
 
 		function Bool isNone(Trap_type trap);
@@ -181,6 +182,9 @@ package decode_opfetch;
 			`ifdef verbose $display($time,"\tDECODE: updating wEpoch"); `endif
 			wEpoch<=~wEpoch;
 		endmethod
+    method Action inferred_xlen(Bit#(2) mxl) ;
+      registerfile.inferred_xlen(mxl);
+    endmethod
 //		method init_complete=registerfile.init_complete;
 	endmodule
 endpackage:decode_opfetch

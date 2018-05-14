@@ -30,6 +30,7 @@ package registerfile;
 			method Action write_debug_fgpr (Bit#(5) r, Bit#(`Reg_width) d);				 // Write a General-Purpose Register
 		`endif
 		method Action write_rd(Bit#(5) r, Bit#(`Reg_width) d, Operand_type rdtype);
+    method Action inferred_xlen(Bit#(2) mxl);
 	endinterface
 
 	(*synthesize*)
@@ -40,6 +41,7 @@ package registerfile;
 		`endif
 		Reg#(Bool) initialize<-mkReg(True);
 		Reg#(Bit#(5)) rg_index<-mkReg(0);
+    Wire#(Bit#(2)) wr_mxl <- mkWire();
 		rule initialize_regfile(initialize);
 		`ifdef spfpu
 			floating_rf.upd(rg_index,0);
@@ -85,12 +87,21 @@ package registerfile;
 				else
 					rs3 = 0;	
 			`endif
+
+      if(wr_mxl==1)begin // 32-bit
+        rs1=signExtend(rs1[31:0]);
+        rs2=signExtend(rs2[31:0]);
+        `ifdef spfpu rs3=signExtend(rs3[31:0]); `endif
+      end
          
 			`ifdef verbose $display($time,"\nReg1 :%d : ",rs1_addr,fshow(rs1),"\nReg2 : %d : ",rs2_addr,fshow(rs2) `ifdef spfpu ,"\nReg3: %d ; ",rs3_addr,fshow(rs3) `endif ); `endif
          return Output_for_operand_fetch{rs1:rs1,rs2:rs2`ifdef spfpu ,rs3: rs3 `endif };
 		endmethod
 		method Action write_rd(Bit#(5) r, Bit#(`Reg_width) d, Operand_type rdtype) if(!initialize); // TODO if not in critical path shift the CReg ports.
 			`ifdef verbose $display($time,"\tRF: Writing into reg: :%d data: %h ",r,d,fshow(rdtype)); `endif
+      if(wr_mxl==1)begin // 32-bit
+        d=signExtend(d[31:0]);
+      end
 			if(rdtype==IntegerRF)begin
 				if(r!=0)begin
 					integer_rf.upd(r,d);
@@ -118,5 +129,8 @@ package registerfile;
 			endmethod
 			`endif
 		`endif
+    method Action inferred_xlen(Bit#(2) mxl);
+      wr_mxl <=mxl;
+    endmethod
 	endmodule
 endpackage

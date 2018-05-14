@@ -60,6 +60,7 @@ package csr;
 			method Action clint_mtip(Bit#(1) intrpt);
 			method Action clint_mtime(Bit#(`Reg_width) c_mtime);
 		`endif
+    method Bit#(2) inferred_xlen;
   endinterface
 
   function String csr_funct(Bit#(3) funct3);
@@ -132,7 +133,7 @@ endfunction
   	Reg#(Bit#(`Reg_width)) csr_mimpid = readOnlyReg(0);
   	Reg#(Bit#(`Reg_width)) csr_mhartid = readOnlyReg(0);
 	//misa fields
-	Reg#(Bit#(2))  rg_mxl		= readOnlyReg(`MXL_BITS);
+	Reg#(Bit#(2))  rg_mxl		<- mkReg(2);
 	Bit#(26) temp_misa='d0;
 	temp_misa[8]=1;
 	temp_misa[20]=1;
@@ -181,7 +182,7 @@ endfunction
   	Reg#(Bit#(`Reg_width)) csr_mstatus =  concatReg24(
            rg_sd,
            readOnlyReg(0),
-           rg_mxl, rg_mxl,          //sxl and uxl fields are hardwired to mxl in misa
+           readOnlyReg(rg_mxl), readOnlyReg(rg_mxl),          //sxl and uxl fields are hardwired to mxl in misa
            readOnlyReg(9'b0),
 					 rg_tsr, rg_tw, rg_tvm,
            rg_mxr, rg_sum, rg_mprv, // memory privilege
@@ -307,7 +308,7 @@ endfunction
 `ifdef MMU
 	Reg#(Bit#(`Reg_width)) csr_sstatus =  concatReg20(
   	         rg_sd,
-  	         readOnlyReg(0), rg_mxl, readOnlyReg(12'b0), //uxl field
+  	         readOnlyReg(0), readOnlyReg(rg_mxl), readOnlyReg(12'b0), //uxl field
   	         rg_mxr, rg_sum, readOnlyReg(1'b0), // memory privilege // 
   	         rg_xs, rg_fs, // coprocessor states 
   	         readOnlyReg(2'b0), readOnlyReg(2'b0), rg_spp, // previous privileges
@@ -1114,6 +1115,8 @@ endfunction
 			rg_clint_mtime<=c_mtime;
 		endmethod
 	`endif
+    method inferred_xlen=rg_mxl;
+
   endmodule
 endpackage
 

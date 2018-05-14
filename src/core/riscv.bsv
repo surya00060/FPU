@@ -218,6 +218,11 @@ import defined_types::*;
 		endrule
 		`endif
 
+    rule connect_mxl;
+      execute_stage.inferred_xlen(csr.inferred_xlen);
+      decode.inferred_xlen(csr.inferred_xlen);
+    endrule
+
 		/* ==================================================================================================================================*/
 
 

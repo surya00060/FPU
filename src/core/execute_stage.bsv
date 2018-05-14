@@ -71,6 +71,7 @@ package execute_stage;
 		interface Get#(Tuple2#(Memout,Bit#(1))) to_dmem;
 		method Action _forwarding_from_memory (Maybe#(Tuple3#(Bit#(`Reg_width), Bit#(TLog#(`PRFDEPTH)), Bit#(4))) fwd_data);
 		method Action update_wEpoch;
+    method Action inferred_xlen(Bit#(2) mxl);
 	endinterface:Ifc_execute_stage
 
 	`ifdef muldiv
@@ -114,6 +115,8 @@ package execute_stage;
 
 		Reg#(Bit#(4)) rg_pid <-mkReg(0);
 		Reg#(Bit#(TLog#(`PRFDEPTH))) rg_prf_index<-mkReg(0);
+
+    Wire#(Bit#(2)) wr_mxl <- mkWire();
 		
 
 		rule update_eEpoch_reg(rg_flush_execute!=None && !wb_flush);
@@ -123,6 +126,9 @@ package execute_stage;
 
 		rule forward_data_from_exe(wr_forward_from_EXE matches tagged Valid .fwdata) ;
 			let {data,index,pid}=fwdata;
+      if(wr_mxl==1) begin// 32-bits
+        data=signExtend(data[31:0]);
+      end
 			prf.fwd_from_execution(data,index,pid);
 		endrule
 	
@@ -148,7 +154,15 @@ package execute_stage;
 				RFType#(`Reg_width) op1<-prf.read_rs1(data.rs1addr,data.rs1_type,data.rs1);
 				RFType#(`Reg_width) op2<-prf.read_rs2(data.rs2addr,data.rs2_type,data.rs2);
 				RFType#(`Reg_width) op3<-prf.read_rs3(data.rs3addr,data.rs3_type,data.rs3_imm);
-				if(op1 matches tagged Present .rs1 &&& op2 matches tagged Present .rs2 &&& op3 matches tagged Present .rs3)begin
+				if(op1 matches tagged Present .x &&& op2 matches tagged Present .y &&& op3 matches tagged Present .z)begin
+          Bit#(`Reg_width) rs1=x;
+          Bit#(`Reg_width) rs2=y;
+          Bit#(`Reg_width) rs3=z;
+          if(wr_mxl==1) begin // 32-bit
+            rs1=signExtend(rs1[31:0]);
+            rs2=signExtend(rs2[31:0]);
+            rs3=signExtend(rs3[31:0]);
+          end
 					`ifdef muldiv
 					let {prf_index,pid}<-prf.get_index_pid(data.destination,data.rdtype);
 					`ifdef verbose $display($time,"\tEXECUTION: PRFINDEX: %d PID: %d",prf_index,pid); `endif
@@ -339,6 +353,9 @@ package execute_stage;
 		method Action _forwarding_from_memory (Maybe#(Tuple3#(Bit#(`Reg_width), Bit#(TLog#(`PRFDEPTH)), Bit#(4))) fwd_data);
 			if(fwd_data matches tagged Valid .fwdata)begin
 				let {data,index,pid}=fwdata;
+        if(wr_mxl==1) begin// 32-bits
+          data=signExtend(data[31:0]);
+        end
 				prf.fwd_from_memory(data,index,pid);
 			end
 		endmethod
@@ -350,5 +367,8 @@ package execute_stage;
 		method Action flush_prf;
 			prf.flush_all;
 		endmethod
+    method Action inferred_xlen(Bit#(2) mxl);
+      wr_mxl <=mxl;
+    endmethod
 	endmodule
 endpackage:execute_stage
