@@ -39,7 +39,7 @@ package common_types;
 	typedef 32 PADDR ;
   typedef 32 VADDR ;
 	typedef Bit #(3)  Funct3;
-  typedef 6 PRFDEPTH;
+  typedef 4 PRFDEPTH;
 
   //------ The follwing contain common tuples across the stages ------------- 
 	typedef enum {ALU, MEMORY, BRANCH, JAL, JALR, SYSTEM_INSTR, 
@@ -47,7 +47,11 @@ package common_types;
       deriving(Bits, Eq, FShow); // the type of the decoded instruction.
 	typedef enum {Load=0, Store=1 `ifdef atomic ,Atomic=2 `endif } Access_type 
                                                                         deriving (Bits, Eq, FShow);
-	typedef enum {Flush= 1, None= 0} Flush_type deriving (Bits, Eq, FShow);
+  `ifdef bpu                                                                     
+  	typedef enum {CheckNPC, Mispredict, None} Flush_type deriving (Bits, Eq, FShow);
+  `else
+  	typedef enum {CheckNPC, None} Flush_type deriving (Bits, Eq, FShow);
+  `endif
 	typedef enum {`ifdef spfpu FloatingRF, `endif IntegerRF, PC} Op1type deriving(Bits, Eq, FShow);
 	typedef enum {`ifdef spfpu FloatingRF, `endif IntegerRF, Immediate, Constant4} Op2type deriving(Bits, Eq, FShow);
   typedef enum {FRF, IRF} Op3type deriving(Bits, Eq, FShow);
@@ -57,6 +61,11 @@ package common_types;
   // -------------------------------------------------------------------------------------
 
   // ------- The following typdefs are used to define the output from the decode stage -----
+  // data structure of the fwding data structure
+  typedef union tagged{
+    Bit#(width) Present;
+  	void Absent;
+  } FwdType#(numeric type width) deriving(Bits,Eq,FShow);
   
   // Rdtype is not required here. The ALU or FPU unit can generate the rdtype at the respective
   // stage and use it commit or perform operand forwarding. This will reduce one bit propagation in
@@ -90,7 +99,7 @@ package common_types;
   `endif
 
   // define all tuples here
-  typedef Tuple3#(Commit_type, Bit#(XLEN), Bit#(TAdd#(PADDR, 1))) ALU_OUT;
+  typedef Tuple5#(Commit_type, Bit#(XLEN), Bit#(VADDR), Trap_type, Flush_type) ALU_OUT;
   
   typedef Tuple5#(Bit#(PADDR), Bit#(XLEN), Access_type, Bit#(2), Bit#(1)) MemoryRequest;
   typedef Tuple4#(Bit#(PADDR), Access_type, Bit#(2), Bit#(1)) CoreRequest;
@@ -147,12 +156,9 @@ typedef struct{
 
 // ---------- Tuples for the second Pipeline Stage -----------//
 `ifdef spfpu
-  typedef Tuple7#(Bit#(5),     // rs1addr
+  typedef Tuple4#(Bit#(5),     // rs1addr
                 Bit#(5),     // rs2addr
                 Bit#(5),   // rs3addr ifdef spfpu
-                Op3type,     // rs1type,
-                Op3type,     // rs2type,
-                Op3type,       // rs3type,
                 Instruction_type // instr_type
                 ) OpTypes;
 `else
@@ -176,20 +182,30 @@ typedef struct{
                  ) OpData;
 `endif
 
-typedef Tuple7#(  Bit#(5),    // rd
+`ifdef bpu
+typedef Tuple8#(  Bit#(5),    // rd
                   Bool,       // word32
                   Access_type,  // mem_access
                   Bit#(4),  // fn
                   Bit#(3),  // funct3
                   Bit#(2),  // prediction
-                  Bit#(2)   // epochs
+                  Bit#(2),    // epochs
+                  Trap_type // trap type
                 ) MetaData;
+`else
+typedef Tuple7#(  Bit#(5),    // rd
+                  Bool,       // word32
+                  Access_type,  // mem_access
+                  Bit#(4),  // fn
+                  Bit#(3),  // funct3
+                  Bit#(2),    // epochs
+                  Trap_type // trap type
+                ) MetaData;
+`endif
 typedef Tuple3#( OpTypes, OpData, MetaData) PIPE2;
 // -------------------------------------------------------------
+// ---------- Tuples for the third Pipeline Stage -----------//
+  
+// ----------------------------------------------------------//
 
-// data structure of the fwding data structure
-typedef union tagged{
-  Bit#(width) Present;
-	void Absent;
-} FwdType#(numeric type width) deriving(Bits,Eq,FShow);
 endpackage

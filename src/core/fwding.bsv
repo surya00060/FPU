@@ -123,7 +123,7 @@ package fwding;
     endmethod
     `ifdef spfpu
     method ActionValue#(FwdType#(XLEN)) read_rs3 (Bit#(5) addr, Bit#(XLEN) rfvalue   
-                                                            `ifdef spfpu , Op3type rstype `endif );
+                                                            Op3type rstype );
       FwdType#(XLEN) ret= tagged Present rfvalue;
 			let array_rd=readVReg(mapping); // convert the reg-vector to bit#(5)-vector
       if(rstype==IRF && addr==0)

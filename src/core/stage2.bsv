@@ -149,15 +149,16 @@ package stage2;
 
       OpData t2 =tuple4(op1, op2, op3, op4);
       `ifdef spfpu
-        Op3type r1type=(rs1type==FloatingRF)?FRF:IRF;
-        Op3type r2type=(rs2type==FloatingRF)?FRF:IRF;
-        Op3type r3type=(rs3type==FloatingRF)?FRF:IRF;
-        OpTypes t1 =tuple7(rs1addr, rs2addr, rs3addr, r1type, r2type, r3type, instrType);
+        OpTypes t1 =tuple4(rs1addr, rs2addr, rs3addr, instrType);
       `else
         OpTypes t1 =tuple3(rs1addr, rs2addr, instrType);
       `endif
 
-      MetaData t3 = tuple7(rd, word32, memaccess, fn, funct3, pred, epochs);
+      `ifdef bpu
+        MetaData t3 = tuple8(rd, word32, memaccess, fn, funct3, pred, epochs, trap);
+      `else
+        MetaData t3 = tuple7(rd, word32, memaccess, fn, funct3, epochs, trap);
+      `endif
       if(!wfi && {eEpoch, wEpoch}==epochs)
         tx.u.enq(tuple3(t1, t2, t3));
         
