@@ -107,10 +107,10 @@ package alu;
       if(inst_type==JAL || inst_type==JALR) 
         flush=CheckNPC;
       else if(inst_type==BRANCH)
-        if(final_output[0]==1 && prediction[1]==1)
+        if(final_output[0]==1) // actually taken then check the NPC for target address.
+          flush=CheckRPC;
+        else if(final_output[0]==0) // actuall not-taken but predicted taken.
           flush=CheckNPC;
-        else if(final_output[0]!=prediction[1])
-          flush=Mispredict;
     `else
   		if((inst_type==BRANCH && final_output[0]==1) || inst_type==JALR || inst_type==JAL )begin
 	  		flush=CheckNPC;
