@@ -79,6 +79,8 @@ package stage2;
 	import FIFOF::*;
 	import TxRx:: *;
 	import DReg::*;
+	import Connectable::*;
+	import GetPut::*;
 	/* ====================== */
 
 	/* === project imports === */
@@ -89,7 +91,8 @@ package stage2;
 	/* ====================== */
 
 	interface Ifc_stage2;
-		method Action write_rd (Bit#(5)r, Bit#(XLEN) d `ifdef spfpu ,Op3type rdtype `endif );
+		method Action write_rd(Bit#(5) r, Bit#(XLEN) d, Bit#(2) index
+        `ifdef spfpu , Op3type rdtype `endif );
 		/* ===== pipe connections ========= */
 		interface RXe#(IF_ID_type) rx_in;
     (*always_ready*)
@@ -103,6 +106,7 @@ package stage2;
     method Action csr_updated (Bool upd);
 		method Action update_eEpoch;
 		method Action update_wEpoch;
+    interface Put#(Bit#(2))  get_index;
 	endinterface:Ifc_stage2
 
   (*synthesize*)
@@ -118,6 +122,7 @@ package stage2;
 		Reg#(Bit#(1)) wEpoch <-mkReg(0);
     Reg#(Bool) rg_stall <- mkReg(False);
     Reg#(Bool) rg_wfi <- mkReg(False);
+    Wire#(Bool) wr_op_complete <-mkDWire(False);
 
     rule decode_and_fetch(!rg_stall);
 	    let pc=rx.u.first.program_counter;
@@ -127,7 +132,7 @@ package stage2;
 	    let epochs=rx.u.first.epochs;
       let err=rx.u.first.accesserr_pagefault;
       let {opdecode, meta, trap, resume_wfi} = decoder_func(inst, err, wr_csrs);
-
+      
       `ifdef spfpu
         let {rs1addr, rs2addr, rd, rs3addr, rs1type, rs2type, rs3type}=opdecode;
       `else
@@ -139,12 +144,17 @@ package stage2;
       `else
         let {fn, instrType, memaccess, imm, funct3, wfi}=meta;
       `endif
+      
+      if(!wfi && {eEpoch, wEpoch}==epochs)
+        wr_op_complete<= True;
 
-      let {rs1, rs2 `ifdef spfpu , rs3 `endif }<-registerfile.opaddress(rs1addr, rs1type, rs2addr, 
-          rs2type, pc, imm `ifdef spfpu , rs3addr, rs3type `endif );
+      let {rs1, rs2 `ifdef spfpu , rs3 `endif , rs1index, rs2index `ifdef spfpu , rs3index `endif
+        , rd_index }<-registerfile.opaddress(rs1addr, rs2addr, rd
+            `ifdef spfpu , rs1type, rs2type, rs3addr, rs3type `endif );
 
-      Bit#(XLEN) op1=(trap matches tagged Exception Illegal_inst)?zeroExtend(inst):
-                                                                  (rs1type==PC)?signExtend(pc):rs1;
+      Bit#(XLEN) op1=(rs1type==PC)?signExtend(pc):rs1;
+      if(trap matches tagged Exception .x &&& x==Illegal_inst)
+        op1=zeroExtend(inst); 
       Bit#(XLEN) op2=(rs2type==Constant4)?'d4:(rs2type==Immediate)?signExtend(imm):rs2;
       Bit#(VADDR) op3=(instrType==MEMORY || instrType==JALR)?truncate(rs1):zeroExtend(pc); 
       `ifdef spfpu
@@ -155,9 +165,9 @@ package stage2;
 
       OpData t2 =tuple4(op1, op2, op3, op4);
       `ifdef spfpu
-        OpTypes t1 =tuple4(rs1addr, rs2addr, rs3addr, instrType);
+        OpTypes t1 =tuple5(rs1index, rs2index, rs3index, rd_index, instrType);
       `else
-        OpTypes t1 =tuple3(rs1addr, rs2addr, instrType);
+        OpTypes t1 =tuple4(rs1index, rs2index, rd_index, instrType);
       `endif
 
       `ifdef bpu
@@ -165,6 +175,7 @@ package stage2;
       `else
         MetaData t3 = tuple7(rd, word32, memaccess, fn, funct3, epochs, trap);
       `endif
+
       if(!wfi && {eEpoch, wEpoch}==epochs)
         tx.u.enq(tuple3(t1, t2, t3));
         
@@ -183,8 +194,9 @@ package stage2;
     method Action csrs (CSRtoDecode csr);
       wr_csrs<= csr;
     endmethod
-		method Action write_rd (Bit#(5)r, Bit#(XLEN) d `ifdef spfpu , Op3type rdtype `endif )=
-                                    registerfile.write_rd(r,d `ifdef spfpu ,rdtype `endif );
+		method Action write_rd(Bit#(5) r, Bit#(XLEN) d, Bit#(2) index
+        `ifdef spfpu , Op3type rdtype `endif )=
+                                    registerfile.write_rd(r,d, index `ifdef spfpu ,rdtype `endif );
 
     // This method will get activated when there is a flush from the execute stage
 		method Action update_eEpoch;
@@ -202,5 +214,10 @@ package stage2;
       if(upd)
         rg_stall<= False;
     endmethod
+    interface get_index= interface Put
+      method Action put (Bit#(2) index)if(wr_op_complete);
+        registerfile.get_index(index);
+      endmethod
+    endinterface;
   endmodule
 endpackage

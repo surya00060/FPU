@@ -51,15 +51,17 @@ package registerfile;
 	/*===========================*/
 
 	interface Ifc_registerfile;
-	  method ActionValue#(Operands) opaddress(Bit#(5) rs1addr, Op1type rs1type, Bit#(5) rs2addr, 
-        Op2type rs2type, Bit#(VADDR) pc, Bit#(32) imm `ifdef spfpu ,Bit#(5) rs3addr, Op3type
-        rs3type `endif );
+	  method ActionValue#(Operands) opaddress( Bit#(5) rs1addr, Bit#(5) rs2addr, Bit#(5) rd
+        `ifdef spfpu , Op1type rs1type , Op2type rs2type , Bit#(5) rs3addr , Op3type rs3type 
+        `endif );
 
 		`ifdef Debug
       method ActionValue#(Bit#(XLEN)) read_write_gprs(Bit#(5) r, Bit#(XLEN) data, Bool rw 
           `ifdef spfpu ,Op3type rfselect `endif );
 		`endif
-		method Action write_rd(Bit#(5) r, Bit#(XLEN) d `ifdef spfpu , Op3type rdtype `endif );
+		method Action write_rd(Bit#(5) r, Bit#(XLEN) d, Bit#(2) index
+        `ifdef spfpu , Op3type rdtype `endif );
+    method Action get_index(Bit#(2) index);
 	endinterface
 
 	(*synthesize*)
@@ -73,6 +75,7 @@ package registerfile;
 		`endif
 		Reg#(Bool) initialize<-mkReg(True);
 		Reg#(Bit#(5)) rg_index<-mkReg(0);
+    Wire#(Bit#(2)) wr_rename_index <- mkDWire(3);
 
     for (Integer i=0;i<32;i=i+1) begin
       arr_rename_int[i]<- mkReg(tagged Invalid);
@@ -94,9 +97,9 @@ package registerfile;
 				initialize<=False;
 		endrule
 
-	  method ActionValue#(Operands) opaddress(Bit#(5) rs1addr, Op1type rs1type, Bit#(5) rs2addr, 
-        Op2type rs2type, Bit#(VADDR) pc, Bit#(32) imm `ifdef spfpu ,Bit#(5) rs3addr, Op3type
-        rs3type `endif ) if(!initialize);
+	  method ActionValue#(Operands) opaddress( Bit#(5) rs1addr, Bit#(5) rs2addr, Bit#(5) rd
+        `ifdef spfpu , Op1type rs1type , Op2type rs2type , Bit#(5) rs3addr , Op3type rs3type 
+        `endif ) if(!initialize);
 			
 			Bit#(XLEN) rs1irf=integer_rf.sub(rs1addr);
 			Bit#(XLEN) rs2irf=integer_rf.sub(rs2addr);
@@ -108,16 +111,24 @@ package registerfile;
 
       Bit#(XLEN) rs1, rs2 `ifdef spfpu , rs3 `endif ;
 
+      Bit#(2) rs1index=fromMaybe(3, arr_rename_int[rs1addr]); 
+      Bit#(2) rs2index=fromMaybe(3, arr_rename_int[rs2addr]); 
+
       `ifdef spfpu
-        if(rs1type==FloatingRF)
+        Bit#(2) rs3index=fromMaybe(3, arr_rename_int[rs3addr]); 
+        if(rs1type==FloatingRF)begin
           rs1=rs1frf;
-        else
+          rs1index=fromMaybe(3, arr_rename_float[rs1addr]); 
+        end
+        else 
       `endif
         rs1=rs1irf;
 
       `ifdef spfpu
-        if(rs2type==FloatingRF)
+        if(rs2type==FloatingRF)begin
           rs2=rs2frf;
+          rs2index=fromMaybe(3, arr_rename_float[rs2addr]); 
+        end
         else
       `endif
         rs2=rs2irf;
@@ -128,31 +139,33 @@ package registerfile;
         else
           rs3=signExtend(imm);
       `endif
-        
-			if(verbosity>0)
-        $display($time,"\nReg1 :%d(%h) ",rs1addr,rs1,fshow(rs1type),"\nReg2 : %d(%h) ",rs2addr,
-          rs2,fshow(rs2type) `ifdef spfpu ,"\nReg3: %d(%h) ; ",rs3addr,rs3,fshow(rs3type) `endif ); 
 
+      arr_rename_int[rd]<= tagged Valid wr_rename_index; 
+        
       `ifdef spfpu
-        return tuple3(rs1, rs2, rs3);
+        return tuple7(rs1, rs2, rs3, rs1index, rs2index, rs3index, wr_rename_index);
       `else
-        return tuple2(rs1, rs2);
+        return tuple5(rs1, rs2, rs1index, rs2index, wr_rename_index);
       `endif
 		endmethod
 
-		method Action write_rd(Bit#(5) r, Bit#(XLEN) d `ifdef spfpu , Op3type rdtype `endif ) 
-                                                                                    if(!initialize);
+		method Action write_rd(Bit#(5) r, Bit#(XLEN) d, Bit#(2) index
+        `ifdef spfpu , Op3type rdtype `endif ) if(!initialize);
 			if(verbosity>0)
         $display($time,"\tRF: Writing Rd: %d(%h) ",r,d `ifdef spfpu ,fshow(rdtype) `endif ); 
 
       `ifdef spfpu
         if(rdtype==FRF)begin
 				  floating_rf.upd(r,d);
+          if(arr_rename_float[r] matches tagged Valid .x &&& x == index)
+            arr_rename_float[r]<= tagged Invalid;
         end
         else
       `endif
 				if(r!=0)begin
 					integer_rf.upd(r,d);
+          if(arr_rename_int[r] matches tagged Valid .x &&& x == index)
+            arr_rename_int[r]<= tagged Invalid;
 				end
 		endmethod
 		`ifdef Debug
@@ -178,5 +191,8 @@ package registerfile;
         return resultop;
       endmethod
 		`endif
+    method Action get_index(Bit#(2) index);
+      wr_rename_index<=index;
+    endmethod
 	endmodule
 endpackage
