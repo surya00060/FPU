@@ -48,9 +48,9 @@ package common_types;
 	typedef enum {Load=0, Store=1 `ifdef atomic ,Atomic=2 `endif } Access_type 
                                                                         deriving (Bits, Eq, FShow);
   `ifdef bpu                                                                     
-  	typedef enum {CheckNPC, Mispredict, None} Flush_type deriving (Bits, Eq, FShow);
+  	typedef enum {CheckNPC, CheckRPC, None} Flush_type deriving (Bits, Eq, FShow);
   `else
-  	typedef enum {CheckNPC, None} Flush_type deriving (Bits, Eq, FShow);
+  	typedef enum {CheckRPC, None} Flush_type deriving (Bits, Eq, FShow);
   `endif
 	typedef enum {`ifdef spfpu FloatingRF, `endif IntegerRF, PC} Op1type deriving(Bits, Eq, FShow);
 	typedef enum {`ifdef spfpu FloatingRF, `endif IntegerRF, Immediate, Constant4} Op2type deriving(Bits, Eq, FShow);
@@ -144,6 +144,12 @@ package common_types;
 	  void None;
 	} Trap_type deriving(Bits,Eq,FShow);
 
+typedef struct {
+	Bit#(addr_width) pc;
+	Bit#(addr_width) branch_address;
+	Bit#(2) state;
+  } Training_data#(numeric type addr_width) deriving (Bits, Eq);
+
 // the data stucture for the pipeline FIFO between fetch and decode.
 typedef struct{
 	Bit#(VADDR) program_counter;
@@ -156,14 +162,14 @@ typedef struct{
 
 // ---------- Tuples for the second Pipeline Stage -----------//
 `ifdef spfpu
-  typedef Tuple4#(Bit#(5),     // rs1addr
-                Bit#(5),     // rs2addr
-                Bit#(5),   // rs3addr ifdef spfpu
+  typedef Tuple4#(Bit#(2),     // rs1addr
+                Bit#(2),     // rs2addr
+                Bit#(2),   // rs3addr ifdef spfpu
                 Instruction_type // instr_type
                 ) OpTypes;
 `else
-  typedef Tuple3#(Bit#(5),     // rs1addr
-                  Bit#(5),     // rs2addr
+  typedef Tuple3#(Bit#(2),     // rs1addr
+                  Bit#(2),     // rs2addr
                   Instruction_type // instr_type
                 ) OpTypes;
 `endif
@@ -202,9 +208,35 @@ typedef Tuple7#(  Bit#(5),    // rd
                   Trap_type // trap type
                 ) MetaData;
 `endif
-typedef Tuple3#( OpTypes, OpData, MetaData) PIPE2;
+`ifdef simulate
+  typedef Tuple4#( OpTypes, OpData, MetaData, Bit#(32)) PIPE2;
+`else
+  typedef Tuple3#( OpTypes, OpData, MetaData) PIPE2;
+`endif
 // -------------------------------------------------------------
 // ---------- Tuples for the third Pipeline Stage -----------//
+`ifdef simulate
+typedef Tuple8#(
+  Commit_type,              // regular,  csr or memory
+  Bit#(XLEN),               // rd value
+  Bit#(5),                  // rd
+  Bit#(VADDR),              // PC 
+  Bit#(20),                 // CSR field
+  Bit#(1),                  // epoch
+  Trap_type,                // trap
+  Bit#(32)                  // instruction
+  ) PIPE3;
+`else
+typedef Tuple7#(
+  Commit_type,              // regular,  csr or memory
+  Bit#(XLEN),               // rd value
+  Bit#(5),                  // rd
+  Bit#(VADDR),              // PC
+  Bit#(20),                 // CSR field
+  Bit#(1),                  // epoch
+  Trap_type                // trap
+  ) PIPE3;
+`endif
   
 // ----------------------------------------------------------//
 
