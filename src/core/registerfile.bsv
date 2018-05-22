@@ -66,11 +66,22 @@ package registerfile;
 	module mkregisterfile(Ifc_registerfile);
     Integer verbosity = `VERBOSITY;
 		RegFile#(Bit#(5),Bit#(XLEN)) integer_rf <-mkRegFileWCF(0,31);
+    Reg#(Maybe#(Bit#(2))) arr_rename_int [32];
 		`ifdef spfpu 
 			RegFile#(Bit#(5),Bit#(XLEN)) floating_rf <-mkRegFileWCF(0,31);
+      Reg#(Maybe#(Bit#(2))) arr_rename_float [32];
 		`endif
 		Reg#(Bool) initialize<-mkReg(True);
 		Reg#(Bit#(5)) rg_index<-mkReg(0);
+
+    for (Integer i=0;i<32;i=i+1) begin
+      arr_rename_int[i]<- mkReg(tagged Invalid);
+      `ifdef spfpu
+        arr_rename_float[i]<- mkReg(tagged Invalid);
+      `endif
+    end
+
+
     // The following rule is fired on system reset and writes all the register values to "0". This
     // rule will never fire otherwise
 		rule initialize_regfile(initialize);
