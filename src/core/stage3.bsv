@@ -115,9 +115,9 @@ package stage3;
         let {rd, word32, memaccess, fn, funct3, epochs, trap}=metadata;
       `endif
       `ifdef spfpu
-        let { rs1addr, rs2addr, rs3addr, instrtype}=optypes;
+        let { rs1addr, rs2addr, rs3addr, rd_index, instrtype}=optypes;
       `else
-        let { rs1addr, rs2addr, instrtype}=optypes;
+        let { rs1addr, rs2addr, rd_index, instrtype}=optypes;
       `endif
       Bit#(VADDR) pc = (instrtype==MEMORY || instrtype==JALR)?truncate(op1):truncate(op3);
       
@@ -168,7 +168,7 @@ package stage3;
             `else
               tx.u.enq(tuple7(cmtype, out, rd, pc, truncate(addr), epochs[0], trap1));
             `endif
-            fwding.fwd_from_exe(out, truncate(rd) );// Send index instead of rd TODO
+            fwding.fwd_from_exe(out, rd_index);// Send index instead of rd TODO
           end
         end
       end

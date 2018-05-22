@@ -93,9 +93,9 @@ package common_types;
   // ------------------------------------------------------------------------------------------
 
   `ifdef spfpu
-    typedef Tuple3#(Bit#(XLEN), Bit#(XLEN), Bit#(XLEN)) Operands ;
+    typedef Tuple7#(Bit#(XLEN), Bit#(XLEN), Bit#(XLEN), Bit#(2), Bit#(2), Bit#(2), Bit#(2)) Operands ;
   `else
-    typedef Tuple2#(Bit#(XLEN), Bit#(XLEN)) Operands ;
+    typedef Tuple5#(Bit#(XLEN), Bit#(XLEN), Bit#(2), Bit#(2), Bit#(2)) Operands ;
   `endif
 
   // define all tuples here
@@ -162,14 +162,16 @@ typedef struct{
 
 // ---------- Tuples for the second Pipeline Stage -----------//
 `ifdef spfpu
-  typedef Tuple4#(Bit#(2),     // rs1addr
+  typedef Tuple5#(Bit#(2),     // rs1addr
                 Bit#(2),     // rs2addr
                 Bit#(2),   // rs3addr ifdef spfpu
+                Bit#(2),  // rd rename index 
                 Instruction_type // instr_type
                 ) OpTypes;
 `else
-  typedef Tuple3#(Bit#(2),     // rs1addr
+  typedef Tuple4#(Bit#(2),     // rs1addr
                   Bit#(2),     // rs2addr
+                  Bit#(2),  // rd rename index 
                   Instruction_type // instr_type
                 ) OpTypes;
 `endif
