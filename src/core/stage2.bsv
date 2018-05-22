@@ -67,6 +67,11 @@ NOTE2: Handling WFI.
   If there are n-continous "wfi" instructions,  then n-interrupts will have to be serviced to resume
   the core.
 
+NOTE3: When an illegal exception is taken you have to store the instruction in the mtval register.
+This enables trap handlers to quickly emulate the instruction in software. To do this, in case of an
+illega exception we send the instruction as rs1 from stage2 and then pass it as the rd value after
+exection stage.
+
 --------------------------------------------------------------------------------------------------
 */
 package stage2;
@@ -138,7 +143,8 @@ package stage2;
       let {rs1, rs2 `ifdef spfpu , rs3 `endif }<-registerfile.opaddress(rs1addr, rs1type, rs2addr, 
           rs2type, pc, imm `ifdef spfpu , rs3addr, rs3type `endif );
 
-      Bit#(XLEN) op1=(rs1type==PC)?signExtend(pc):rs1;
+      Bit#(XLEN) op1=(trap matches tagged Exception Illegal_inst)?zeroExtend(inst):
+                                                                  (rs1type==PC)?signExtend(pc):rs1;
       Bit#(XLEN) op2=(rs2type==Constant4)?'d4:(rs2type==Immediate)?signExtend(imm):rs2;
       Bit#(VADDR) op3=(instrType==MEMORY || instrType==JALR)?truncate(rs1):zeroExtend(pc); 
       `ifdef spfpu
