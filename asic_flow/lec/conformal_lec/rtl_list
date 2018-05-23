@@ -1,0 +1,1 @@
+read design -golden -VERILOG2K  -keep_unreach <Provide the path and file list> 
