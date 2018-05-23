@@ -62,6 +62,7 @@ package registerfile;
 		method Action write_rd(Bit#(5) r, Bit#(XLEN) d, Bit#(2) index
         `ifdef spfpu , Op3type rdtype `endif );
     method Action get_index(Bit#(2) index);
+    method Action reset_renaming;
 	endinterface
 
 	(*synthesize*)
@@ -98,8 +99,8 @@ package registerfile;
 		endrule
 
 	  method ActionValue#(Operands) opaddress( Bit#(5) rs1addr, Bit#(5) rs2addr, Bit#(5) rd
-        `ifdef spfpu , Op1type rs1type , Op2type rs2type , Bit#(5) rs3addr , Op3type rs3type 
-        `endif ) if(!initialize);
+        `ifdef spfpu , Op1type rs1type , Op2type rs2type , Bit#(5) rs3addr , Op3type rs3type ,
+        Op3type rdtype `endif ) if(!initialize);
 			
 			Bit#(XLEN) rs1irf=integer_rf.sub(rs1addr);
 			Bit#(XLEN) rs2irf=integer_rf.sub(rs2addr);
@@ -139,8 +140,12 @@ package registerfile;
         else
           rs3=signExtend(imm);
       `endif
-
-      arr_rename_int[rd]<= tagged Valid wr_rename_index; 
+      `ifdef spfpu
+        if(rdtype==FRF)
+          arr_rename_float[rd]<= tagged Valid wr_rename_index; 
+        else
+      `endif
+        arr_rename_int[rd]<= tagged Valid wr_rename_index; 
         
       `ifdef spfpu
         return tuple7(rs1, rs2, rs3, rs1index, rs2index, rs3index, wr_rename_index);
@@ -193,6 +198,14 @@ package registerfile;
 		`endif
     method Action get_index(Bit#(2) index);
       wr_rename_index<=index;
+    endmethod
+    method Action reset_renaming;
+      for (Integer i=0;i<32;i=i+1) begin
+        arr_rename_int[i]<= tagged Invalid;
+        `ifdef spfpu
+          arr_rename_float[i]<= tagged Invalid;
+        `endif
+      end
     endmethod
 	endmodule
 endpackage

@@ -110,6 +110,7 @@ package stage2;
 	endinterface:Ifc_stage2
 
   (*synthesize*)
+  (*conflict_free="write_rd, decode_and_fetch"*)
   module mkstage2(Ifc_stage2);
 
     Ifc_registerfile registerfile <-mkregisterfile();
@@ -131,8 +132,11 @@ package stage2;
 	    let pred=rx.u.first.prediction;
 	    let epochs=rx.u.first.epochs;
       let err=rx.u.first.accesserr_pagefault;
-      let {opdecode, meta, trap, resume_wfi} = decoder_func(inst, err, wr_csrs);
-      
+      `ifdef spfpu
+        let {opdecode, meta, trap, resume_wfi, rdtype} = decoder_func(inst, err, wr_csrs);
+      `else
+        let {opdecode, meta, trap, resume_wfi} = decoder_func(inst, err, wr_csrs);
+      `endif
       `ifdef spfpu
         let {rs1addr, rs2addr, rd, rs3addr, rs1type, rs2type, rs3type}=opdecode;
       `else
@@ -150,7 +154,7 @@ package stage2;
 
       let {rs1, rs2 `ifdef spfpu , rs3 `endif , rs1index, rs2index `ifdef spfpu , rs3index `endif
         , rd_index }<-registerfile.opaddress(rs1addr, rs2addr, rd
-            `ifdef spfpu , rs1type, rs2type, rs3addr, rs3type `endif );
+            `ifdef spfpu , rs1type, rs2type, rs3addr, rs3type, rdtype `endif );
 
       Bit#(XLEN) op1=(rs1type==PC)?signExtend(pc):rs1;
       if(trap matches tagged Exception .x &&& x==Illegal_inst)
