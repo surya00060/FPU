@@ -89,7 +89,11 @@ package common_types;
   `endif
 
   // the following type is defined as: Operand Data, Decode Meta data,  Trap, resume_wfi
-  typedef Tuple4#(OpDecode, DecodeMeta, Trap_type, Bool) DecodeOut ;
+  `ifdef spfpu
+    typedef Tuple5#(OpDecode, DecodeMeta, Trap_type, Bool, Op3type) DecodeOut ;
+  `else
+    typedef Tuple4#(OpDecode, DecodeMeta, Trap_type, Bool) DecodeOut ;
+  `endif
   // ------------------------------------------------------------------------------------------
 
   `ifdef spfpu
@@ -162,10 +166,11 @@ typedef struct{
 
 // ---------- Tuples for the second Pipeline Stage -----------//
 `ifdef spfpu
-  typedef Tuple5#(Bit#(2),     // rs1addr
+  typedef Tuple6#(Bit#(2),     // rs1addr
                 Bit#(2),     // rs2addr
                 Bit#(2),   // rs3addr ifdef spfpu
                 Bit#(2),  // rd rename index 
+                Op3type,  // rdtype
                 Instruction_type // instr_type
                 ) OpTypes;
 `else
@@ -217,7 +222,7 @@ typedef Tuple7#(  Bit#(5),    // rd
 `endif
 // -------------------------------------------------------------
 // ---------- Tuples for the third Pipeline Stage -----------//
-`ifdef simulate
+`ifdef spfpu
 typedef Tuple8#(
   Commit_type,              // regular,  csr or memory
   Bit#(XLEN),               // rd value
@@ -226,20 +231,28 @@ typedef Tuple8#(
   Bit#(20),                 // CSR field
   Bit#(1),                  // epoch
   Trap_type,                // trap
-  Bit#(32)                  // instruction
-  ) PIPE3;
+  Op3type                   // rdtype
+  ) ExecOut;
 `else
 typedef Tuple7#(
   Commit_type,              // regular,  csr or memory
   Bit#(XLEN),               // rd value
   Bit#(5),                  // rd
-  Bit#(VADDR),              // PC
+  Bit#(VADDR),              // PC 
   Bit#(20),                 // CSR field
   Bit#(1),                  // epoch
   Trap_type                // trap
-  ) PIPE3;
+  ) ExecOut;
 `endif
-  
+
+`ifdef simulate
+typedef Tuple2#(
+  ExecOut, 
+  Bit#(32)
+  ) PIPE3;
+`else
+typedef ExecOut PIPE3;
+`endif
 // ----------------------------------------------------------//
 
 endpackage

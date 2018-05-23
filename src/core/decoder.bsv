@@ -174,6 +174,7 @@ package decoder;
     `ifdef spfpu
       Bit#(5) rs3=inst[31:27];
   		Op3type rs3type=FRF;
+  		Op3type rdtype=IRF;
     `endif
     // ------------------------------------------------------------------
 
@@ -287,8 +288,11 @@ package decoder;
       // will avoid any stalls on instructions not using rs3.
       if(!r4type)begin
         rs3=0;
-        rs3type=IntegerRF;
+        rs3type=IRF;
       end
+      if(opcode==`FLOAD_op || (opcode[4:2]=='b101 &&  
+         funct7[6:3]!='b1010 && funct7[6:3]!='b1100 && funct7[6:3]!='b1110 ) || opcode[4:2]=='b100) 
+        rdtype=FRF; 
     `endif
 
 		//instructions which support word lenght operation in RV64 are to be added in Alu
@@ -422,6 +426,10 @@ package decoder;
       DecodeMeta t2 = tuple6(fn, inst_type, mem_access, immediate_value, funct3, wfi);
     `endif
 
-    return tuple4(t1, t2, interrupt, resume_wfi);
+    `ifdef spfpu
+      return tuple5(t1, t2, interrupt, resume_wfi, rdtype);
+    `else
+      return tuple4(t1, t2, interrupt, resume_wfi);
+    `endif
   endfunction
 endpackage
