@@ -148,111 +148,120 @@ package common_types;
 	  void None;
 	} Trap_type deriving(Bits,Eq,FShow);
 
-typedef struct {
-	Bit#(addr_width) pc;
-	Bit#(addr_width) branch_address;
-	Bit#(2) state;
-  } Training_data#(numeric type addr_width) deriving (Bits, Eq);
+  typedef struct {
+  	Bit#(addr_width) pc;
+  	Bit#(addr_width) branch_address;
+  	Bit#(2) state;
+    } Training_data#(numeric type addr_width) deriving (Bits, Eq);
 
-// the data stucture for the pipeline FIFO between fetch and decode.
-typedef struct{
-	Bit#(VADDR) program_counter;
-	Bit#(32) instruction;
-	Bit#(VADDR) nextpc; // TODO get rid of this
-	Bit#(2) prediction;
-	Bit#(2) epochs;
-  Bit#(2) accesserr_pagefault;
-}IF_ID_type deriving (Bits,Eq);
-
-// ---------- Tuples for the second Pipeline Stage -----------//
-`ifdef spfpu
-  typedef Tuple6#(Bit#(2),     // rs1addr
-                Bit#(2),     // rs2addr
-                Bit#(2),   // rs3addr ifdef spfpu
-                Bit#(2),  // rd rename index 
-                Op3type,  // rdtype
-                Instruction_type // instr_type
-                ) OpTypes;
-`else
-  typedef Tuple4#(Bit#(2),     // rs1addr
+  typedef struct{
+  	Bit#(XLEN) address;
+  	Bit#(XLEN) memory_data; // data to be written in the memory
+  	Bit#(2) transfer_size; // 0 -8 bits, 1- 16 bits, 2 -32 bits 3 - 64-bits;
+  	Bit#(1) signextend; // whether the loaded value has to be signextended
+  	Access_type mem_type; // STORE or AMO or LOAD or FENCE
+  	`ifdef atomic Bit#(5) atomic_op; `endif
+  	}Memrequest deriving(Bits,Eq,FShow);
+  
+  // the data stucture for the pipeline FIFO between fetch and decode.
+  typedef struct{
+  	Bit#(VADDR) program_counter;
+  	Bit#(32) instruction;
+  	Bit#(VADDR) nextpc; // TODO get rid of this
+  	Bit#(2) prediction;
+  	Bit#(2) epochs;
+    Bit#(2) accesserr_pagefault;
+  }IF_ID_type deriving (Bits,Eq);
+  
+  // ---------- Tuples for the second Pipeline Stage -----------//
+  `ifdef spfpu
+    typedef Tuple6#(Bit#(2),     // rs1addr
                   Bit#(2),     // rs2addr
+                  Bit#(2),   // rs3addr ifdef spfpu
                   Bit#(2),  // rd rename index 
+                  Op3type,  // rdtype
                   Instruction_type // instr_type
-                ) OpTypes;
-`endif
-
-`ifdef spfpu
-  typedef Tuple4#( Bit#(XLEN),  // rs1_pc
-                   Bit#(XLEN),  // rs2
-                   Bit#(VADDR), // pc_rs1
-                   Bit#(XLEN)   // rs3_imm
-                 ) OpData;
-`else
-  typedef Tuple4#( Bit#(XLEN),  // rs1_pc
-                   Bit#(XLEN),  // rs2
-                   Bit#(VADDR), // pc_rs1 
-                   Bit#(VADDR)  // imm
-                 ) OpData;
-`endif
-
-`ifdef bpu
-typedef Tuple8#(  Bit#(5),    // rd
-                  Bool,       // word32
-                  Access_type,  // mem_access
-                  Bit#(4),  // fn
-                  Bit#(3),  // funct3
-                  Bit#(2),  // prediction
-                  Bit#(2),    // epochs
-                  Trap_type // trap type
-                ) MetaData;
-`else
-typedef Tuple7#(  Bit#(5),    // rd
-                  Bool,       // word32
-                  Access_type,  // mem_access
-                  Bit#(4),  // fn
-                  Bit#(3),  // funct3
-                  Bit#(2),    // epochs
-                  Trap_type // trap type
-                ) MetaData;
-`endif
-`ifdef simulate
-  typedef Tuple4#( OpTypes, OpData, MetaData, Bit#(32)) PIPE2;
-`else
-  typedef Tuple3#( OpTypes, OpData, MetaData) PIPE2;
-`endif
-// -------------------------------------------------------------
-// ---------- Tuples for the third Pipeline Stage -----------//
-`ifdef spfpu
-typedef Tuple8#(
-  Commit_type,              // regular,  csr or memory
-  Bit#(XLEN),               // rd value
-  Bit#(5),                  // rd
-  Bit#(VADDR),              // PC 
-  Bit#(20),                 // CSR field
-  Bit#(1),                  // epoch
-  Trap_type,                // trap
-  Op3type                   // rdtype
-  ) ExecOut;
-`else
-typedef Tuple7#(
-  Commit_type,              // regular,  csr or memory
-  Bit#(XLEN),               // rd value
-  Bit#(5),                  // rd
-  Bit#(VADDR),              // PC 
-  Bit#(20),                 // CSR field
-  Bit#(1),                  // epoch
-  Trap_type                // trap
-  ) ExecOut;
-`endif
-
-`ifdef simulate
-typedef Tuple2#(
-  ExecOut, 
-  Bit#(32)
-  ) PIPE3;
-`else
-typedef ExecOut PIPE3;
-`endif
-// ----------------------------------------------------------//
+                  ) OpTypes;
+  `else
+    typedef Tuple4#(Bit#(2),     // rs1addr
+                    Bit#(2),     // rs2addr
+                    Bit#(2),  // rd rename index 
+                    Instruction_type // instr_type
+                  ) OpTypes;
+  `endif
+  
+  `ifdef spfpu
+    typedef Tuple4#( Bit#(XLEN),  // rs1_pc
+                     Bit#(XLEN),  // rs2
+                     Bit#(VADDR), // pc_rs1
+                     Bit#(XLEN)   // rs3_imm
+                   ) OpData;
+  `else
+    typedef Tuple4#( Bit#(XLEN),  // rs1_pc
+                     Bit#(XLEN),  // rs2
+                     Bit#(VADDR), // pc_rs1 
+                     Bit#(VADDR)  // imm
+                   ) OpData;
+  `endif
+  
+  `ifdef bpu
+  typedef Tuple8#(  Bit#(5),    // rd
+                    Bool,       // word32
+                    Access_type,  // mem_access
+                    Bit#(4),  // fn
+                    Bit#(3),  // funct3
+                    Bit#(2),  // prediction
+                    Bit#(2),    // epochs
+                    Trap_type // trap type
+                  ) MetaData;
+  `else
+  typedef Tuple7#(  Bit#(5),    // rd
+                    Bool,       // word32
+                    Access_type,  // mem_access
+                    Bit#(4),  // fn
+                    Bit#(3),  // funct3
+                    Bit#(2),    // epochs
+                    Trap_type // trap type
+                  ) MetaData;
+  `endif
+  `ifdef simulate
+    typedef Tuple4#( OpTypes, OpData, MetaData, Bit#(32)) PIPE2;
+  `else
+    typedef Tuple3#( OpTypes, OpData, MetaData) PIPE2;
+  `endif
+  // -------------------------------------------------------------
+  // ---------- Tuples for the third Pipeline Stage -----------//
+  `ifdef spfpu
+  typedef Tuple8#(
+    Commit_type,              // regular,  csr or memory
+    Bit#(XLEN),               // rd value
+    Bit#(5),                  // rd
+    Bit#(VADDR),              // PC 
+    Bit#(20),                 // CSR field
+    Bit#(1),                  // epoch
+    Trap_type,                // trap
+    Op3type                   // rdtype
+    ) ExecOut;
+  `else
+  typedef Tuple7#(
+    Commit_type,              // regular,  csr or memory
+    Bit#(XLEN),               // rd value
+    Bit#(5),                  // rd
+    Bit#(VADDR),              // PC 
+    Bit#(20),                 // CSR field
+    Bit#(1),                  // epoch
+    Trap_type                // trap
+    ) ExecOut;
+  `endif
+  
+  `ifdef simulate
+  typedef Tuple2#(
+    ExecOut, 
+    Bit#(32)
+    ) PIPE3;
+  `else
+  typedef ExecOut PIPE3;
+  `endif
+  // ----------------------------------------------------------//
 
 endpackage

@@ -69,6 +69,8 @@ package stage3;
   import alu::*;
   import fwding1 ::*;
   import GetPut::*;
+  import FIFOF::*;
+  import SpecialFIFOs::*;
 
   interface Ifc_stage3;
 		interface RXe#(PIPE2) rx_in;
@@ -81,6 +83,7 @@ package stage3;
   		method Maybe#(Training_data#(VADDR)) training_data;
 		  method Maybe#(Bit#(VADDR)) ras_push;
     `endif
+		interface Get#(Tuple2#(Memrequest,Bit#(1))) to_dmem;
   endinterface
 
   module mkstage3(Ifc_stage3);
@@ -100,6 +103,7 @@ package stage3;
     Wire#(Bool) wr_flush_from_exe <- mkDWire(False);
     Wire#(Bool) wr_flush_from_wb <- mkDWire(False);
     Wire#(Bit#(VADDR)) wr_redirect_pc <- mkDWire(0);
+		FIFOF#(Tuple2#(Memrequest,Bit#(1))) ff_memory_request <-mkBypassFIFOF;// holds the information to be given to dmem
 
     rule flush_mapping(wr_flush_from_exe||wr_flush_from_wb);
       fwding.flush_mapping;
@@ -187,13 +191,18 @@ package stage3;
               check_rpc<= tuple2(redirect, addr);
             `endif
 
-
+            if(cmtype==MEMORY &&& trap1 matches tagged None)begin
+              ff_memory_request.enq(tuple2(Memrequest{address:zeroExtend(addr), memory_data:x2, 
+                    transfer_size: funct3[1:0], signextend: ~funct3[2], mem_type: memaccess
+                    `ifdef atomic , atomic_op: op4[11:7] `endif }, epochs[0]));
+            end
 
             `ifdef spfpu
               ExecOut t1 = (tuple8(cmtype, out, rd, pc, truncate(addr), epochs[0], trap1, rdtype));
             `else
               ExecOut t1 = (tuple7(cmtype, out, rd, pc, truncate(addr), epochs[0], trap1));
             `endif
+
             `ifdef simulate
               tx.u.enq(tuple2(t1, instruction));
             `else
@@ -236,5 +245,11 @@ package stage3;
   		method training_data=wr_training_data;
 		  method ras_push=wr_ras_push;
     `endif
+		interface to_dmem = interface Get 
+			method ActionValue#(Tuple2#(Memrequest,Bit#(1))) get ;
+				ff_memory_request.deq;
+				return ff_memory_request.first;
+			endmethod
+		endinterface;
   endmodule
 endpackage
