@@ -136,15 +136,19 @@ package stage3;
 
       if(trap matches tagged None &&& execute_instruction)begin
 
-        let {redirect_result, redirect_pc, npc}=check_rpc;
+        let {redirect_result, redirect_pc `ifdef bpu , npc `endif }=check_rpc;
         if(redirect_result==CheckRPC && pc!=redirect_pc `ifdef bpu || 
                                                   redirect_result==CheckNPC && pc!=npc `endif )begin
             // generate flush here
           wr_flush_from_exe<=True;
           if(redirect_result==CheckRPC)
             wr_redirect_pc<= redirect_pc;
-          else
-            wr_redirect_pc<= npc;
+          `ifdef bpu
+            // incase a branch predictor is involved we need to check if the next pc is redirected
+            // or is pc+ 4?
+            else
+              wr_redirect_pc<= npc;
+          `endif
           eEpoch<= ~eEpoch;
           rx.u.deq;
         end
@@ -154,9 +158,11 @@ package stage3;
             rx.u.deq;
             let {cmtype, out, addr, trap1, redirect} = fn_alu(fn, x1, x2, op3, truncate(x4), 
                                 instrtype, funct3, pc, memaccess, word32 `ifdef bpu ,pred `endif );
-            // if previous instruction was a branch or jump. Need to capture the next pc value to
-            // ensure prediction was correct or not.
+
             `ifdef bpu
+              // in case of bimodal branch predictor we need to train the bpu and write new status
+              // bits. The following logic calculates the next set of status bits depending on
+              // whether the branch was actually taken or not.
 		          if(out[0]==1)begin
 		          	if(pred<3)
 		          		pred=pred+1;
@@ -165,11 +171,17 @@ package stage3;
 		          	if(pred>0)
 		          		pred=pred-1;
 		          end
+
+              // if previous instruction was a branch or jump. Need to capture the next pc value to
+              // ensure prediction was correct or not.
               Bit#(VADDR) nextpc=pc+ 4;
               check_rpc<= tuple3(redirect, addr, nextpc);
-              if(instrtype==BRANCH)
+              if(instrtype==BRANCH &&& trap1 matches tagged None)
                 wr_training_data<= tagged Valid Training_data{pc:pc, branch_address:addr, state:pred};
-              if((instrtype==JALR || instrtype==JAL)  &&& rd matches 'b00?01)
+
+              // the following logic pushes the new return address on top of the RAS stack. 
+              if((instrtype==JALR || instrtype==JAL)  &&& rd matches 'b00?01 &&& trap1 matches
+                                                                                        tagged None)
                 wr_ras_push<=tagged Valid nextpc; 
             `else
               check_rpc<= tuple2(redirect, addr);
