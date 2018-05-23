@@ -32,6 +32,7 @@ package fwding1;
   import common_types::*;
   `include "common_params.bsv"
   import Vector::*;
+  import GetPut::*;
 
   interface Ifc_fwding;
     method ActionValue#(FwdType#(XLEN)) read_rs1 (Bit#(XLEN) rfvalue, Bit#(TLog#(PRFDEPTH)) index);
@@ -42,14 +43,14 @@ package fwding1;
 
 		method Action fwd_from_exe (Bit#(XLEN) d, Bit#(TLog#(PRFDEPTH)) index);
 		method Action fwd_from_mem (Bit#(XLEN) d, Bit#(TLog#(PRFDEPTH)) index);
-    method ActionValue#(Bit#(TLog#(PRFDEPTH))) get_index();
+    interface Get#(Bit#(TLog#(PRFDEPTH))) get_index;
     method Action flush_mapping;
   endinterface
 
   (*synthesize*)
   (*conflict_free="fwd_from_exe, fwd_from_mem"*)
-  (*conflict_free="fwd_from_exe, get_index"*)
-  (*conflict_free="get_index, fwd_from_mem"*)
+  (*conflict_free="fwd_from_exe, get_index_get"*)
+  (*conflict_free="get_index_get, fwd_from_mem"*)
   module mkfwding(Ifc_fwding);
     Reg#(FwdType#(XLEN)) fwd_data [valueOf(PRFDEPTH)-1];
     for(Integer i=0;i<= 32;i=i+ 1)begin
@@ -88,14 +89,16 @@ package fwding1;
 		method Action fwd_from_mem (Bit#(XLEN) d, Bit#(TLog#(PRFDEPTH)) index);
 			fwd_data[index]<=tagged Present d;	
 		endmethod
-    method ActionValue#(Bit#(TLog#(PRFDEPTH))) get_index();
-      fwd_data[rg_index]<= tagged Absent;
-      if(rg_index==2)
-        rg_index<= 0;
-      else
-        rg_index<= rg_index+ 1;
-      return rg_index;
-    endmethod
+    interface get_index = interface Get
+      method ActionValue#(Bit#(TLog#(PRFDEPTH))) get;
+        fwd_data[rg_index]<= tagged Absent;
+        if(rg_index==2)
+          rg_index<= 0;
+        else
+          rg_index<= rg_index+ 1;
+        return rg_index;
+      endmethod
+    endinterface;
   endmodule
 
 endpackage

@@ -68,6 +68,7 @@ package stage3;
 
   import alu::*;
   import fwding1 ::*;
+  import GetPut::*;
 
   interface Ifc_stage3;
 		interface RXe#(PIPE2) rx_in;
@@ -75,7 +76,7 @@ package stage3;
     method Action update_wEpoch;
     method Tuple2#(Bool, Bit#(VADDR)) flush_from_exe;
 		method Action fwd_from_mem (Bit#(XLEN) d, Bit#(TLog#(PRFDEPTH)) index);
-    method ActionValue#(Bit#(TLog#(PRFDEPTH))) get_index();
+    interface Get#(Bit#(TLog#(PRFDEPTH))) get_index;
     `ifdef bpu
   		method Maybe#(Training_data#(VADDR)) training_data;
     `endif
@@ -195,7 +196,7 @@ package stage3;
 		method Action fwd_from_mem (Bit#(XLEN) d, Bit#(TLog#(PRFDEPTH)) index);
       fwding.fwd_from_mem(d, index);
     endmethod
-    method get_index() = fwding.get_index;
+    interface get_index = fwding.get_index;
     `ifdef bpu
   		method training_data = wr_training_data;
     `endif
