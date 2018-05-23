@@ -79,6 +79,7 @@ package stage3;
     interface Get#(Bit#(TLog#(PRFDEPTH))) get_index;
     `ifdef bpu
   		method Maybe#(Training_data#(VADDR)) training_data;
+		  method Maybe#(Bit#(VADDR)) ras_push;
     `endif
   endinterface
 
@@ -89,6 +90,7 @@ package stage3;
     `ifdef bpu
       Reg#(Tuple3#(Flush_type, Bit#(VADDR), Bit#(VADDR))) check_rpc <- mkReg(tuple3(None, 0, 0));
 		  Reg#(Maybe#(Training_data#(VADDR))) wr_training_data <-mkDReg(tagged Invalid);
+		  Wire#(Maybe#(Bit#(VADDR))) wr_ras_push<-mkDWire(tagged Invalid);
     `else
       Reg#(Tuple2#(Flush_type, Bit#(VADDR))) check_rpc <- mkReg(tuple2(None, 0));
     `endif
@@ -116,7 +118,7 @@ package stage3;
         let {rd, word32, memaccess, fn, funct3, epochs, trap}=metadata;
       `endif
       `ifdef spfpu
-        let { rs1addr, rs2addr, rs3addr, rd_index, instrtype}=optypes;
+        let { rs1addr, rs2addr, rs3addr, rd_index, rdtype, instrtype}=optypes;
       `else
         let { rs1addr, rs2addr, rd_index, instrtype}=optypes;
       `endif
@@ -155,21 +157,37 @@ package stage3;
             // if previous instruction was a branch or jump. Need to capture the next pc value to
             // ensure prediction was correct or not.
             `ifdef bpu
-              check_rpc<= tuple3(redirect, addr, (pc+ 4));
+		          if(out[0]==1)begin
+		          	if(pred<3)
+		          		pred=pred+1;
+		          end
+		          else begin
+		          	if(pred>0)
+		          		pred=pred-1;
+		          end
+              Bit#(VADDR) nextpc=pc+ 4;
+              check_rpc<= tuple3(redirect, addr, nextpc);
               if(instrtype==BRANCH)
-                wr_training_data<= tagged Valid Training_data{pc:pc, branch_address:addr, state:?};// TODO  generate the right state bits
+                wr_training_data<= tagged Valid Training_data{pc:pc, branch_address:addr, state:pred};
+              if((instrtype==JALR || instrtype==JAL)  &&& rd matches 'b00?01)
+                wr_ras_push<=tagged Valid nextpc; 
             `else
               check_rpc<= tuple2(redirect, addr);
             `endif
 
 
 
-            `ifdef simulate
-              tx.u.enq(tuple8(cmtype, out, rd, pc, truncate(addr), epochs[0], trap1, instruction));
+            `ifdef spfpu
+              ExecOut t1 = (tuple8(cmtype, out, rd, pc, truncate(addr), epochs[0], trap1, rdtype));
             `else
-              tx.u.enq(tuple7(cmtype, out, rd, pc, truncate(addr), epochs[0], trap1));
+              ExecOut t1 = (tuple7(cmtype, out, rd, pc, truncate(addr), epochs[0], trap1));
             `endif
-            fwding.fwd_from_exe(out, rd_index);// Send index instead of rd TODO
+            `ifdef simulate
+              tx.u.enq(tuple2(t1, instruction));
+            `else
+              tx.u.enq(t1);
+            `endif
+            fwding.fwd_from_exe(out, rd_index);
           end
         end
       end
@@ -177,10 +195,15 @@ package stage3;
         rx.u.deq; 
         if(execute_instruction) begin // trap has occurred on this instruction
           Bit#(XLEN) res=op1;
-          `ifdef simulate
-            tx.u.enq(tuple8(REGULAR, res, 0, pc, ?, epochs[0], trap, instruction));
+          `ifdef spfpu
+            ExecOut t1 = (tuple8(REGULAR, res, 0, pc, ?, epochs[0], trap, rdtype));
           `else
-            tx.u.enq(tuple7(REGULAR, res, 0, pc, ?, epochs[0], trap));
+            ExecOut t1 = (tuple7(REGULAR, res, 0, pc, ?, epochs[0], trap));
+          `endif
+          `ifdef simulate
+            tx.u.enq(tuple2(t1, instruction));
+          `else
+            tx.u.enq(t1);
           `endif
         end
         // else you need to simply drop the execution since epochs have changed.
@@ -198,7 +221,8 @@ package stage3;
     endmethod
     interface get_index = fwding.get_index;
     `ifdef bpu
-  		method training_data = wr_training_data;
+  		method training_data=wr_training_data;
+		  method ras_push=wr_ras_push;
     `endif
   endmodule
 endpackage
