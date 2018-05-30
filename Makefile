@@ -133,12 +133,13 @@ endif
 define_macros += -D supervisor=$(SUPERVISOR) -D user=$(USER) -D usertraps=$(USERTRAPS) -D VERBOSITY=$(VERBOSITY)
 
 PERIPHERALS:=src/peripherals/bootrom:src/peripherals/clint:./src/peripherals/vme:src/peripherals/plic:./src/peripherals/uart/:./src/peripherals/tcm/:./src/peripherals/jtagdtm:./src/peripherals/gpio:./src/peripherals/qspi:./src/peripherals/i2c/:./src/peripherals/sdram:./src/peripherals/axiexp:./src/peripherals/dma:./src/peripherals/pwm:./src/peripherals/flexbus
-UNCORE:=./src/uncore:./src/uncore/axi4:./src/uncore/debug:./src/uncore/axi4lite
+UNCORE:=./src/uncore:./src/uncore/debug:./src/uncore/axi4lite
+FABRIC:=./src/fabric/axi4
 CORE:=./src/core/fpu:./src/core/
 TESTBENCH:=./src/testbench/
 LIB:=./src/lib/
 VERILATOR_FLAGS = --stats -O3 -CFLAGS -O3 -LDFLAGS -static --x-assign fast --x-initial fast --noassert --cc $(TOP_MODULE).v --exe sim_main.cpp -Wno-STMTDLY -Wno-UNOPTFLAT -Wno-WIDTH -Wno-lint -Wno-COMBDLY -Wno-INITIALDLY 
-BSVINCDIR:= .:%/Prelude:%/Libraries:%/Libraries/BlueNoC:$(CORE):$(UNCORE):$(PERIPHERALS):$(TESTBENCH):$(LIB)
+BSVINCDIR:=.:%/Prelude:%/Libraries:%/Libraries/BlueNoC:$(CORE):$(UNCORE):$(PERIPHERALS):$(TESTBENCH):$(LIB):$(FABRIC)
 default: compile_bluesim link_bluesim 
 
 check-blue:
