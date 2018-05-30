@@ -8,3 +8,5 @@ bin/
 src/uncore/debug/RBB_Shakti\.o
 
 verilog/
+
+\.Xil/
