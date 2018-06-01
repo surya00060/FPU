@@ -48,6 +48,7 @@ package registerfile;
 	/*===== Package Imports ==== */
 	import RegFile::*;
 	import ConfigReg::*;
+  import GetPut::*;
 	/*===========================*/
 
 	interface Ifc_registerfile;
@@ -59,8 +60,7 @@ package registerfile;
       method ActionValue#(Bit#(XLEN)) read_write_gprs(Bit#(5) r, Bit#(XLEN) data, Bool rw 
           `ifdef spfpu ,Op3type rfselect `endif );
 		`endif
-		method Action write_rd(Bit#(5) r, Bit#(XLEN) d, Bit#(2) index
-        `ifdef spfpu , Op3type rdtype `endif );
+    interface Put#(CommitData) commit_rd;
     method Action get_index(Bit#(2) index);
     method Action reset_renaming;
 	endinterface
@@ -154,8 +154,13 @@ package registerfile;
       `endif
 		endmethod
 
-		method Action write_rd(Bit#(5) r, Bit#(XLEN) d, Bit#(2) index
-        `ifdef spfpu , Op3type rdtype `endif ) if(!initialize);
+    interface commit_rd= interface Put
+		method Action put (CommitData in) if(!initialize);
+      `ifdef spfpu
+        let{r, d, index, rdtype}=in;
+      `else
+        let{r, d, index}=in;
+      `endif
 			if(verbosity>0)
         $display($time,"\tRF: Writing Rd: %d(%h) ",r,d `ifdef spfpu ,fshow(rdtype) `endif ); 
 
@@ -173,6 +178,7 @@ package registerfile;
             arr_rename_int[r]<= tagged Invalid;
 				end
 		endmethod
+    endinterface;
 		`ifdef Debug
       method ActionValue#(Bit#(XLEN)) read_write_gprs(Bit#(5) r, Bit#(XLEN) data, Bool rw 
           `ifdef spfpu ,Op3type rfselect `endif ) if(!initialize);

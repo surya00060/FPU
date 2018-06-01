@@ -45,7 +45,7 @@ package fwding;
 		method ActionValue#(Bit#(TLog#(PRFDEPTH))) get_index(Bit#(5) addr
       `ifdef spfpu , Op3type rdtype `endif );
 		method Action fwd_from_exe (Bit#(XLEN) d, Bit#(TLog#(PRFDEPTH)) index);
-		method Action fwd_from_mem (Bit#(XLEN) d, Bit#(TLog#(PRFDEPTH)) index);
+		method Action fwd_from_mem (Tuple2#(Bit#(XLEN),  Bit#(TLog#(PRFDEPTH))) in);
     method Action flush_mapping;
 		method Action update_rd (Bit#(TLog#(PRFDEPTH)) index);
   endinterface
@@ -158,7 +158,8 @@ package fwding;
 		method Action fwd_from_exe (Bit#(XLEN) d, Bit#(TLog#(PRFDEPTH)) index);
 			data[index]<=tagged Present d;	
 		endmethod
-		method Action fwd_from_mem (Bit#(XLEN) d, Bit#(TLog#(PRFDEPTH)) index);
+		method Action fwd_from_mem (Tuple2#(Bit#(XLEN),  Bit#(TLog#(PRFDEPTH))) in);
+      let {index, d}=in;
 			data[index]<=tagged Present d;	
 		endmethod
 		method Action update_rd (Bit#(TLog#(PRFDEPTH)) index);

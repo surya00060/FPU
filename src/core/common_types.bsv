@@ -40,6 +40,7 @@ package common_types;
   typedef 32 VADDR ;
 	typedef Bit #(3)  Funct3;
   typedef 4 PRFDEPTH;
+  typedef 8 RAS_DEPTH;
 
   //------ The follwing contain common tuples across the stages ------------- 
 	typedef enum {ALU, MEMORY, BRANCH, JAL, JALR, SYSTEM_INSTR, 
@@ -56,7 +57,7 @@ package common_types;
 	typedef enum {`ifdef spfpu FloatingRF, `endif IntegerRF, Immediate, Constant4} Op2type deriving(Bits, Eq, FShow);
   typedef enum {FRF, IRF} Op3type deriving(Bits, Eq, FShow);
   typedef enum {MEMORY, SYSTEM_INSTR, REGULAR} Commit_type deriving(Eq, Bits, FShow);
-  typedef enum {Machine=3, `ifdef supervisor Supervisor=1, `endif User=0} Privilege_mode 
+  typedef enum {Machine=3, Supervisor=1, User=0} Privilege_mode 
                                                                           deriving(Eq, Bits, FShow);
   // -------------------------------------------------------------------------------------
 
@@ -255,13 +256,28 @@ package common_types;
   `endif
   
   `ifdef simulate
-  typedef Tuple2#(
-    ExecOut, 
+  typedef Tuple3#(
+    ExecOut,
+    Bit#(2), 
     Bit#(32)
     ) PIPE3;
   `else
-  typedef ExecOut PIPE3;
+  // rd index also
+  typedef Tuple2#(ExecOut, Bit#(2)) PIPE3;
   `endif
   // ----------------------------------------------------------//
 
+  typedef struct {
+  	Bit#(1)			mprv;
+  	Bit#(1)			sum;
+  	Bit#(1)			mxr;
+  	Privilege_mode mpp;
+  	Privilege_mode prv;
+  } Chmod deriving(Bits, Eq);
+
+  `ifdef spfpu
+    typedef Tuple4#(Bit#(5), Bit#(XLEN), Bit#(TLog#(PRFDEPTH)), Op3type) CommitData;
+  `else
+    typedef Tuple3#(Bit#(5), Bit#(XLEN), Bit#(TLog#(PRFDEPTH))) CommitData;
+  `endif
 endpackage

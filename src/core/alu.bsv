@@ -38,7 +38,7 @@ This module contains single cycle MUL instruction execution.
 
 package alu;
 
-  `ifdef MULDIV import muldiv::*; `endif
+  `ifdef muldiv import muldiv::*; `endif
   import common_types::*;
   `include "common_params.bsv"
 

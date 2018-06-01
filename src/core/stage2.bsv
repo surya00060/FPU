@@ -91,8 +91,7 @@ package stage2;
 	/* ====================== */
 
 	interface Ifc_stage2;
-		method Action write_rd(Bit#(5) r, Bit#(XLEN) d, Bit#(2) index
-        `ifdef spfpu , Op3type rdtype `endif );
+    interface Put#(CommitData) commit_rd;
 		/* ===== pipe connections ========= */
 		interface RXe#(IF_ID_type) rx_in;
     (*always_ready*)
@@ -110,7 +109,7 @@ package stage2;
 	endinterface:Ifc_stage2
 
   (*synthesize*)
-  (*conflict_free="write_rd, decode_and_fetch"*)
+  (*conflict_free="commit_rd_put, decode_and_fetch"*)
   module mkstage2(Ifc_stage2);
 
     Ifc_registerfile registerfile <-mkregisterfile();
@@ -198,9 +197,7 @@ package stage2;
     method Action csrs (CSRtoDecode csr);
       wr_csrs<= csr;
     endmethod
-		method Action write_rd(Bit#(5) r, Bit#(XLEN) d, Bit#(2) index
-        `ifdef spfpu , Op3type rdtype `endif )=
-                                    registerfile.write_rd(r,d, index `ifdef spfpu ,rdtype `endif );
+    interface commit_rd=registerfile.commit_rd;
 
     // This method will get activated when there is a flush from the execute stage
 		method Action update_eEpoch;

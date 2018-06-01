@@ -23,6 +23,7 @@
 
 `define FNRAND	8
 
+`define NON_M_TRAP (`USERTRAPS|`supervisor)
 /////////////////////////////////////////////////////////////////////////
 ////////////////////// opcode definitions of ISA ////////////////////////
 `define AUIPC_op			    'b00101
@@ -110,4 +111,16 @@
 `define UCYCLEH	  'hC80 // Upper 32bits of UCYCLE
 `define UTIMEH		'hC81 // Upper 32bits of UTIME
 `define UINSTRETH 'hC82 // Upper 32bits of UINSTRET
+/////////////////////////// Register Mapping for Supervisor Mode Regs /////////////////
+`define SSTATUS	  'h100 // Supervisor Status register                                
+`define SEDELEG   'h102 // Supervisor exception delegation register
+`define SIDELEG   'h103 // Supervisor interrupt delegation register
+`define SIE       'h104 // Supervisor interrupt enable register
+`define STVEC	    'h100 // Supervisor trap vector register
+`define SSCRATCH  'h140 // Supervisor scratch register
+`define SEPC      'h141 // Supervisor exception program counter
+`define SCAUSE    'h142 // Supervisor cause register
+`define STVAL     'h143 // Supervisor bad address
+`define SIP       'h144 // Supervisor interrupt pending
+`define SATP      'h180 // Supervisor address translation and protection
 ////////////////////////////////////////////////////////////////////////////////////

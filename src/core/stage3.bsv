@@ -77,7 +77,7 @@ package stage3;
 		interface TXe#(PIPE3) tx_out;
     method Action update_wEpoch;
     method Tuple2#(Bool, Bit#(VADDR)) flush_from_exe;
-		method Action fwd_from_mem (Bit#(XLEN) d, Bit#(TLog#(PRFDEPTH)) index);
+    interface Put#(Tuple2#(Bit#(XLEN), Bit#(TLog#(PRFDEPTH)))) fwd_from_mem;
     interface Get#(Bit#(TLog#(PRFDEPTH))) get_index;
     `ifdef bpu
   		method Maybe#(Training_data#(VADDR)) training_data;
@@ -103,7 +103,7 @@ package stage3;
     Wire#(Bool) wr_flush_from_exe <- mkDWire(False);
     Wire#(Bool) wr_flush_from_wb <- mkDWire(False);
     Wire#(Bit#(VADDR)) wr_redirect_pc <- mkDWire(0);
-		FIFOF#(Tuple2#(Memrequest,Bit#(1))) ff_memory_request <-mkBypassFIFOF;// holds the information to be given to dmem
+		FIFOF#(Tuple2#(Memrequest,Bit#(1))) ff_memory_request <-mkBypassFIFOF;
 
     rule flush_mapping(wr_flush_from_exe||wr_flush_from_wb);
       fwding.flush_mapping;
@@ -204,9 +204,9 @@ package stage3;
             `endif
 
             `ifdef simulate
-              tx.u.enq(tuple2(t1, instruction));
+              tx.u.enq(tuple3(t1, rd_index, instruction));
             `else
-              tx.u.enq(t1);
+              tx.u.enq(tuple2(t1, rd_index));
             `endif
             fwding.fwd_from_exe(out, rd_index);
           end
@@ -222,9 +222,9 @@ package stage3;
             ExecOut t1 = (tuple7(REGULAR, res, 0, pc, ?, epochs[0], trap));
           `endif
           `ifdef simulate
-            tx.u.enq(tuple2(t1, instruction));
+            tx.u.enq(tuple3(t1, rd_index, instruction));
           `else
-            tx.u.enq(t1);
+            tx.u.enq(tuple2(t1, rd_index));
           `endif
         end
         // else you need to simply drop the execution since epochs have changed.
@@ -237,9 +237,12 @@ package stage3;
       wr_flush_from_wb<= True;
     endmethod
     method flush_from_exe=tuple2(wr_flush_from_exe, wr_redirect_pc);
-		method Action fwd_from_mem (Bit#(XLEN) d, Bit#(TLog#(PRFDEPTH)) index);
-      fwding.fwd_from_mem(d, index);
-    endmethod
+    interface fwd_from_mem= interface Put
+      method Action put (Tuple2#(Bit#(XLEN), Bit#(TLog#(PRFDEPTH))) inputs);
+        let {d, index}=inputs;
+        fwding.fwd_from_mem(d, index);
+      endmethod
+    endinterface;
     interface get_index = fwding.get_index;
     `ifdef bpu
   		method training_data=wr_training_data;
