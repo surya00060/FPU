@@ -119,7 +119,7 @@ elsif ($test_sim =~ /^ncverilog$/ || $test_sim =~ /^vcs$/ || $test_sim =~ /^blue
   $simulator = $test_sim;
 }
 else {
-  doPrint("ERROR: Invalid simulator, --sim=[bluespec|ncverilog|vcs]\n");
+  doPrint("ERROR: Invalid simulator $test_sim, --sim=[bluespec|ncverilog|vcs]\n");
   exit(1);
 }
 
@@ -278,6 +278,14 @@ elsif ($testSuite =~ /peripherals.*smoke/ && $simulator =~ /^vcs$/) {
 }
 else {
   systemFileCmd("./out","log.txt");
+  if ($simulator =~ /^ncverilog$/) {
+    if (-d "cov_work/scope/test") {
+      my $name = join("_",$test_suite, $testType, $testName);
+      $name =~ s/\//\_/g ;
+      systemCmd("mkdir -p $shaktiHome/bin/cov_work/scope/$name");
+      systemCmd("mv cov_work/scope/test/*  $shaktiHome/bin/cov_work/scope/$name");
+    }
+  }
 }
 my $result;
 

@@ -4,6 +4,5 @@ coverage -code -reset
 coverage -fsm -reset
 coverage -toggle -reset
 run
-coverage -dump test
 exit
 

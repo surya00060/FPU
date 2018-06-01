@@ -210,7 +210,7 @@ if ($generate) {
 }
 ####### src compilation
 if ($compile) {
-  if ($simulator == 0) {
+  if ($simulator =~ /^bluespec$/) {
     chdir($shaktiHome);
     doDebugPrint("cd $shaktiHome\n");
     systemCmd("make restore");
@@ -218,7 +218,7 @@ if ($compile) {
     systemCmd("make link_bluesim");
     systemCmd("make generate_boot_files");
   }
-  elsif ($simulator == 1) {
+  elsif ($simulator =~ /^ncverilog$/) {
     chdir($shaktiHome);
     doDebugPrint("cd $shaktiHome\n");
     systemCmd("make restore");
@@ -318,7 +318,7 @@ if ($submit) {
       system("perl -I $shaktiHome/verification/scripts $shaktiHome/verification/scripts/makeTest.pl --test=$test --suite=$tSuite --type=$pv --sim=$simulator");
       sleep(2);
     }
-    print "$test\t\t\t$tSuite\t\t\t$pv\t\t\tRunning\n";
+    #print "$test\t\t\t$tSuite\t\t\t$pv\t\t\tRunning\n";
     $refreshCount++;
     if ($refreshCount == $licenseCount) {
       if ($parallel) {

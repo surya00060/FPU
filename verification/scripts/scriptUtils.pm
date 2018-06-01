@@ -37,6 +37,7 @@ use Exporter qw(import);
 our @EXPORT = qw(systemCmd systemFileCmd systemKillCmd 
                  doClean doPrint doDebugPrint printHelp
                  checkSetup openLog closeLog appendLog
+                 checkBins
                  $scriptLog $shaktiHome $workdir
                  );
 

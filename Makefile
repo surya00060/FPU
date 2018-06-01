@@ -230,6 +230,7 @@ link_cov_ncverilog:
 	@echo 'ncsim -input $(SHAKTI_C_HOME)/verification/scripts/sim_code.tcl -cdslib ./cds.lib -hdlvar ./hdl.var work.main #> /dev/null' > $(BSVOUTDIR)/out
 	@mv work cds.lib hdl.var $(BSVOUTDIR)/
 	@chmod +x $(BSVOUTDIR)/out
+	@mkdir -p bin/cov_work
 	@echo Linking finished
 
 .PHONY: link_msim
@@ -279,6 +280,10 @@ linux_bsim: compile_bluesim link_bluesim generate_boot_files
 .PHONY: regress 
 regress:  
 	SHAKTI_C_HOME=$$PWD perl -I$(SHAKTI_C_HOME)/verification/scripts $(SHAKTI_C_HOME)/verification/scripts/makeRegress.pl $(opts)
+
+.PHONY: regress_ncverilog
+regress_ncverilog:  
+	CONFIG_SIM=ncverilog SHAKTI_C_HOME=$$PWD perl -I$(SHAKTI_C_HOME)/verification/scripts $(SHAKTI_C_HOME)/verification/scripts/makeRegress.pl $(opts)
 
 .PHONY: test
 test:  
