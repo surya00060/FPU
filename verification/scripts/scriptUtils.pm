@@ -62,6 +62,9 @@ sub checkSetup {
   }
   appendLog("$workdir/$scriptLog.log");
 
+}
+
+sub checkBins {
   my $out = "$shaktiHome/bin/out";
   my $boot = "$shaktiHome/bin/boot.MSB";
 
@@ -74,8 +77,8 @@ sub checkSetup {
     doPrint("ERROR: Boot files not present! [option: make generate_boot_files]\n");
     exit(1);
   }
-}
 
+}
 sub openLog {
   my @file = @_;
   open LOG, ">$file[0]" or die "[$scriptLog.pl] ERROR opening file $!\n";

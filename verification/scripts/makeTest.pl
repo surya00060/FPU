@@ -155,6 +155,9 @@ if ($clean) {
   doClean();
   exit(0);
 }
+else {
+  checkBins();
+}
 
 my @test = ();
 if ($testSuite =~ /csmith-run/) {

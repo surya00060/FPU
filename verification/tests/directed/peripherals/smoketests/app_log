@@ -1,0 +1,51 @@
+	I2C: Initializing the Controller
+	Clock successfully initalized
+	Setting Control Register with 0x80 
+	Control Register Successfully set 
+	Reading Control Register 
+	Control Register is Written with 0x80 
+	Waiting for a specified time
+ 	Done Waiting 
+ 	Status Reg value is : 0x81 
+	All is well till here 
+	I2C successfully initialized
+	Is bus busy?
+	Starting Write Transaction -- Did you create tri1 nets for SDA and SCL in verilog?
+	Sending Rep Start and doing some other R/W transaction
+	Write Enable
+Status : 0 dcr : 1769473 cr: 52367105 ccr: 12550 
+	QSPI: Reading the ID register and discovering the Flash Device
+status: 1026 in loop	Cypress: S25FS512S Detected value: 0102204d 
+	Write Enable
+status: 6 in loopStatus : 0 dcr : 1769473 cr: 52367105 ccr: 12550 
+	 Waiting for Wip 
+	 Waiting for Wip 
+	 Waiting for Wip 
+	 Waiting for Wip 
+	 Waiting for Wip 
+	 Waiting for Wip 
+	 Waiting for Wip 
+	 Waiting for Wip 
+	 Waiting for Wip 
+	 Waiting for Wip 
+	 Waiting for Wip 
+	 Waiting for Wip 
+	 Waiting for Wip 
+	 Waiting for Wip 
+	 Waiting for Wip 
+	 Waiting for Wip 
+	 Waiting for Wip 
+	 Waiting for Wip 
+	 Waiting for Wip 
+	 Waiting for Wip 
+	 Waiting for Wip 
+	 QSPI: Page Program/Erase Command Successfully Completed
+	 Erase Completed Successfully 
+	Write Enable
+status: 6 in loopStatus : 0 dcr : 1769473 cr: 52367105 ccr: 12550 
+	 Waiting for Wip 
+	 QSPI: Page Program/Erase Command Successfully Completed
+status: 1026 in loopstatus: 1026 in loopstatus: 1026 in loopstatus: 1026 in loop	 DMA_CCR3 value: 000a6adf
+	 Waiting for DMA interrupt ISR value: 00000700
+	 Clearing Interrupt Flags
+	Tests Done, Check Statements above

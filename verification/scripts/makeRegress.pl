@@ -147,6 +147,9 @@ if ($clean) {
   doClean();
   exit(0);
 }
+else {
+  checkBins();
+}
 
 my $MaxCount = 0;
 my $count = 0;
