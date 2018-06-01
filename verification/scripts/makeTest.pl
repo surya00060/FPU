@@ -251,9 +251,8 @@ systemCmd("ln -s $shaktiHome/bin/boot.LSB    boot.LSB");
 #systemCmd("ln -s $shaktiHome/bin/boot.0h   boot.0h");
 if ($simulator =~ /^ncverilog$/) {
   systemCmd("ln -s $shaktiHome/bin/work work");
-  systemCmd("ln -s $shaktiHome/verilog/cds.lib cds.lib");
-  systemCmd("ln -s $shaktiHome/verilog/hdl.var hdl.var");
-  systemCmd("ln -s $shaktiHome/verilog/include include");
+  systemCmd("ln -s $shaktiHome/bin/cds.lib cds.lib");
+  systemCmd("ln -s $shaktiHome/bin/hdl.var hdl.var");
 }
 if ($simulator =~ /^vcs$/) {
   systemCmd("ln -s /scratch/lavanya/c-class/bin/csrc csrc");
