@@ -4,7 +4,8 @@
 include ./old_vars
 include soc_config.inc
 
-export SHAKTI_C_HOME=$$PWD
+SHAKTI_C_HOME=$(PWD)
+export SHAKTI_C_HOME
 
 TOP_MODULE:=mkTbSoc
 TOP_FILE:=TbSoc.bsv
@@ -212,6 +213,21 @@ link_ncverilog:
 	@ncvlog -sv -cdslib ./cds.lib -hdlvar ./hdl.var +define+TOP=$(TOP_MODULE) ${BLUESPECDIR}/Verilog/main.v -y ./$(VERILOGDIR)/ -y ${BLUESPECDIR}/Verilog/ -y ./src/bfm
 	@ncelab  -cdslib ./cds.lib -hdlvar ./hdl.var work.main -timescale 1ns/1ps
 	@echo 'ncsim -cdslib ./cds.lib -hdlvar ./hdl.var work.main #> /dev/null' > $(BSVOUTDIR)/out
+	@mv work cds.lib hdl.var $(BSVOUTDIR)/
+	@chmod +x $(BSVOUTDIR)/out
+	@echo Linking finished
+
+.PHONY: link_cov_ncverilog
+link_cov_ncverilog: 
+	@echo "Linking $(TOP_MODULE) using ncverilog..."
+	@rm -rf work include bin/work
+	@mkdir -p bin 
+	@mkdir work
+	@echo "define work ./work" > cds.lib
+	@echo "define WORK work" > hdl.var
+	@ncvlog -sv -cdslib ./cds.lib -hdlvar ./hdl.var +define+TOP=$(TOP_MODULE) ${BLUESPECDIR}/Verilog/main.v -y ./$(VERILOGDIR)/ -y ${BLUESPECDIR}/Verilog/ -y ./src/bfm
+	@ncelab -covfile $(SHAKTI_C_HOME)/verification/scripts/covfile.cf -cdslib ./cds.lib -hdlvar  ./hdl.var work.main -timescale 1ns/1ps
+	@echo 'ncsim -input $(SHAKTI_C_HOME)/verification/scripts/sim_code.tcl -cdslib ./cds.lib -hdlvar ./hdl.var work.main #> /dev/null' > $(BSVOUTDIR)/out
 	@mv work cds.lib hdl.var $(BSVOUTDIR)/
 	@chmod +x $(BSVOUTDIR)/out
 	@echo Linking finished
