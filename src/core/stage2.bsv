@@ -180,8 +180,11 @@ package stage2;
       `endif
 
       if(!wfi && {eEpoch, wEpoch}==epochs)
-        tx.u.enq(tuple3(t1, t2, t3));
-        
+	`ifdef simulate
+	  tx.u.enq(tuple4(t1, t2, t3, inst));
+	`else
+	  tx.u.enq(tuple3(t1, t2, t3));
+        `endif
       if((rg_wfi && resume_wfi) || (!rg_wfi))
         rx.u.deq; 
 

@@ -34,6 +34,8 @@ package stage4;
   import common_types::*;
   `include "common_params.bsv"
 
+  import FIFO::*;
+  import FIFOF::*;
   import csr::*;
   import csrfile::*;
 
@@ -95,7 +97,7 @@ package stage4;
 
     rule instruction_commit;
       `ifdef simulate
-        let {execout, rdindex, instr}=rx.u.first;
+        let {execout, rdindex, inst}=rx.u.first;
       `else
         let {execout, rdindex}=rx.u.first;
       `endif
@@ -136,7 +138,7 @@ package stage4;
                 wr_commit <= tagged Valid (tuple3(rdaddr, data, rdindex));
               `endif
               `ifdef simulate 
-                dump_ff.enq(tuple5(prv, zeroExtend(pc), inst, rd, data));
+                dump_ff.enq(tuple5(prv, zeroExtend(pc), inst, rdaddr, data));
               `endif
             end
             else begin
@@ -158,8 +160,7 @@ package stage4;
           jump_address=newpc;
           fl=drain;
           `ifdef simulate 
-          else
-            dump_ff.enq(tuple5(prv, zeroExtend(pc), inst, rd, dest));
+            dump_ff.enq(tuple5(prv, zeroExtend(pc), inst, rdaddr, dest));
           `endif
           `ifdef spfpu
             wr_commit <= tagged Valid (tuple4(rdaddr, dest, rdindex, rdtype));
