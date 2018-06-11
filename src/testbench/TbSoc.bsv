@@ -498,7 +498,7 @@ rule connect_boot;
     //soc.flexbus_out.m_din(32'haaaaaaaa);
  //endrule
 
- Memory_IFC#(`SDRAMMemBase,`Addr_space) main_memory <- mkMemory("code.mem.MSB","code.mem.LSB","MainMEM");
+ Memory_IFC#(`FlexBusBase,`Addr_space) main_memory <- mkMemory("code.mem.MSB","code.mem.LSB","MainMEM");
 
  FlexBus_Slave_to_AXI4_Master_Fabric_IFC#(32,64,0) verfn_ifc <- mkFlexBus_Slave_to_AXI4_Master_Fabric;
 

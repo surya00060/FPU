@@ -121,6 +121,9 @@ provisos(
 
   ConfigReg#(FlexBus_States) flexbus_state_verfn <- mkConfigReg(FlexBus_S1_ADDR);
 
+  //      AXI4_Slave_to_FlexBus_Master_Xactor_IFC#(32, 64, 0)
+    //                                              flexbus_xactor_ifc <- mkAXI4_Slave_to_FlexBus_Master_Xactor;
+
   Reg#(Bit#(32)) r_AD 	<- mkReg(32'h00000000);
   Reg#(Bit#(1)) r_ALE 		<- mkReg(1'b0);
   Reg#(Bit#(1)) r_R_Wn 		<- mkReg(1'b0);
@@ -129,6 +132,7 @@ provisos(
   Reg#(Bit#(4)) r_BE_BWEn 	<- mkReg(4'h0);
   Reg#(Bit#(1)) r_TBSTn 	<- mkReg(1'b0);
   Reg#(Bit#(1)) r_OEn 		<- mkReg(1'b0);
+  Reg#(Bit#(3)) r_arsize    <- mkReg(3'b000);
 
   Reg#(Bool)    r1_OEn      <- mkReg(True);
 
@@ -151,6 +155,7 @@ provisos(
    Reg#(Maybe#(AXI4_Rd_Addr #(wd_addr, wd_user)))  rd_req_reg[2] <- mkCReg(2,tagged Invalid);
 	 Reg#(Bit#(8)) rg_read_burst_cycle <-mkReg(0);
 
+   Reg#(Bool)    generate_write_req      <- mkReg(False);
    //  TriState#(Bit#(32)) tri_AD_in <- mkTriState(!r1_OEn,r_din);
 
         rule rl_OEn;
@@ -183,9 +188,9 @@ provisos(
    Reg#(Maybe#(AXI4_Wr_Addr #(wd_addr, wd_user)))  wr_req_reg[2] <- mkCReg(2,tagged Invalid);
    Reg#(Maybe#(AXI4_Wr_Data #(wd_data)))  wr_data_reg[2] <- mkCReg(2,tagged Invalid);
 	 Reg#(Bit#(8)) rg_write_burst_cycle <-mkReg(0);
-	 rule generate_write_request(wr_req_reg[1] matches tagged Valid .ar &&& wr_data_reg[1] matches tagged Valid .wd &&& f_wr_addr[0] matches tagged Invalid &&& f_wr_data[0] matches tagged Invalid);
+	 rule generate_write_request(wr_req_reg[1] matches tagged Valid .ar &&& wr_data_reg[1] matches tagged Valid .wd &&& f_wr_addr[0] matches tagged Invalid &&& f_wr_data[0] matches tagged Invalid &&& generate_write_req);
 			`ifdef verbose_debug_ver $display("generate_write_request FIRED"); `endif
-			`ifdef verbose $display($time,"\tAXI4MasterWrite: Generating Write Request for Address: %h Data: %h BurstSize: %d BurstLength: %d BurstMode: :%d",ar.awaddr,wd.wdata,ar.awsize,ar.awlen,ar.awburst); `endif
+			`ifdef verbose $display($time,"\tAXI4MasterWrite: Generating Write Request for Address: %h Data: %h BurstSize: %d BurstLength: %d BurstMode: :%d Strobe: %b",ar.awaddr,wd.wdata,ar.awsize,ar.awlen,ar.awburst, wd.wstrb); `endif
 			f_wr_addr[0]<=tagged Valid ar;
 			f_wr_data[0]<=tagged Valid wd;
 			let info=ar;
@@ -193,6 +198,7 @@ provisos(
 				wr_req_reg[1]<= tagged Invalid;
 				wr_data_reg[1]<= tagged Invalid;
 				rg_write_burst_cycle<=0;
+                generate_write_req <= False;
 			end
 			else begin
 				info.awaddr=address_increment(ar.awlen,ar.awsize,ar.awburst,ar.awaddr);
@@ -201,14 +207,14 @@ provisos(
 			end
 		endrule
 
-		rule rl_generate_addr (r_ALE== 1 && flexbus_state_verfn == FlexBus_S1_ADDR );
+		rule rl_state_S1_ADDR (r_ALE== 1 && flexbus_state_verfn == FlexBus_S1_ADDR );
 			`ifdef verbose_debug_ver $display("STATE S1 ADDR VERFN fired "); `endif
 			r_WS <= r_WS_val;
 			if (r_R_Wn == 1'b1) begin
 				if(rd_req_reg[0] matches tagged Invalid) begin
 					rd_req_reg[0]<=tagged Valid (AXI4_Rd_Addr {araddr : pack({r_AD}),
 									  aruser : 0,
-									  arsize : 3'h2,
+									  arsize : r_arsize,
 									  arlen  : 8'h00,
 									  arburst: 2'b00,
 									  arid : 0
@@ -230,13 +236,18 @@ provisos(
 		endrule
 		rule rl_state_S2_WRITE (flexbus_state_verfn == FlexBus_S2_WRITE); //Write Phase
 			`ifdef verbose_debug_ver $display("STATE S2 WRITE VERFN FIRED"); `endif
+            Bool upper_bits= False;
 			if (r_R_Wn == 1'b0) begin
 				if(wr_data_reg[0] matches tagged Invalid) begin
-	 				wr_data_reg[0]<=tagged Valid (AXI4_Wr_Data{wdata: pack({32'h00000000,r_AD[7:0],r_AD[15:8],r_AD[23:16],r_AD[31:24]}),
-									 wstrb	: 8'h0F,
+                    if (wr_req_reg[1] matches tagged Valid .ar) begin
+                        upper_bits = (unpack(ar.awaddr[2])) ? True : False;
+                    end
+	 				wr_data_reg[0]<=tagged Valid (AXI4_Wr_Data{wdata: pack({r_AD[7:0],r_AD[15:8],r_AD[23:16],r_AD[31:24],r_AD[7:0],r_AD[15:8],r_AD[23:16],r_AD[31:24]}),
+									 wstrb	: ({(upper_bits) ? 8'hF0 : 8'h0F}),
 									 wid 	: 0,
 									 wlast 	: True
 									});
+                    generate_write_req <= True;
 				end
 			end
 			if (r_WS == 0) begin
@@ -246,6 +257,7 @@ provisos(
 			else
 				r_WS <= r_WS -1;
 		endrule
+        
 		rule rl_state_S3_BURST (flexbus_state_verfn == FlexBus_S3_BURST); //Burst Phase
 			`ifdef verbose_debug_ver $display("STATE S3 BURST VERFN FIRED"); `endif
 			if (r_R_Wn == 1'b1)  begin
@@ -255,6 +267,11 @@ provisos(
 					f_rd_data[1]<=tagged Invalid;
 				end
 			end
+            else begin
+				if(f_wr_resp[1] matches tagged Valid .wr) begin	
+                    f_wr_resp[1]<=tagged Invalid;
+                end
+            end
            		flexbus_state_verfn <= FlexBus_S1_ADDR; 
 		endrule
 
@@ -300,7 +317,9 @@ provisos(
 				 method Bit #(2)			 m_awburst = fromMaybe(?,f_wr_addr[1]).awburst;
 				 method Bit #(4)			 m_awid			=fromMaybe(?,f_wr_addr[1]).awid;
 			   method Action m_awready (Bool awready);
-			      if (isValid(f_wr_addr[1]) && awready) f_wr_addr[1]<=tagged Invalid;
+			      if (isValid(f_wr_addr[1]) && awready) begin 
+                        f_wr_addr[1]<=tagged Invalid;
+                  end
 			   endmethod
 
 			   // Wr Data channel
@@ -310,7 +329,9 @@ provisos(
 			   method Bool                       m_wlast =  fromMaybe(?,f_wr_data[1]).wlast;
 			   method Bit#(4)										 m_wid =		fromMaybe(?,f_wr_data[1]).wid;
 			   method Action m_wready (Bool wready);
-			      if (isValid(f_wr_data[1]) && wready) f_wr_data[1]<=tagged Invalid;
+                   if (isValid(f_wr_data[1]) && wready) begin
+                        f_wr_data[1]<=tagged Invalid;
+                   end
 			   endmethod
 
 			   // Wr Response channel
@@ -385,6 +406,9 @@ provisos(
 	endmethod
 	method Action m_OEn            (  Bit #(1)         i_OEn);                           // in
 		r_OEn <= i_OEn;
+	endmethod
+	method Action m_arsize_i       (  Bit #(3)      i_arsize);                           // in
+		r_arsize <= i_arsize;
 	endmethod
 
 	method Bit #(32) m_din = r_din;				//out

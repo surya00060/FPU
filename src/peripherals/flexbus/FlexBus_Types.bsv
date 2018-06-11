@@ -79,6 +79,9 @@ interface FlexBus_Master_IFC;
    (* always_ready, result="OEn"      *)  method Bit #(1)       m_OEn;                                    // out
 
    (* always_ready, result="ALE"      *)  method Bit #(1)       m_ALE;                                    // out
+   `ifdef FlexBus_verify
+  			 method Bit #(3)       m_arsize;                                    // out
+    `endif
    //(* always_ready, always_enabled    *)  method Action m_TAn ((* port="TAn" *) Bit #(1) tAn);            // in
    method Action m_TAn ((* port="TAn" *) Bit #(1) tAn);            // in
 
@@ -130,6 +133,9 @@ interface FlexBus_Slave_IFC ;
    (* always_ready, always_enabled    *) method Action m_TBSTn 		( (* port="TBSTn"    *)  Bit #(1)         i_TBSTn);                         // in
    (* always_ready, always_enabled    *) method Action m_OEn		( (* port="OEn"      *)  Bit #(1)         i_OEn);                           // in
 										
+   `ifdef FlexBus_verify
+  			 method Action  m_arsize_i (Bit#(3) i_arsize);                           // out
+    `endif
    (* always_ready, result="din"   *)  method Bit #(32) m_din;                                                // out
    (* always_ready, result="TAn"   *)  method Bit #(1) m_TAn;                                                      // out
 
@@ -164,6 +170,9 @@ instance Connectable #(FlexBus_Master_IFC ,
 	 flexbus_s.m_BE_BWEn (flexbus_m.m_BE_BWEn);
 	 flexbus_s.m_TBSTn   (flexbus_m.m_TBSTn);
 	 flexbus_s.m_OEn     (flexbus_m.m_OEn);
+     `ifdef FlexBus_verify
+	     flexbus_s.m_arsize_i     (flexbus_m.m_arsize);
+     `endif
       endrule
       (* fire_when_enabled *)
       //(* fire_when_enabled, no_implicit_conditions *)
@@ -300,6 +309,7 @@ module mkAXI4_Slave_to_FlexBus_Master_Xactor
    Reg#(Bit#(wd_addr))  r_araddr         <- mkReg(0);
    Reg#(Bit#(wd_addr))  r2_araddr        <- mkReg(0);
    Reg#(Bit#(2))      	r_arsize         <- mkReg(0);
+   Reg#(Bit#(3))      	r1_arsize        <- mkReg(0);
    Reg#(Bit#(4))      	r_arid           <- mkReg(0);
    Reg#(Bit#(4))      	r_awid           <- mkReg(0);
    Reg#(Bit#(1))      	wr_pending       <- mkReg(0);
@@ -307,7 +317,9 @@ module mkAXI4_Slave_to_FlexBus_Master_Xactor
    Reg#(Bit#(1))      	r_chk_fifos_rd   <- mkReg(0);
    ConfigReg#(Bit#(1))      	rd_wrb      <- mkConfigReg(1);
    Reg#(Bool)         	r_rready  	<- mkReg(False);       
+   Reg#(Bool)         	r_wready  	<- mkReg(False);       
    Reg#(Bool)         	r2_rready  	<- mkReg(False);       
+   Reg#(Bool)         	r2_wready  	<- mkReg(False);       
 
    Reg#(Bool)         	r1_awvalid	<- mkReg(False);       
    Reg#(Bool)         	r2_awvalid	<- mkReg(False);       
@@ -459,6 +471,7 @@ module mkAXI4_Slave_to_FlexBus_Master_Xactor
         r_chk_fifos_rd <= 1'b1;
    		AXI4_Rd_Addr#(wd_addr, wd_user) rd_addr = f_rd_addr.first;
         	r_araddr <= f_rd_addr.first.araddr;
+        	r1_arsize <= f_rd_addr.first.arsize;
         	v_arsize = f_rd_addr.first.arsize;
             r_arid <= f_rd_addr.first.arid;
                 case (v_arsize) matches
@@ -477,7 +490,7 @@ module mkAXI4_Slave_to_FlexBus_Master_Xactor
         end
    endrule
 
-   rule rl_enq_wr_resp;
+   rule rl_enq_wr_resp (r2_wready == True);
    Bool bready = f_wr_resp.notFull; 
    if (f_wr_resp.notFull) 
   	f_wr_resp.enq (AXI4_Wr_Resp {bresp:r_wrbresp,
@@ -495,7 +508,7 @@ module mkAXI4_Slave_to_FlexBus_Master_Xactor
 						  ruser:0,
                           rid:r_arid});
 		//AXI4_Slave_IFC.m_rready(True);
-        	`ifdef verbose_debug $display("RD DATA FIFO WAS NOT FULL SO I ENQUEUED r_rd_data=%h r2_rready= %b\n", r_rd_data, r2_rready); `endif
+        	`ifdef verbose_debug $display("RD DATA FIFO WAS NOT FULL SO I ENQUEUED r_rd_data=%h r2_rready= %b r_arid = %b\n", r_rd_data, r2_rready, r_arid); `endif
     	end
    endrule
 
@@ -560,8 +573,18 @@ module mkAXI4_Slave_to_FlexBus_Master_Xactor
    endrule
 
    rule rl_assign_rd_data;
-	r_rd_data[63:0] <= pack({32'h00000000, r_rd_data_32bit_byte4, r_rd_data_32bit_byte3, r_rd_data_32bit_byte2, r_rd_data_32bit_byte1});
+    `ifdef FlexBus_verify
+        if (r1_arsize == 3'd2)
+	        r_rd_data[63:0] <= pack({r_rd_data_32bit_byte4, r_rd_data_32bit_byte3,r_rd_data_32bit_byte2, r_rd_data_32bit_byte1, r_rd_data_32bit_byte4, r_rd_data_32bit_byte3, r_rd_data_32bit_byte2, r_rd_data_32bit_byte1});
+        else if (r1_arsize == 3'd1)
+	        r_rd_data[63:0] <= pack({r_rd_data_32bit_byte2, r_rd_data_32bit_byte1,r_rd_data_32bit_byte2, r_rd_data_32bit_byte1, r_rd_data_32bit_byte2, r_rd_data_32bit_byte1, r_rd_data_32bit_byte2, r_rd_data_32bit_byte1});
+        else if (r1_arsize == 3'd0)
+	        r_rd_data[63:0] <= pack({r_rd_data_32bit_byte1, r_rd_data_32bit_byte1,r_rd_data_32bit_byte1, r_rd_data_32bit_byte1, r_rd_data_32bit_byte1, r_rd_data_32bit_byte1, r_rd_data_32bit_byte1, r_rd_data_32bit_byte1});
+    `else
+	    r_rd_data[63:0] <= pack({32'h00000000, r_rd_data_32bit_byte4, r_rd_data_32bit_byte3, r_rd_data_32bit_byte2, r_rd_data_32bit_byte1});
+    `endif
         r2_rready <= r_rready;
+        r2_wready <= r_wready;
         `ifdef verbose_debug_l2 $display("ASSIGN READ DATA FIRED AND r_rd_data = %h r_rready=%b r2_rready=%b", r_rd_data, r_rready, r2_rready);`endif
    endrule
   
@@ -718,7 +741,9 @@ module mkAXI4_Slave_to_FlexBus_Master_Xactor
 			r_rready <= True;
 			//r_rpt_cnt <= r_rpt_cnt -1;
 		end
-                //else
+        else
+			r_wready <= True;
+
 		flexbus_state <= FlexBus_S4_HOLD;
 		if (register_ifc.op_side.m_AA == 1'b1) begin // check this functionality  later for now 
 			r_OEn <= 1'b1;
@@ -889,7 +914,10 @@ module mkAXI4_Slave_to_FlexBus_Master_Xactor
 				r_rd_data_32bit_byte1 <= r_din[7:0];
 			end
 			r_rready <= True;
-    		end
+    	end
+        else begin
+            r_wready <= True;
+        end
 		if (register_ifc.op_side.m_AA == 1'b1) begin // check this functionality  later for now 
 			r_OEn <= 1'b1;
 			r_BE_BWEn <= 4'hF;
@@ -923,6 +951,7 @@ module mkAXI4_Slave_to_FlexBus_Master_Xactor
                 r1_wvalid   <= False;
 
 		        r_rready	<= False;
+		        r_wready	<= False;
                 r_wrbresp	<= AXI4_OKAY;  
                 r_rresp	    <= AXI4_OKAY;  
                 r_ASET		<= 2'b00;  
@@ -1084,7 +1113,11 @@ interface flexbus_side = interface FlexBus_Master_IFC;
 				return r_ALE;
                          endmethod
                 //endinterface;
-
+            `ifdef FlexBus_verify
+  			 method Bit #(3) m_arsize = r1_arsize;                           // out
+				//return r1_arsize;
+                         //endmethod
+             `endif
 			endinterface;
 
 endmodule: mkAXI4_Slave_to_FlexBus_Master_Xactor
