@@ -50,11 +50,11 @@ def setBranchInstr():
 			try:
 				cv.branchRegisters.remove(memb['r1'])
 			except:
-				cc = 0 # The WDC patch as is : This is a filler expect to bypass the any error from the above
+				cc = 0 # The patch as is : This is a filler expect to bypass the any error from the above
 			try:
 				cv.branchRegisters.remove(memb['r2'])
 			except:
-				xx = 0 # The WDC patch as is : This is a filler expect to bypass the any error from the above
+				xx = 0 # The patch as is : This is a filler expect to bypass the any error from the above
 			return (instr1, instr2)
 	return
 
@@ -170,9 +170,9 @@ def gen_base_instr(opcode):
 				if memb['instrPosition']-2<maxBranchPosition and memb['setBranch'] == False:
 					maxBranchPosition=memb['instrPosition']-2
 			
-			if maxBranchPosition< cv.instructionNumber+2:
+			if maxBranchPosition< cv.instructionNumber+6:
 				return
-			minBranchPosition=max((max(previousBranches)+2,cv.instructionNumber+2))
+			minBranchPosition=max((max(previousBranches)+4,cv.instructionNumber+4))
 			
 			if minBranchPosition >= maxBranchPosition:
 				return
