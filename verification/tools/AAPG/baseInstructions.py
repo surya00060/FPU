@@ -47,8 +47,14 @@ def setBranchInstr():
 			else:
 				instr2 = '{0} x{1}, x{2}, i_{3}'.format(memb['opcode'],memb['r2'],memb['r1'],memb['targetInstr'])
 			loopPositions[indx]['setBranch']=True
-			cv.branchRegisters.remove(memb['r1'])
-			cv.branchRegisters.remove(memb['r2'])
+			try:
+				cv.branchRegisters.remove(memb['r1'])
+			except:
+				cc = 0 # The patch as is : This is a filler expect to bypass the any error from the above
+			try:
+				cv.branchRegisters.remove(memb['r2'])
+			except:
+				xx = 0 # The patch as is : This is a filler expect to bypass the any error from the above
 			return (instr1, instr2)
 	return
 
