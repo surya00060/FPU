@@ -47,14 +47,8 @@ def setBranchInstr():
 			else:
 				instr2 = '{0} x{1}, x{2}, i_{3}'.format(memb['opcode'],memb['r2'],memb['r1'],memb['targetInstr'])
 			loopPositions[indx]['setBranch']=True
-			try:
-				cv.branchRegisters.remove(memb['r1'])
-			except:
-				cc = 0 # The patch as is : This is a filler expect to bypass the any error from the above
-			try:
-				cv.branchRegisters.remove(memb['r2'])
-			except:
-				xx = 0 # The patch as is : This is a filler expect to bypass the any error from the above
+			cv.branchRegisters.remove(memb['r1'])
+			cv.branchRegisters.remove(memb['r2'])
 			return (instr1, instr2)
 	return
 
@@ -170,9 +164,9 @@ def gen_base_instr(opcode):
 				if memb['instrPosition']-2<maxBranchPosition and memb['setBranch'] == False:
 					maxBranchPosition=memb['instrPosition']-2
 			
-			if maxBranchPosition< cv.instructionNumber+0:
+			if maxBranchPosition< cv.instructionNumber+6:
 				return
-			minBranchPosition=max((max(previousBranches)+0,cv.instructionNumber+0))
+			minBranchPosition=max((max(previousBranches)+4,cv.instructionNumber+4))
 			
 			if minBranchPosition >= maxBranchPosition:
 				return

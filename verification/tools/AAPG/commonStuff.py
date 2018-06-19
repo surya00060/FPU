@@ -33,13 +33,6 @@ def find_rand_destination_reg():
 				previousIntegerDestinations.popleft()
 			return num
 	reg_int=random.randint(1,31)
-
-	if len(cv.unusedRegs+cv.branchRegisters) == 31:
-		try:
-			cv.unusedRegs.remove(reg_int)
-		except:
-			cv.branchRegisters.remove(reg_int)
-
 	while reg_int in cv.unusedRegs+cv.branchRegisters:
 		reg_int=random.randint(1,31)
 	previousIntegerDestinations.append(reg_int)

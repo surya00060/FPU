@@ -127,7 +127,7 @@ try:
       #print ('\nGenerating Test Case - '+str(count))
       aapg.random.seed(seed.strip())
       stdoutseed=subprocess.getoutput("date +%d%m%Y%s")
-      filename = testType + '_' + stdoutseed + '_test' + str(count) + '.S'
+      filename = 'aapg_' + testType + '_' + stdoutseed + '_test' + str(count) + '.S'
       aapg.aapgMain(filename)
       subprocess.call('mv ./{0} $SHAKTI_C_HOME/verification/tests/random/aapg/generated_tests/{1}'.format(filename,testType),shell=True)
       print ('[regress.py] {0}'.format(filename))
