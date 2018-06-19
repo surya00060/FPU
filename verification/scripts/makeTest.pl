@@ -83,7 +83,6 @@ else {
 }
 
 #my $workdir = "$testPath/workdir";
-doDebugPrint("Generating Test Dump Directory ------------\n");
 
 my $testName;
 my $testSuite;
@@ -92,6 +91,21 @@ my $test;
 my $simulator;
 my $testType;
 my $trace;
+
+# Prints command line usage of script
+if ($help) {
+  printHelp();
+  exit(0);
+}
+
+# Clean script generated outputs
+if ($clean) {
+  doClean();
+  exit(0);
+}
+else {
+  checkBins();
+}
 
 # Test name
 if (!$test_name) {
@@ -134,30 +148,14 @@ else {
   doPrint("ERROR: Invalid test type, --test_type=[p|v]\n");
   exit(1);
 }
-
-# trace
-
 if (!$no_trace) {
-  $trace = 1;
+  $trace=1;
 }
 else {
-  $trace = 0;
+  $trace=0;
 }
 
-# Prints command line usage of script
-if ($help) {
-  printHelp();
-  exit(0);
-}
-
-# Clean script generated outputs
-if ($clean) {
-  doClean();
-  exit(0);
-}
-else {
-  checkBins();
-}
+doDebugPrint("Generating Test Dump Directory ------------\n");
 
 my @test = ();
 if ($testSuite =~ /csmith-run/) {
