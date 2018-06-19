@@ -285,6 +285,10 @@ regress:
 regress_ncverilog:  
 	CONFIG_SIM=ncverilog SHAKTI_C_HOME=$$PWD perl -I$(SHAKTI_C_HOME)/verification/scripts $(SHAKTI_C_HOME)/verification/scripts/makeRegress.pl $(opts)
 
+.PHONY: coverage_ncverilog
+coverage_ncverilog:  
+	`ncroot`/tools/bin/64bit/imc -64bit -exec $(SHAKTI_C_HOME)/verification/scripts/coverage_merge_ncverilog
+
 .PHONY: test
 test:  
 	SHAKTI_C_HOME=$$PWD perl -I$(SHAKTI_C_HOME)/verification/scripts $(SHAKTI_C_HOME)/verification/scripts/makeTest.pl $(opts)
@@ -292,6 +296,10 @@ test:
 .PHONY: torture
 torture:  
 	SHAKTI_C_HOME=$$PWD perl -I$(SHAKTI_C_HOME)/verification/scripts $(SHAKTI_C_HOME)/verification/scripts/makeTorture.pl $(opts)
+
+.PHONY: aapg
+aapg:  
+	SHAKTI_C_HOME=$$PWD perl -I$(SHAKTI_C_HOME)/verification/scripts $(SHAKTI_C_HOME)/verification/scripts/makeAapg.pl $(opts)
 
 .PHONY: clean
 clean:
