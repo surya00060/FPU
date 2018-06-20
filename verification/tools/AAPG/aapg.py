@@ -176,7 +176,7 @@ def aapgMain(fileName):
 	bI.initialize_vars()
 	cv.instructionNumber=0
 	cv.numberOfLoops=0
-	cv.unusedRegs=[]
+	cv.unusedRegs=[2]
 	cv.branchRegisters=[]
 	initialCode()
 	random_ASM_generator()

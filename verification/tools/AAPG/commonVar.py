@@ -4,7 +4,7 @@
 
 instructionNumber=3
 numberOfLoops=0
-unusedRegs=[]
+unusedRegs=[2]
 branchRegisters=[]
 
 
