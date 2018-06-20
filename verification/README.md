@@ -48,7 +48,7 @@ All the commands have to be run from SHAKTI_C_HOME: <repo-path>/c-class
 | make torture opts="--sub"| generates and simulates a single riscv-torture test|
 
 ## Detailed Command Description
-1. Lists the test
+### Lists the test
 ```
 $ make regress
 
@@ -63,7 +63,7 @@ $ make regress
          directed/riscv-tests/isa/rv64ua                                 
 ```
 
-2. Regression clean
+### Regression clean
 ```
 $ make regress opts="--clean"
 
@@ -76,7 +76,7 @@ $ make regress opts="--clean"
 [makeRegress.pl] 'rm -rf /scratch/lavanya/c-class/verification/tests/random/*/generated_tests/*'
 
 ```
-3. Filter the tests
+### Filter the tests
 ```
 $ make regress opts="--filter=rv64mi"
 
@@ -88,17 +88,17 @@ $ make regress opts="--filter=rv64mi"
 
 ```
 
-4. Run only the filtered tests
+### Run only the filtered tests
 ```
 $ make regress opts="--filter=rv64mi --sub"
 ```
 
-5. Run all the riscv-tests (tests are run one after the other)
+### Run all the riscv-tests (tests are run one after the other)
 ```
 $ make regress opts="--sub"
 ```
 
-6. Run the tests in parallel. Currently this option runs at max 50 licenses in parallel. So it is advisable to use this option with caution
+### Run the tests in parallel. Currently this option runs at max 50 licenses in parallel. So it is advisable to use this option with caution
 ```
 $ make regress opts="--filter=mulh --parallel --sub"
 ```
@@ -107,19 +107,15 @@ You can check the results of the above submission with the below command
 $ make regress opts="--filter=mulh"
 ```
 
-7. Generate random tests during regression. 5 tests of each configuration is generated
+### Generate random tests during regression. 5 tests of each configuration is generated
 ```
 $ make regress opts="--gen --sub --test_count=5"
 ```
-8. Generate riscv-torture tests
+### Generate riscv-torture tests
 ```
 $ make torture opts="--config=smoke --test_count=3 --parallel"
 ```
 Wait till ``[success] Total time`` for all tests. The generated tests will be present in:
 ```
 $SHAKTI_C_HOME/verification/tests/random/riscv-torture/generated_tests/<config_name> 
-```
-9. Generate and simulate a single riscv-torture test
-```
-$ make torture opts="--sub"
 ```
