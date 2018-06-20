@@ -352,7 +352,7 @@ Options:
   --list_configs                Lists available configs
   --test_count=TEST_COUNT       Generates TEST_COUNT number of tests
                                 [default] --test_count=1
-  --submit                      [TODO] Generates and simulates a single AAPG test
+  --submit                      Generates and simulates a single AAPG test
   --nodebug                     [TODO] Forces no debug messages to be printed
   --parallel                    [TODO] Test generation runs in parallel
   --help                        Displays this help

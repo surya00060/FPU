@@ -135,17 +135,27 @@ if ($testConfig =~ /^all$/) {
     }
 }
 else {
-  my $configFile = "$configPath/$testConfig\.py";
-  if (-e $configFile) {
-    doDebugPrint("$configFile is being used for AAPG generation\n");
-    systemCmd("perl -pi -e 's/numberOfTests=.*/numberOfTests=$testCount/' $configFile");
-    systemCmd("cp $configFile $shaktiHome/verification/tools/AAPG/config.py");
-    chdir("$shaktiHome/verification/tools/AAPG");
-    my $config = `basename $configFile .py`; chomp($config);
-    systemCmd("./regress.py gen_only $config&");
+  if ($submit) {
+      systemCmd("cp $configPath/bringup.py $shaktiHome/verification/tools/AAPG/config.py");
+      chdir("$shaktiHome/verification/tools/AAPG");
+      my @out = `./regress.py gen_only bringup`;
+      if($out[-1] =~ /\] (\S+)\.S/) {
+        system("CONFIG_LOG=1 perl -I $shaktiHome/verification/scripts $shaktiHome/verification/scripts/makeTest.pl --test=$1 --suite=random/aapg/generated_tests/bringup --type=p --sim=$simulator");
+      }
   }
   else {
-    doPrint("ERROR: $configFile does not exist\n");
-    exit(1);
+    my $configFile = "$configPath/$testConfig\.py";
+    if (-e $configFile) {
+      doDebugPrint("$configFile is being used for AAPG generation\n");
+      systemCmd("perl -pi -e 's/numberOfTests=.*/numberOfTests=$testCount/' $configFile");
+      systemCmd("cp $configFile $shaktiHome/verification/tools/AAPG/config.py");
+      chdir("$shaktiHome/verification/tools/AAPG");
+      my $config = `basename $configFile .py`; chomp($config);
+      systemCmd("./regress.py gen_only $config&");
+    }
+    else {
+      doPrint("ERROR: $configFile does not exist\n");
+      exit(1);
+    }
   }
 }
