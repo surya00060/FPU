@@ -111,7 +111,7 @@ try:
       count=count+1
   elif makeType=='gen_only':
     for seed in seeds:
-      print ('\nGenerating Test Case - '+str(count))
+      print ('\nGenerating Test Case-' + str(count) + ' with seed ' + str(seed))
       aapg.random.seed(seed.strip())
       aapg.aapgMain('output.s')
       compileASM()
