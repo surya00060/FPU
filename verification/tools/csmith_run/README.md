@@ -24,19 +24,23 @@ RV32IMAF,  etc.
 1. To generate a single test:
 
             $ make test.c
+
 2. To generate a single test and run on host pc:
 
             $  make test.host
-3. To generate a single test and run on spike: (this will on host and compare the checksums between
-host and spike for correctness)
+
+3. To generate a single test and run on spike: (this will on host and compare the checksums between host and spike for correctness)
 
             $ make spike
+
 4. To generate and run multiple tests on spike:
 
             $ make spike-regress
+
 5. To compare RTL checksum with spike and host:
 
             $ make 
+
 ### Steps involved in running a single step of CSMITH regression ###
 --------------------------------------------------------------------
 There three steps in running CSMITH:
