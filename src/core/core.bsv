@@ -21,8 +21,8 @@ package core;
 	/*================================== */
 
 	/*========= Project imports ======== */
-	`include "defined_parameters.bsv"
-	import defined_types			::*;
+	`include "common_params.bsv"
+	import common_types			::*;
 	import Semi_FIFOF					::*;
 	import AXI4_Types		:: *;
 	import AXI4_Fabric		:: *;
@@ -39,8 +39,8 @@ package core;
 	endinterface
 
 	interface Ifc_core_AXI4;
-		interface AXI4_Master_IFC#(`PADDR, `Reg_width, `USERSPACE) imem_master;
-		interface AXI4_Master_IFC#(`PADDR, `Reg_width, `USERSPACE) dmem_master;
+		interface AXI4_Master_IFC#(PADDR, XLEN, 0) imem_master;
+		interface AXI4_Master_IFC#(PADDR, XLEN, 0) dmem_master;
 		method Action set_external_interrupt(Tuple2#(Bool,Bool) i);
 		method Action boot_sequence(Bit#(1) bootseq);
 		/* =========================== Debug Interface ===================== */
@@ -50,18 +50,18 @@ package core;
 			method Bool									reset_complete;
    		method Action								stop;										 // Stop CPU
    		method Bool halted ();
-   		method Bit#(`Reg_width)			read_igpr (Bit#(5) r);				 // Read a General-Purpose Register
-   		method Action								write_igpr (Bit#(5) r, Bit#(`Reg_width) d);	 // Write into a General-Purpose Register
+   		method Bit#(XLEN)			read_igpr (Bit#(5) r);				 // Read a General-Purpose Register
+   		method Action								write_igpr (Bit#(5) r, Bit#(XLEN) d);	 // Write into a General-Purpose Register
 			`ifdef spfpu
-   		method Bit#(`Reg_width)			read_fgpr (Bit#(5) r);				 // Read a General-Purpose Register
-   		method Action								write_fgpr (Bit#(5) r, Bit#(`Reg_width) d);	 // Write into a General-Purpose Register
+   		method Bit#(XLEN)			read_fgpr (Bit#(5) r);				 // Read a General-Purpose Register
+   		method Action								write_fgpr (Bit#(5) r, Bit#(XLEN) d);	 // Write into a General-Purpose Register
 			`endif
-   		method ActionValue#(Bit#(`Reg_width))			rw_csr (Bit#(12) r, Bool write, Bit#(`Reg_width) data);				 // Read a General-Purpose Register
+   		method ActionValue#(Bit#(XLEN))			rw_csr (Bit#(12) r, Bool write, Bit#(XLEN) data);				 // Read a General-Purpose Register
 		`endif
 		`ifdef CLINT
 			method Action clint_msip(Bit#(1) intrpt);
 			method Action clint_mtip(Bit#(1) intrpt);
-			method Action clint_mtime(Bit#(`Reg_width) c_mtime);
+			method Action clint_mtime(Bit#(XLEN) c_mtime);
 		`endif
 		/*-========================================================================== */
 	endinterface
@@ -72,19 +72,19 @@ package core;
 	`ifdef MMU (*preempts="dtlb_to_ptw,itlb_to_ptw"*) `endif
 	//`ifdef MMU (*preempts="mkConnectionGetPut_4,mkConnectionGetPut_3"*) `endif
 	(*synthesize*)
-	module mkcore_AXI4#(Bit#(`VADDR) reset_vector)(Ifc_core_AXI4);
-	  	Ifc_riscv riscv <-mkriscv(reset_vector);
-		AXI4_Master_Xactor_IFC #(`PADDR,`Reg_width,`USERSPACE) imem_xactor <- mkAXI4_Master_Xactor;
-		AXI4_Master_Xactor_IFC #(`PADDR,`Reg_width,`USERSPACE) dmem_xactor <- mkAXI4_Master_Xactor;
+	module mkcore_AXI4#(Bit#(VADDR) reset_vector)(Ifc_core_AXI4);
+	  Ifc_riscv riscv <-mkriscv(); // TODO reset vector
+		AXI4_Master_Xactor_IFC #(PADDR,XLEN,0) imem_xactor <- mkAXI4_Master_Xactor;
+		AXI4_Master_Xactor_IFC #(PADDR,XLEN,0) dmem_xactor <- mkAXI4_Master_Xactor;
 		Ifc_imem imem <-mkimem();
 		Ifc_dmem dmem <- mkdmem;
-		Ifc_PTWalk#(`ADDR, `VADDR, 56, `PADDR, `ASID, `OFFSET) ptw <- mkPTWalk;
-		Wire#(Bit#(`Reg_width)) wr_pte <- mkWire();
+		Ifc_PTWalk#(64, VADDR, 56, PADDR, ASID, OFFSET) ptw <- mkPTWalk;
+		Wire#(Bit#(XLEN)) wr_pte <- mkWire();
 		Reg#(Bool) rg_serve_dTLB <- mkReg(False);
 
 		mkConnection(riscv.request_to_imem,imem.request_from_core);
 		mkConnection(imem.instruction_response_to_core,riscv.instruction_response_from_imem);
-		mkConnection(riscv.request_to_dmem, dmem.request_from_cpu);
+		mkConnection(riscv.to_dmem, dmem.request_from_cpu);
 		mkConnection(dmem.response_to_cpu, riscv.response_from_dmem);
 		`ifdef MMU
 			rule itlb_to_ptw;
@@ -140,10 +140,10 @@ package core;
 				ptw.satp_frm_csr(riscv.send_satp);
 				imem.translation_protection_frm_csr(riscv.mmu_cache_disable[0],
 																riscv.perm_to_TLB,
-																riscv.send_satp[`Reg_width-1:`Reg_width-`ASID-4]);
+																riscv.send_satp[XLEN-1:XLEN-ASID-4]);
 				dmem.translation_protection_frm_csr(riscv.mmu_cache_disable[0],
 																riscv.perm_to_TLB,
-																riscv.send_satp[`Reg_width-1:`Reg_width-`ASID-4]);
+																riscv.send_satp[XLEN-1:XLEN-ASID-4]);
 			endrule
 			rule send_pte_pointer;
 				let x <- ptw.ifc_memory.send_PTE_pointer;
@@ -166,7 +166,7 @@ package core;
 		endrule
 		Reg#(Bool) rg_update_a_bit <- mkReg(False);
 		Reg#(Bool) rg_update_b_bit <- mkReg(False);
-		Reg#(Maybe#(Bit#(TMul#(8,TMul#(`DCACHE_WORD_SIZE,`DCACHE_BLOCK_SIZE))))) rg_data_line <-mkReg(tagged Invalid);
+		Reg#(Maybe#(Bit#(TMul#(8,TMul#(DCACHE_WORD_SIZE,DCACHE_BLOCK_SIZE))))) rg_data_line <-mkReg(tagged Invalid);
 		Reg#(Bit#(8)) rg_burst_count<-mkReg(0);
 		Reg#(Bool) rg_wait_for_response[2]<-mkCReg(2,False);
 		rule check_read_request_to_memory_from_dcache;
@@ -181,10 +181,10 @@ package core;
 		rule check_write_request_to_memory_from_dcache(rg_data_line matches tagged Invalid &&& !rg_wait_for_response[1]);
 			let info<-dmem.request_to_memory_write;
 			/*=== Need to shift the data apprpriately while sending write requests===== */
-			Bit#(`Reg_width) actual_data=info.data_line[`Reg_width-1:0];
+			Bit#(XLEN) actual_data=info.data_line[XLEN-1:0];
 			Bit#(8) write_strobe=info.transfer_size==0?8'b1:info.transfer_size==1?8'b11:info.transfer_size==2?8'hf:8'hff;
 			if(info.transfer_size!=3)begin			// 8-bit write;
-				write_strobe=write_strobe<<(info.address[`byte_offset:0]);
+				write_strobe=write_strobe<<(info.address[Byte_offset:0]);
 			end
 //			info.address[2:0]=0; // also make the address 64-bit aligned
 			/*========================================================================= */
@@ -194,22 +194,22 @@ package core;
 			dmem_xactor.i_wr_data.enq(w);
 	 	  	`ifdef verbose $display($time,"\tCORE: Sending Write Request from DCACHE for  Address: %h BurstLength: %h Data: %h WriteStrobe: %b",info.address,info.burst_length,info.data_line, write_strobe); `endif
 			if(info.burst_length>1)begin // only enable the next rule when doing a line write in burst mode.
-			rg_data_line<=tagged Valid (info.data_line>>`Reg_width);
+			rg_data_line<=tagged Valid (info.data_line>>XLEN);
 			rg_burst_count<=rg_burst_count+1;
 			end
 			rg_wait_for_response[1]<=True;
 		endrule
 		rule send_burst_write_data(rg_data_line matches tagged Valid .data_line);
 			/*==  Since this is going to always be a line write request in burst mode No need of shifting data and address=== */
-			let w  = AXI4_Wr_Data {wdata:  truncate(data_line), wstrb: 8'hff , wlast:(rg_burst_count==`DCACHE_BLOCK_SIZE-1), wid:'d0};
+			let w  = AXI4_Wr_Data {wdata:  truncate(data_line), wstrb: 8'hff ,  wlast:(rg_burst_count==valueOf(DCACHE_BLOCK_SIZE)-1), wid:'d0};
 			dmem_xactor.i_wr_data.enq(w);
 			`ifdef verbose $display($time,"\tCORE: Sending DCACHE Write Data: %h Burst: %d",data_line,rg_burst_count); `endif
-			if(rg_burst_count==`DCACHE_BLOCK_SIZE-1)begin
+			if(rg_burst_count==valueOf(DCACHE_BLOCK_SIZE)-1)begin
 				rg_burst_count<=0;
 				rg_data_line<=tagged Invalid;
 			end
 			else begin
-				rg_data_line<=tagged Valid (data_line>>`Reg_width);
+				rg_data_line<=tagged Valid (data_line>>XLEN);
 				rg_burst_count<=rg_burst_count+1;
 			end
 		endrule
@@ -246,21 +246,21 @@ package core;
 			method reset_complete=riscv.reset_complete;
 			method stop=riscv.stop;
 			method halted=riscv.halted;
-			method Bit#(`Reg_width)read_igpr(Bit#(5) r);
+			method Bit#(XLEN)read_igpr(Bit#(5) r);
 				return riscv.read_debug_igpr(r);
 			endmethod
-			method Action write_igpr(Bit#(5) r, Bit#(`Reg_width)d);
+			method Action write_igpr(Bit#(5) r, Bit#(XLEN)d);
 				riscv.write_debug_igpr(r,d);
 			endmethod
 			`ifdef spfpu
-			method Bit#(`Reg_width) read_fgpr(Bit#(5) r);
+			method Bit#(XLEN) read_fgpr(Bit#(5) r);
 				return riscv.read_debug_fgpr(r);
 			endmethod
-			method Action write_fgpr(Bit#(5) r, Bit#(`Reg_width)d);
+			method Action write_fgpr(Bit#(5) r, Bit#(XLEN)d);
 				riscv.write_debug_fgpr(r,d);
 			endmethod
 			`endif
-   		method ActionValue#(Bit#(`Reg_width))	rw_csr (Bit#(12) r, Bool write, Bit#(`Reg_width) data)=riscv.rw_csr(r,write,data);
+   		method ActionValue#(Bit#(XLEN))	rw_csr (Bit#(12) r, Bool write, Bit#(XLEN) data)=riscv.rw_csr(r,write,data);
 			method Action reset=riscv.reset;
 		`endif
 		method Action boot_sequence(Bit#(1) bootseq)=riscv.boot_sequence(bootseq);
@@ -268,7 +268,7 @@ package core;
 		`ifdef CLINT
 			method Action clint_msip(Bit#(1) intrpt)=riscv.clint_msip(intrpt);
 			method Action clint_mtip(Bit#(1) intrpt)=riscv.clint_mtip(intrpt);
-			method Action clint_mtime(Bit#(`Reg_width) c_mtime)=riscv.clint_mtime(c_mtime);
+			method Action clint_mtime(Bit#(XLEN) c_mtime)=riscv.clint_mtime(c_mtime);
 		`endif
 	endmodule
 endpackage

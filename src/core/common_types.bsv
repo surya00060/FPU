@@ -31,28 +31,120 @@ Details:
 package common_types;
   `include "common_params.bsv"
 
+  //----------------------- TODO TO BE REVISED ---------------------------------------------------
+  typedef 256 BTB_DEPTH;
+  // cache related parameters //
+	typedef 64 DCACHE_ADDR       ;
+	typedef 4  DCACHE_BLOCK_SIZE ;
+	typedef 8  DCACHE_WORD_SIZE  ;
+  typedef 4   DCACHE_WAYS       ;
+  typedef 512 DCACHE_SETS       ;
+  typedef 4	  ICACHE_WAYS      ;
+  typedef 8	  ICACHE_BLOCK_SIZE ;
+  typedef 512 ICACHE_SETS       ;
+  typedef 4	  ICACHE_WORD_SIZE  ;
+  typedef 20  ICACHE_TAG_BITS   ;
+  typedef 20  DCACHE_TAG_BITS   ;
+  typedef enum {
+		Load, Store, Execution} Translation_type deriving(Bits, Eq);
+
+  `ifdef RV64
+    typedef 2 Byte_offset;
+  `else
+    typedef 1 Byte_offset;
+  `endif
+
+  // performance_counter
+  typedef 64 PERFMONITORS;
+  typedef 12 OFFSET;
+  typedef 8 ASID;	
+  typedef 64 ADDR;
+	
+typedef struct {
+	bit v;					//valid
+	bit r;					//allow reads
+	bit w;					//allow writes
+	bit x;					//allow execute(instruction read)
+	bit u;					//allow supervisor
+	bit g;					//global page
+	bit a;					//accessed already
+	bit d;					//dirty
+} TLB_permissions deriving(Bits, Eq, FShow);
+
+typedef struct {
+	Bit#(TSub#(paddr,page_size)) ppn;
+	TLB_permissions 				tlb_perm;
+	Bit#(asid_width)						asid;
+	Bit#(2)										levels;
+} To_TLB#(numeric type paddr, numeric type page_size, numeric type asid_width) deriving(Bits,Eq); 
+  
+typedef struct {
+	Translation_type 	page_type;
+	To_TLB#(paddr_width,page_offset,asid_width) 	tlb_packet;
+} Response_PPN_TLB#(numeric type paddr_width, numeric type page_offset, numeric type asid_width) deriving (Bits,Eq);
+
+typedef struct {
+	Bool ptwdone;
+	Translation_type 	page_type;
+	Bit#(data_width) 	address;
+} Request_PTE_memory#(numeric type data_width) deriving (Bits,Eq);
+
+typedef struct {
+	Trap_type exception;
+	Bit#(data_width) address;	
+	Bool 						 cacheable;
+} From_TLB#(numeric type data_width) deriving (Bits, Eq);
+
+typedef struct {
+	Bit#(vaddr_width) rs1;
+	Bit#(vaddr_width) rs2;
+} Fence_VMA_type#(numeric type vaddr_width) deriving (Bits, Eq);
+
+typedef enum {
+	Store_pf, Load_pf, Instruction_pf, None} Pf_exception_type deriving (Bits, Eq);	
+typedef struct {
+	Translation_type 	page_type;
+	Bit#(TSub#(vaddr_width,page_offset)) 	vpn;
+} Request_PPN_PTW#(numeric type vaddr_width, numeric type page_offset) deriving (Bits,Eq);
+
+  typedef struct{
+    Bit#(addr_width) address;
+    Bit#(8) burst_length; 
+    Access_type ld_st;
+	 Bit#(3) transfer_size;
+  }To_Memory#(numeric type addr_width) deriving(Bits,Eq);
+
+  typedef struct{
+    Bit#(TMul#(word_size,8)) data_line;
+    Bit#(1) bus_error;
+	 Bool last_word;
+  }From_Memory#(numeric type word_size) deriving(Bits,Eq);
+
+// ----------------------------------------------------------------------------------------------
   `ifdef RV64
   	typedef 64 XLEN;
   `else
     typedef 32 XLEN;
   `endif
 	typedef 32 PADDR ;
-  typedef 32 VADDR ;
+  typedef 39 VADDR ;
 	typedef Bit #(3)  Funct3;
   typedef 4 PRFDEPTH;
   typedef 8 RAS_DEPTH;
+
 
   //------ The follwing contain common tuples across the stages ------------- 
 	typedef enum {ALU, MEMORY, BRANCH, JAL, JALR, SYSTEM_INSTR, 
       `ifdef spfpu FLOAT, `endif `ifdef muldiv MULDIV, `endif FENCE} Instruction_type 
       deriving(Bits, Eq, FShow); // the type of the decoded instruction.
-	typedef enum {Load=0, Store=1 `ifdef atomic ,Atomic=2 `endif } Access_type 
+	typedef enum {Load=0, Store=1,  Fence=3 `ifdef atomic ,Atomic=2 `endif } Access_type 
                                                                         deriving (Bits, Eq, FShow);
   `ifdef bpu                                                                     
-  	typedef enum {CheckNPC, CheckRPC, None} Flush_type deriving (Bits, Eq, FShow);
+  	typedef enum {CheckNPC, CheckRPC, Fence, None} Flush_type deriving (Bits, Eq, FShow);
   `else
-  	typedef enum {CheckRPC, None} Flush_type deriving (Bits, Eq, FShow);
+  	typedef enum {CheckRPC, Fence, None} Flush_type deriving (Bits, Eq, FShow);
   `endif
+  typedef enum {Fence, Regular, None} Flush_type2 deriving (Bits, Eq, FShow);
 	typedef enum {`ifdef spfpu FloatingRF, `endif IntegerRF, PC} Op1type deriving(Bits, Eq, FShow);
 	typedef enum {`ifdef spfpu FloatingRF, `endif IntegerRF, Immediate, Constant4} Op2type deriving(Bits, Eq, FShow);
   typedef enum {FRF, IRF} Op3type deriving(Bits, Eq, FShow);
@@ -128,9 +220,9 @@ package common_types;
 		Ecall_from_user=8,
 		Ecall_from_machine=11
     `ifdef supervisor
-      , Inst_page_fault=12
-      , Load_page_fault=13
-      , Store_page_fault=15
+      , Inst_pagefault=12
+      , Load_pagefault=13
+      , Store_pagefault=15
     `endif
 	} Exception_cause deriving (Bits,Eq,FShow);
 
