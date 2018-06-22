@@ -22,38 +22,38 @@ package imem;
 	/* ======== project imports ========= */
 	import TxRx	::*;
 	import icache	::*;
-	import defined_types::*;
+	import common_types::*;
 	import MemoryMap::*;
 	`ifdef bpu
 		import branchpredictor::*;
 	`endif
-	`include "defined_parameters.bsv"
+	`include "common_params.bsv"
 	`ifdef MMU import iTLB::*; `endif
 	/* ================================== */
 
 interface Ifc_imem;
 	/*======= Mandatory Interface to the core ================ */
-	interface Put#(Tuple5#(Bit#(2),Bit#(`VADDR),Bit#(`VADDR),Bool,Bit#(3))) request_from_core;
-	method Maybe#(Tuple7#(Bit#(`VADDR),Bit#(2),Bit#(`VADDR),Bit#(32), Trap_type, Bit#(`PERFMONITORS), Bit#(3))) instruction_response_to_core;
+	interface Put#(Tuple5#(Bit#(2),Bit#(VADDR),Bit#(VADDR),Bool,Bit#(3))) request_from_core;
+	method Maybe#(Tuple7#(Bit#(VADDR),Bit#(2),Bit#(VADDR),Bit#(32), Trap_type, Bit#(PERFMONITORS), Bit#(3))) instruction_response_to_core;
 	method Action flush(Flush_type _flush);
-	method Bit#(`PERFMONITORS) imem_perfmon;
+	method Bit#(PERFMONITORS) imem_perfmon;
 //	method Bool init_complete;
 	method Action stall_fetch(Bool stall);
 	/*=============================================== */
 	/*====== Madatory Interface to the external Bus ======= */
-	method Action response_from_memory(From_Memory#(`DCACHE_WORD_SIZE) mem_data);
-	method ActionValue#(To_Memory#(`PADDR)) request_to_memory;
+	method Action response_from_memory(From_Memory#(DCACHE_WORD_SIZE) mem_data);
+	method ActionValue#(To_Memory#(PADDR)) request_to_memory;
 	/*============================================ */
 	`ifdef bpu
-		interface Get#(Tuple4#(Bit#(3),Bit#(`VADDR),Bit#(`VADDR),Bit#(2))) prediction_response;
-		method Action training (Maybe#(Training_data#(`VADDR)) training_data);
-		interface Put#(Tuple2#(Bit#(3),Bit#(`VADDR))) send_prediction_request;
+		interface Get#(Tuple4#(Bit#(3),Bit#(VADDR),Bit#(VADDR),Bit#(2))) prediction_response;
+		method Action training (Maybe#(Training_data#(VADDR)) training_data);
+		interface Put#(Tuple2#(Bit#(3),Bit#(VADDR))) send_prediction_request;
 	`endif
 	`ifdef MMU
-		method Action translation_protection_frm_csr(bit tlb_disable, Chmod per_bits, Bit#(TAdd#(4,`ASID)) asid);
-		interface Get#(Request_PPN_PTW#(`VADDR,`OFFSET)) to_PTW; 
-		interface Put#(Tuple2#(Bool,To_TLB#(`PADDR,`OFFSET,`ASID))) refill_TLB;
-		method Action fence_itlb(Fence_VMA_type#(`VADDR) rsdata);
+		method Action translation_protection_frm_csr(bit tlb_disable, Chmod per_bits, Bit#(TAdd#(4,ASID)) asid);
+		interface Get#(Request_PPN_PTW#(VADDR,OFFSET)) to_PTW; 
+		interface Put#(Tuple2#(Bool,To_TLB#(PADDR,OFFSET,ASID))) refill_TLB;
+		method Action fence_itlb(Fence_VMA_type#(VADDR) rsdata);
 	`endif	
 	`ifdef prefetch
 		method Action prefetch();
@@ -66,7 +66,7 @@ module mkimem(Ifc_imem);
 	Ifc_icache icache <- mkicache;
 	Reg#(Bool) io_access_started<-mkReg(False);
 
-	Wire#(Bit#(`VADDR)) wr_address_from_core <-mkWire();
+	Wire#(Bit#(VADDR)) wr_address_from_core <-mkWire();
 	Wire#(Bool) wr_flush <-mkDWire(False);
 
 	`ifdef bpu
@@ -74,12 +74,12 @@ module mkimem(Ifc_imem);
 	`endif
 
    
-	Wire#(Maybe#(Tuple7#(Bit#(`VADDR),Bit#(2),Bit#(`VADDR), Bit#(32), Trap_type, Bit#(`PERFMONITORS),Bit#(3)))) wr_response_to_cpu<-mkDWire(tagged Invalid);
-	FIFOF#(To_Memory#(`PADDR)) ff_request_to_memory <-mkSizedBypassFIFOF(1);
+	Wire#(Maybe#(Tuple7#(Bit#(VADDR),Bit#(2),Bit#(VADDR), Bit#(32), Trap_type, Bit#(PERFMONITORS),Bit#(3)))) wr_response_to_cpu<-mkDWire(tagged Invalid);
+	FIFOF#(To_Memory#(PADDR)) ff_request_to_memory <-mkSizedBypassFIFOF(1);
 	Reg#(Trap_type)	rg_exception <- mkReg(tagged None);
 	Reg#(Bit#(3)) epochs <-mkReg(0);
-	Reg#(Bit#(`VADDR)) pc<-mkReg(0);
-	Reg#(Bit#(`VADDR)) npc<-mkReg(0);
+	Reg#(Bit#(VADDR)) pc<-mkReg(0);
+	Reg#(Bit#(VADDR)) npc<-mkReg(0);
 	Reg#(Bit#(2)) prediction <-mkReg(0);
 
 	`ifdef MMU
@@ -128,7 +128,7 @@ module mkimem(Ifc_imem);
 
 	/*===================== Interface to the Core ======== */
 	interface request_from_core = interface Put
-		method Action put(Tuple5#(Bit#(2),Bit#(`VADDR),Bit#(`VADDR),Bool,Bit#(3)) request);
+		method Action put(Tuple5#(Bit#(2),Bit#(VADDR),Bit#(VADDR),Bool,Bit#(3)) request);
 			let {pred,nextpc,instr_addr,fence,epoch_req}=request;
 			epochs<=epoch_req;
 			pc<=instr_addr;
@@ -141,11 +141,11 @@ module mkimem(Ifc_imem);
 			icache.virtual_address(instr_addr,fence);
 		endmethod
 	endinterface;
-	method Maybe#(Tuple7#(Bit#(`VADDR), Bit#(2),Bit#(`VADDR),Bit#(32), Trap_type, Bit#(`PERFMONITORS),Bit#(3))) instruction_response_to_core=wr_response_to_cpu;
+	method Maybe#(Tuple7#(Bit#(VADDR), Bit#(2),Bit#(VADDR),Bit#(32), Trap_type, Bit#(PERFMONITORS),Bit#(3))) instruction_response_to_core=wr_response_to_cpu;
 	/*==================================================== */
 
 	`ifdef bpu
-		method Action training (Maybe#(Training_data#(`VADDR)) training_data)=bpu.training(training_data);
+		method Action training (Maybe#(Training_data#(VADDR)) training_data)=bpu.training(training_data);
 		interface send_prediction_request=bpu.send_prediction_request;
 		interface prediction_response=bpu.prediction_response;
 	`endif
@@ -154,24 +154,24 @@ module mkimem(Ifc_imem);
 		`ifdef MMU
 		`endif	
 	endmethod
-	method Bit#(`PERFMONITORS) imem_perfmon=icache.icache_perfmon;
+	method Bit#(PERFMONITORS) imem_perfmon=icache.icache_perfmon;
 	method Action stall_fetch(Bool stall) = icache.stall_fetch(stall);
 	/*===================================================== */
 
 	/*======= Interface to the external Memory =========== */
-	method Action response_from_memory(From_Memory#(`DCACHE_WORD_SIZE) mem_data)=icache.response_from_memory(mem_data);
-	method ActionValue#(To_Memory#(`PADDR)) request_to_memory;
+	method Action response_from_memory(From_Memory#(DCACHE_WORD_SIZE) mem_data)=icache.response_from_memory(mem_data);
+	method ActionValue#(To_Memory#(PADDR)) request_to_memory;
 		ff_request_to_memory.deq;
 		return ff_request_to_memory.first;
 	endmethod
 	/*===================================================== */
 	`ifdef MMU
-		method Action translation_protection_frm_csr(bit tlb_disable, Chmod per_bits, Bit#(TAdd#(4,`ASID)) asid);
+		method Action translation_protection_frm_csr(bit tlb_disable, Chmod per_bits, Bit#(TAdd#(4,ASID)) asid);
 				itlb.translation_protection_frm_csr(tlb_disable, per_bits, asid);
 		endmethod
 		interface  to_PTW = itlb.to_PTW; 
 		interface  refill_TLB = itlb.refill_TLB;
-		method Action fence_itlb(Fence_VMA_type#(`VADDR) rsdata);
+		method Action fence_itlb(Fence_VMA_type#(VADDR) rsdata);
 			itlb.fence_TLB(rsdata);
 		endmethod
 	`endif	

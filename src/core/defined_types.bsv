@@ -312,24 +312,6 @@ typedef struct{
 		Bit#(5) fflags; 					// indicates if any exception is generated.
 	}Floating_output#(numeric type width) deriving(Bits,Eq);				// data structure of the output FIFO.
 
-typedef enum {
-	Inst_addr_misaligned=0,
-	Inst_access_fault=1,
-	Illegal_inst=2,
-	Breakpoint=3,
-	Load_addr_misaligned=4,
-	Load_access_fault=5,
-	Store_addr_misaligned=6,
-	Store_access_fault=7,
-	Ecall_from_user=8,
-	Ecall_from_supervisor=9,
-	Ecall_from_machine=11,
-	Inst_pagefault=12,
-	Load_pagefault=13,
-	Store_pagefault=15
-	`ifdef simulate ,Endsimulation =16 `endif
-} Exception_cause deriving (Bits,Eq,FShow);
-
 typedef struct {
 	Bit#(TSub#(`VADDR,TAdd#(TLog#(`DCACHE_BLOCK_SIZE), TLog#(`DCACHE_WORD_SIZE)))) vtag;
 	Bit#(`DCACHE_TAG_BITS) ptag;
@@ -337,72 +319,39 @@ typedef struct {
 	Bit#(1) dirty;
 	Bit#(1) valid;
 } Linebuff_tag deriving (Bits, Eq, FShow);
-typedef enum{
-	/*==== Standard =============== */
-	User_soft_int=0,
-	Supervisor_soft_int=1,
-	Machine_soft_int=3,
-	User_timer_int=4,
-	Supervisor_timer_int=5,
-	Machine_timer_int=7,
-	User_external_int=8,
-	Supervisor_external_int=9,
-	Machine_external_int=11,
-	/*=============================*/
-	/*===== Non Standard========= */
-	DebugInterrupt =12,
-	DebugResume=13,
-	DebugReset=14
-//	Icache_miss 							=12,	
-//	Icache_cacheable	 				=13,
-//	Icache_linereplace 				=14,
-//	Icache_tlbmiss 						=15,
-//	Icache_misaligned 				=16,
-//	Cond_branch 							=17,
-//	Cond_branch_taken 				=18,
-//	Cond_branch_mispredicted	=19,
-//	Taken_branch_mispredicted	=20,
-//	Uncond_jumps							=21,
-//	Spfpu_inst								=22,
-//	Dpfpu_inst								=23,
-//	Dcache_tlbmiss						=24,
-//	Total_loads								=25,
-//	Total_stores							=26,
-//	Total_atomic							=27,
-//	Dcache_load_miss					=28,
-//	Dcache_store_miss					=29,
-//	Dcache_atomic_miss				=30,
-//	Dcache_cacheable_load			=31,
-//	Dcache_cacheable_store		=32,
-//	Dcache_cacheable_atomic		=33,
-//	Dcache_writebacks					=34,
-//	Dcache_linereplace				=35,
-//	Dcache_misaligned					=36,
-//	Exceptions_taken					=37,
-//	Interrupts_taken					=38,
-//	Muldiv_instructions				=39,
-//	System_instructions				=40,
-//	Usermode_cycles						=41,
-//	Supervisormode_cycles			=42,
-//	Machinemode_cyles					=43,
-//	Misprediction_stalls			=44,
-//	Interrupt_stalls					=45,
-//	Dfence_cycles							=46,
-//	Ifence_cycles             =47,
-//	Dcache_miss_cycles        =48,
-//	Icache_miss_cycles        =49,
-//	Fpbusy_cycles             =50,
-//	Divisionbusy_cycles				=51,
-//	Total_stall_cycles				=52,
-//	Pagewalk_cycles						=53,
-//	Corebus_cycles						=54
-} Interrupt_cause deriving (Bits,Eq,FShow);
 
-typedef union tagged{
-  Exception_cause Exception;
-  Interrupt_cause Interrupt;
-  void None;
-} Trap_type deriving(Bits,Eq,FShow);
+	typedef enum {
+		Inst_addr_misaligned=0,
+		Inst_access_fault=1,
+		Illegal_inst=2,
+		Breakpoint=3,
+		Load_addr_misaligned=4,
+		Load_access_fault=5,
+		Store_addr_misaligned=6,
+		Store_access_fault=7,
+		Ecall_from_user=8,
+		Ecall_from_machine=11
+ //   `ifdef supervisor TODO get this macro propagated to all memory subsystem file.
+      , Inst_pagefault=12
+      , Load_pagefault=13
+      , Store_pagefault=15
+ //   `endif
+	} Exception_cause deriving (Bits,Eq,FShow);
+
+	typedef enum{
+		User_soft_int=0,
+		Machine_soft_int=3,
+		User_timer_int=4,
+		Machine_timer_int=7,
+		User_external_int=8,
+		Machine_external_int=11
+	} Interrupt_cause deriving (Bits,Eq,FShow);
+
+	typedef union tagged{
+	  Exception_cause Exception;
+	  Interrupt_cause Interrupt;
+	  void None;
+	} Trap_type deriving(Bits,Eq,FShow);
 
 function String event_name(Bit#(64) eventnum);
 	case (eventnum)
