@@ -115,10 +115,12 @@ package alu;
   		if((inst_type==BRANCH && final_output[0]==1) || inst_type==JALR || inst_type==JAL )begin
 	  		flush=CheckNPC;
 		  end
+      else if(inst_type==MEMORY && memaccess==Fence)
+        flush=Fence;
     `endif
 		
     // generate the effective address to jump to 
-		Bit#(PADDR) effective_address=op3+ truncate(imm_value);
+		Bit#(VADDR) effective_address=op3+ truncate(imm_value);
     if(inst_type==JALR)
       effective_address[0]=0;
 		`ifdef simulate
