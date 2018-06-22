@@ -29,10 +29,12 @@ package fetch_stage;
 
 	interface Ifc_fetch;
 		/*============================ Miscellaneous interface =========================== */
-//		method Action flush (Bit#(VADDR) new_pc, Flush_type fl);
+		method Action flush (Bit#(VADDR) new_pc, Flush_type2 fl);
 		method Action stall_fetch(Bool stall);
 		interface Get#(Tuple5#(Bit#(2),Bit#(VADDR),Bit#(VADDR),Bool, Bit#(3))) request_to_imem;
-		method Action instruction_response_from_imem(Maybe#(Tuple7#(Bit#(VADDR),Bit#(2),Bit#(VADDR),Bit#(32), Trap_type, Bit#(3),Bit#(3))) x);
+		method Action
+    instruction_response_from_imem(Maybe#(Tuple7#(Bit#(VADDR),Bit#(2),Bit#(VADDR),Bit#(32),
+    Trap_type, Bit#(PERFMONITORS),Bit#(3))) x);
 		interface Put#(Tuple4#(Bit#(3),Bit#(VADDR),Bit#(VADDR),Bit#(2))) prediction_response;
 		interface Get#(Tuple2#(Bit#(3),Bit#(VADDR))) send_prediction_request;
 		interface TXe#(IF_ID_type) tx_out; // pipe interface to the external FIFO;
@@ -46,6 +48,9 @@ package fetch_stage;
 //	(*preempts="flush,enque_new_pc"*)
 	(*conflict_free="enque_new_pc,prediction_response_put"*)
 	module mkfetch#(Bit#(VADDR) reset_vector)(Ifc_fetch);
+
+    let verbosity = `VERBOSITY ;
+
 		FIFOF#(Tuple3#(Bit#(2),Bit#(VADDR), Bit#(VADDR))) generate_pc<-mkLFIFOF();
 		Reg#(Bit#(VADDR)) rg_programcounter[3]<-mkCReg(3,'h1000);
 		Reg#(Bit#(1)) eEpoch <-mkReg(0);
@@ -53,9 +58,10 @@ package fetch_stage;
 		Reg#(Bit#(1)) iEpoch[2] <-mkCReg(2,0);
 		Wire#(Maybe#(Bit#(VADDR))) wr_flush_prediction <-mkDWire(tagged Invalid);
 
+
 		Wire#(Bool) wr_stall_fetch <- mkDWire(False);
 		Reg#(Bool) rg_fence[2]<-mkCReg(2,False);
-		FIFOF#(Tuple7#(Bit#(VADDR),Bit#(2),Bit#(VADDR),Bit#(32),Trap_type, Bit#(3),Bit#(3))) ff_response_to_cpu <-mkSizedBypassFIFOF(1);
+		FIFOF#(Tuple7#(Bit#(VADDR),Bit#(2),Bit#(VADDR),Bit#(32),Trap_type, Bit#(PERFMONITORS),Bit#(3))) ff_response_to_cpu <-mkSizedBypassFIFOF(1);
 		TX#(IF_ID_type) tx <-mkTX;
 		Ifc_Stack ras <-mkStack;
 
@@ -64,9 +70,13 @@ package fetch_stage;
 			ff_response_to_cpu.deq;
 			Bool rs1_link=case (instruction[19:15]) matches 'b00?01:True; default :False; endcase;
 			Bool rd_link=case (instruction[11:7]) matches 'b00?01:True; default :False; endcase;
-			`ifdef verbose $display($time,"\t************* FETCH STAGE FIRING ************ PC: %h Instr-EPOCHS: %b Current_Epochs: %b",pc, epoch,{iEpoch[0],eEpoch,wEpoch}); `endif
+			if(verbosity>0) begin  
+        $display($time,"\t************* FETCH STAGE FIRING ************ PC: %h Instr-EPOCHS: %b Current_Epochs: %b",pc, epoch,{iEpoch[0],eEpoch,wEpoch}); 
+      end
 			if(epoch!={iEpoch[0],eEpoch,wEpoch})begin
-				`ifdef verbose $display($time,"\tFETCH: Dropping Instruction Since Epochs do not match"); `endif
+				if(verbosity>0) begin  
+          $display($time,"\tFETCH: Dropping Instruction Since Epochs do not match"); 
+        end
 			end
 			else begin
 				if(instruction[6:2] matches 'b110?1 &&& !rd_link &&& rs1_link)begin
@@ -78,7 +88,9 @@ package fetch_stage;
 							wr_flush_prediction<=tagged Valid npc;
 							prediction='b10;
 						end
-						`ifdef verbose $display($time,"TAKING RAS as the NEXT PC: %h",x); `endif
+						if(verbosity>0) begin  
+              $display($time,"TAKING RAS as the NEXT PC: %h",x); 
+            end
 					end
 				end
 				else if((prediction[1]==1 && instruction[6:4]!='b110))begin
@@ -93,12 +105,16 @@ package fetch_stage;
 										  accesserr_pagefault:'d0,  // TODO captuer only 2 bits for errors
 										  epochs:{eEpoch,wEpoch}
 										  });
-				`ifdef verbose $display($time,"\tInstruction Fetched: %h \t PC: %h PERF: %h Prediction: ",instruction,pc,perfmonitors,fshow(prediction)," next pc: %h",npc); `endif
+				if(verbosity>0) begin  
+          $display($time,"\tInstruction Fetched: %h \t PC: %h PERF: %h Prediction: ",instruction,pc,perfmonitors,fshow(prediction)," next pc: %h",npc); 
+        end
 			end
 		endrule
 
 		rule enque_new_pc(wr_flush_prediction matches tagged Valid .newpc);
-			`ifdef verbose $display($time,"\tFETCH: Enquiing new PC to ICACHE: %h",newpc); `endif
+			if(verbosity>0) begin  
+        $display($time,"\tFETCH: Enquiing new PC to ICACHE: %h",newpc); 
+      end
 			generate_pc.enq(tuple3('b00,newpc,newpc+4));			
 		endrule
 
@@ -106,35 +122,45 @@ package fetch_stage;
 		interface request_to_imem = interface Get
 			method ActionValue#(Tuple5#(Bit#(2),Bit#(VADDR),Bit#(VADDR),Bool, Bit#(3))) get if(tx.u.notFull && !wr_stall_fetch);
 				let {prediction,pc,npc}=generate_pc.first;
-				`ifdef verbose $display($time,"\tFETCH: Address sent to IMEM: %h epochs: %b",pc,{iEpoch[0],eEpoch,wEpoch}); `endif
+				if(verbosity>0) begin  
+          $display($time,"\tFETCH: Address sent to IMEM: %h epochs: %b",pc,{iEpoch[0],eEpoch,wEpoch}); 
+        end
 					rg_fence[0]<=False;
 				if(!rg_fence[0])
 					generate_pc.deq;
 				return tuple5(prediction,npc,pc,rg_fence[0],{iEpoch[0],eEpoch,wEpoch});
 			endmethod
 		endinterface;
-		method Action instruction_response_from_imem(Maybe#(Tuple7#(Bit#(VADDR),Bit#(2),Bit#(VADDR),Bit#(32), Trap_type, Bit#(3),Bit#(3))) x);
+		method Action
+    instruction_response_from_imem(Maybe#(Tuple7#(Bit#(VADDR),Bit#(2),Bit#(VADDR),Bit#(32),
+    Trap_type, Bit#(PERFMONITORS),Bit#(3))) x);
 			if(x matches tagged Valid .instr1)begin
 				let {pc,prediction,npc,instruction,trap,perfmonitors,epoch}=instr1;
-				`ifdef verbose $display($time,"\tFETCH: GOT Instructions: ",fshow(instr1)); `endif
+				if(verbosity>0) begin  
+          $display($time,"\tFETCH: GOT Instructions: ",fshow(instr1)); 
+        end
 				ff_response_to_cpu.enq(instr1);
 			end
 		endmethod
-/*		method Action flush (Bit#(VADDR) new_pc, Flush_type fl); TODO
-			`ifdef verbose $display($time,"\tFETCH: Flushing New PC: %h",new_pc); `endif
+		method Action flush (Bit#(VADDR) new_pc, Flush_type2 fl); 
+			if(verbosity>0) begin  
+        $display($time,"\tFETCH: Flushing New PC: %h",new_pc); 
+      end
 			rg_programcounter[1]<=new_pc;
 			generate_pc.clear;
 			if(fl==Fence)
 				rg_fence[1]<=True;
 		endmethod
-*/
+
 		method Action stall_fetch(Bool stall);
 			wr_stall_fetch <= stall;
 		endmethod
 		interface tx_out = tx.e;
 		method Action push_ras(Maybe#(Bit#(VADDR)) addr);
 			if(addr matches tagged Valid .x)begin
-				`ifdef verbose $display($time,"RAS: Pushing Addr: %h",x); `endif
+				if(verbosity>0) begin  
+          $display($time,"RAS: Pushing Addr: %h",x); 
+        end
 				ras.push(x);
 			end
 		endmethod
@@ -145,22 +171,28 @@ package fetch_stage;
 					if(prediction[1]==0)
 						npc=pc+4;
 						rg_programcounter[0]<=npc;
-						`ifdef verbose $display($time,"\tFETCH: Got prediction from BPU: %b for PC: %h New PC: %h",prediction,pc,npc); `endif
+						if(verbosity>0) begin  
+              $display($time,"\tFETCH: Got prediction from BPU: %b for PC: %h New PC: %h",prediction,pc,npc); 
+            end
 						generate_pc.enq(tuple3(prediction,pc,npc));		
 				end
-				`ifdef verbose
-				else 
-					 $display($time,"\tFETCH: Dropping response from BPU for PC: %h",pc); `endif
+				else if(verbosity>0) begin 
+					 $display($time,"\tFETCH: Dropping response from BPU for PC: %h",pc); 
+        end
 			endmethod
 		endinterface;
 		interface send_prediction_request=interface Get
 			method ActionValue#(Tuple2#(Bit#(3),Bit#(VADDR))) get;
 				if(wr_flush_prediction matches tagged Valid .newpc)begin
-					`ifdef verbose $display($time,"\tFETCH: Sending Program Counter to BPU: %h",newpc+4); `endif
+					if(verbosity>0) begin  
+            $display($time,"\tFETCH: Sending Program Counter to BPU: %h",newpc+4); 
+          end
 					return tuple2({iEpoch[1],eEpoch,wEpoch},newpc+4);
 				end
 				else begin
-					`ifdef verbose $display($time,"\tFETCH: Sending Program Counter to BPU: %h",rg_programcounter[2]); `endif
+					if(verbosity>0) begin  
+            $display($time,"\tFETCH: Sending Program Counter to BPU: %h",rg_programcounter[2]); 
+          end
 					return tuple2({iEpoch[1],eEpoch,wEpoch},rg_programcounter[2]);
 				end
 			endmethod
