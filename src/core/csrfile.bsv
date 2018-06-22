@@ -42,7 +42,6 @@ package csrfile;
 	  method Action clint_msip(Bit#(1) intrpt);
 		method Action clint_mtip(Bit#(1) intrpt);
 		method Action clint_mtime(Bit#(XLEN) c_mtime);
-    method Action externalinterrupt(Bit#(1) intrpt);
     method ActionValue#(Bit#(VADDR)) upd_on_ret ( `ifdef NON_M_TRAP Privilege_mode prv `endif ) ;
     method ActionValue#(Bit#(VADDR)) upd_on_trap(Bit#(6) cause, Bit#(VADDR) pc, Bit#(VADDR) tval);
     method Action incr_minstret;
@@ -55,7 +54,17 @@ package csrfile;
     `ifdef spfpu
   		method Bit#(3) roundingmode;
     `endif
+	  method Action set_external_interrupt(Tuple2#(Bool,Bool) ex_i);
   endinterface
+
+  function Reg#(Bit#(a)) extInterruptReg(Reg#(Bit#(a)) r1, Reg#(Bit#(a)) r2);
+    return (interface Reg;
+      method Bit#(a) _read = r1 | r2;
+      method Action _write(Bit#(a) x); 
+        r1._write(x);
+			endmethod
+    endinterface);
+  endfunction
 
   (*synthesize*)
   (*mutually_exclusive="upd_on_ret, write_csr"*)
@@ -226,12 +235,16 @@ package csrfile;
     Reg#(Bit#(1)) rg_meip <- mkReg(0);
     Bit#(1) heip = 0;
     `ifdef supervisor
-      Reg#(Bit#(1)) seip <- mkReg(0); 
+      Reg#(Bit#(1)) soft_seip <- mkReg(0);
+      Reg#(Bit#(1)) ext_seip <- mkReg(0);
+      Reg#(Bit#(1)) seip = extInterruptReg(soft_seip, ext_seip); 
     `else
       Bit#(1) seip = 0; 
     `endif
     `ifdef USERTRAPS
-      Reg#(Bit#(1)) rg_ueip <- mkReg(0); //extInterruptReg(rg_ueips,rg_ueipe);
+      Reg#(Bit#(1)) soft_ueip <- mkReg(0);
+      Reg#(Bit#(1)) ext_ueip <- mkReg(0);
+      Reg#(Bit#(1)) rg_ueip = extInterruptReg(soft_ueip, ext_ueip); 
     `else
       Bit#(1) rg_ueip = 0;
     `endif
@@ -657,9 +670,6 @@ package csrfile;
   	method Action clint_mtime(Bit#(XLEN) c_mtime);
   		rg_clint_mtime<=c_mtime;
   	endmethod
-    method Action externalinterrupt(Bit#(1) intrpt);
-      rg_meip<= intrpt;
-    endmethod
     
     method ActionValue#(Bit#(VADDR)) upd_on_ret `ifdef NON_M_TRAP (Privilege_mode prv) `endif ;
       `ifdef NON_M_TRAP 
@@ -775,16 +785,32 @@ package csrfile;
       endmethod
     `endif
     method interrupt = unpack(|(csr_mie&csr_mip));
-	`ifdef supervisor
-	  method Bit#(XLEN) send_satp;
-	  	return satp;
-	  endmethod
-	  method Chmod perm_to_TLB;
-	  	return Chmod {mprv : rg_mprv, sum : sum, mxr : mxr, mpp : unpack(rg_mpp), prv : rg_prv};
-	  endmethod
-	`endif
+	  `ifdef supervisor
+	    method Bit#(XLEN) send_satp;
+	    	return satp;
+	    endmethod
+	    method Chmod perm_to_TLB;
+	    	return Chmod {mprv : rg_mprv, sum : sum, mxr : mxr, mpp : unpack(rg_mpp), prv : rg_prv};
+	    endmethod
+	  `endif
     `ifdef spfpu
   		method roundingmode=frm;
     `endif
+	  method Action set_external_interrupt(Tuple2#(Bool,Bool) ex_i);
+	  	let {i,j} = ex_i;
+	  	if(rg_prv == Machine) begin
+	  		rg_meip <= pack(i);
+	  	end
+      `ifdef supervisor
+  	  	else if(rg_prv == Supervisor) begin
+	    		ext_seip <= pack(i);
+	    	end
+      `endif
+      `ifdef USERTRAPS
+  	  	else if(rg_prv == User) begin
+	    		ext_ueip <= pack(i);
+	    	end
+      `endif
+	  endmethod
   endmodule
 endpackage

@@ -14,7 +14,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 package PTWalk;
 
 import ConfigReg:: *;
-import defined_types::*;
+import common_types::*;
 import GetPut::*;
 
 

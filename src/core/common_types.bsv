@@ -59,6 +59,21 @@ package common_types;
   typedef 12 OFFSET;
   typedef 8 ASID;	
   typedef 64 ADDR;
+
+
+
+typedef struct{
+    Bit#(PADDR) address;
+    Bit#(8) burst_length; 
+    Access_type ld_st;
+    Bit#(2) transfer_size; // 0 -8 bits, 1- 16 bits, 2 -32 bits 3 - 64-bits;
+    Bit#(TMul#(DCACHE_BLOCK_SIZE,TMul#(DCACHE_WORD_SIZE,8))) data_line;
+  } To_Memory_Write deriving(Bits,Eq);
+
+typedef struct {
+	Bit#(data_width) vaddr;
+	Access_type  ld_st_atomic;
+} DTLB_access#(numeric type data_width) deriving(Bits, Eq);
 	
 typedef struct {
 	bit v;					//valid
@@ -70,6 +85,9 @@ typedef struct {
 	bit a;					//accessed already
 	bit d;					//dirty
 } TLB_permissions deriving(Bits, Eq, FShow);
+
+typedef enum {
+		PTW_ready, Handling_PTW, Wait_for_memory, PTW_done, Send_to_memory} PTW_state deriving(Bits, Eq);
 
 typedef struct {
 	Bit#(TSub#(paddr,page_size)) ppn;
@@ -111,7 +129,7 @@ typedef struct {
     Bit#(addr_width) address;
     Bit#(8) burst_length; 
     Access_type ld_st;
-	 Bit#(3) transfer_size;
+	 Bit#(2) transfer_size;
   }To_Memory#(numeric type addr_width) deriving(Bits,Eq);
 
   typedef struct{

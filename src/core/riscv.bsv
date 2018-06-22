@@ -54,11 +54,10 @@ package riscv;
       method ActionValue#(Bit#(XLEN)) read_write_gprs(Bit#(5) r, Bit#(XLEN) data 
           `ifdef spfpu ,Op3type rfselect `endif );
     `endif
-    interface Put#(Tuple3#(Bit#(XLEN), Bool, Access_type)) memory_response;
+    interface Put#(Maybe#(Tuple3#(Bit#(XLEN), Bool, Access_type))) memory_response;
     method Action clint_msip(Bit#(1) intrpt);
     method Action clint_mtip(Bit#(1) intrpt);
     method Action clint_mtime(Bit#(XLEN) c_mtime);
-    method Action externalinterrupt(Bit#(1) intrpt);
     `ifdef simulate
       interface Get#(DumpType) dump;
     `endif
@@ -66,6 +65,8 @@ package riscv;
     	method Bit#(XLEN) send_satp;
     	method Chmod perm_to_TLB;
     `endif
+    method Bool flush_dmem;
+	  method Action set_external_interrupt(Tuple2#(Bool,Bool) ex_i);
   endinterface
 
   (*synthesize*)
@@ -149,7 +150,6 @@ package riscv;
     method Action clint_msip(Bit#(1) intrpt)=stage4.clint_msip(intrpt);
     method Action clint_mtip(Bit#(1) intrpt)=stage4.clint_mtip(intrpt);
     method Action clint_mtime(Bit#(XLEN) c_mtime)=stage4.clint_mtime(c_mtime);
-    method Action externalinterrupt(Bit#(1) intrpt)=stage4.externalinterrupt(intrpt);
     `ifdef simulate
       interface dump=stage4.dump;
     `endif
@@ -157,6 +157,12 @@ package riscv;
     	method send_satp=stage4.send_satp;
     	method perm_to_TLB=stage4.perm_to_TLB;
     `endif
+    interface memory_response=stage4.memory_response;
+    method Bool flush_dmem;
+			return flush_from_wb;
+		endmethod
+	  method Action set_external_interrupt(Tuple2#(Bool,Bool)
+                                                        ex_i)=stage4.set_external_interrupt(ex_i);
   endmodule
 
 endpackage

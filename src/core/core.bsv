@@ -42,7 +42,6 @@ package core;
 		interface AXI4_Master_IFC#(PADDR, XLEN, 0) imem_master;
 		interface AXI4_Master_IFC#(PADDR, XLEN, 0) dmem_master;
 		method Action set_external_interrupt(Tuple2#(Bool,Bool) i);
-		method Action boot_sequence(Bit#(1) bootseq);
 		/* =========================== Debug Interface ===================== */
 		`ifdef Debug
 			method Action reset;
@@ -85,7 +84,7 @@ package core;
 		mkConnection(riscv.request_to_imem,imem.request_from_core);
 		mkConnection(imem.instruction_response_to_core,riscv.instruction_response_from_imem);
 		mkConnection(riscv.to_dmem, dmem.request_from_cpu);
-		mkConnection(dmem.response_to_cpu, riscv.response_from_dmem);
+		mkConnection(dmem.response_to_cpu, riscv.memory_response);
 		`ifdef MMU
 			rule itlb_to_ptw;
 				let x <- imem.to_PTW.get;
@@ -138,12 +137,12 @@ package core;
 			//endrule
 			rule send_permissions_to_tlb;
 				ptw.satp_frm_csr(riscv.send_satp);
-				imem.translation_protection_frm_csr(riscv.mmu_cache_disable[0],
+				imem.translation_protection_frm_csr(0,
 																riscv.perm_to_TLB,
-																riscv.send_satp[XLEN-1:XLEN-ASID-4]);
-				dmem.translation_protection_frm_csr(riscv.mmu_cache_disable[0],
+																riscv.send_satp[valueOf(XLEN)-1:valueOf(XLEN)-valueOf(ASID)-4]);
+				dmem.translation_protection_frm_csr(0,
 																riscv.perm_to_TLB,
-																riscv.send_satp[XLEN-1:XLEN-ASID-4]);
+																riscv.send_satp[valueOf(XLEN)-1:valueOf(XLEN)-valueOf(ASID)-4]);
 			endrule
 			rule send_pte_pointer;
 				let x <- ptw.ifc_memory.send_PTE_pointer;
@@ -156,10 +155,12 @@ package core;
 			rule send_pte_entry;
 				ptw.ifc_memory.get_PTE(wr_pte);
 			endrule
+      /* TODO
 			rule fence_tlbs;
 				dmem.fence_dtlb(riscv.fence_tlbs);
 				imem.fence_itlb(riscv.fence_tlbs);
 			endrule
+      */
 		`endif
 		rule fence_stall_icache;
 			imem.stall_fetch(dmem.stall_fetch);
@@ -181,10 +182,10 @@ package core;
 		rule check_write_request_to_memory_from_dcache(rg_data_line matches tagged Invalid &&& !rg_wait_for_response[1]);
 			let info<-dmem.request_to_memory_write;
 			/*=== Need to shift the data apprpriately while sending write requests===== */
-			Bit#(XLEN) actual_data=info.data_line[XLEN-1:0];
+			Bit#(XLEN) actual_data=info.data_line[valueOf(XLEN)-1:0];
 			Bit#(8) write_strobe=info.transfer_size==0?8'b1:info.transfer_size==1?8'b11:info.transfer_size==2?8'hf:8'hff;
 			if(info.transfer_size!=3)begin			// 8-bit write;
-				write_strobe=write_strobe<<(info.address[Byte_offset:0]);
+				write_strobe=write_strobe<<(info.address[2:0]); // TODO parameterize to byte_offset for rv32
 			end
 //			info.address[2:0]=0; // also make the address 64-bit aligned
 			/*========================================================================= */
@@ -194,28 +195,30 @@ package core;
 			dmem_xactor.i_wr_data.enq(w);
 	 	  	`ifdef verbose $display($time,"\tCORE: Sending Write Request from DCACHE for  Address: %h BurstLength: %h Data: %h WriteStrobe: %b",info.address,info.burst_length,info.data_line, write_strobe); `endif
 			if(info.burst_length>1)begin // only enable the next rule when doing a line write in burst mode.
-			rg_data_line<=tagged Valid (info.data_line>>XLEN);
+			rg_data_line<=tagged Valid (info.data_line>>valueOf(XLEN));
 			rg_burst_count<=rg_burst_count+1;
 			end
 			rg_wait_for_response[1]<=True;
 		endrule
 		rule send_burst_write_data(rg_data_line matches tagged Valid .data_line);
 			/*==  Since this is going to always be a line write request in burst mode No need of shifting data and address=== */
-			let w  = AXI4_Wr_Data {wdata:  truncate(data_line), wstrb: 8'hff ,  wlast:(rg_burst_count==valueOf(DCACHE_BLOCK_SIZE)-1), wid:'d0};
+			let w  = AXI4_Wr_Data {wdata:  truncate(data_line), wstrb: 8'hff ,
+      wlast:(rg_burst_count==fromInteger(valueOf(DCACHE_BLOCK_SIZE))-1), wid:'d0};
 			dmem_xactor.i_wr_data.enq(w);
 			`ifdef verbose $display($time,"\tCORE: Sending DCACHE Write Data: %h Burst: %d",data_line,rg_burst_count); `endif
-			if(rg_burst_count==valueOf(DCACHE_BLOCK_SIZE)-1)begin
+			if(rg_burst_count==fromInteger(valueOf(DCACHE_BLOCK_SIZE))-1)begin
 				rg_burst_count<=0;
 				rg_data_line<=tagged Invalid;
 			end
 			else begin
-				rg_data_line<=tagged Valid (data_line>>XLEN);
+				rg_data_line<=tagged Valid (data_line>>valueOf(XLEN));
 				rg_burst_count<=rg_burst_count+1;
 			end
 		endrule
 		rule check_read_request_to_memory_from_icache;
 			let info <-imem.request_to_memory;
-			let read_request = AXI4_Rd_Addr {araddr: truncate(info.address), aruser: 0, arlen: info.burst_length-1, arsize: info.transfer_size, arburst: 'b10, arid:'d1}; // arburst: 00-FIXED 01-INCR 10-WRAP
+			let read_request = AXI4_Rd_Addr {araddr: truncate(info.address), aruser: 0, arlen:
+      info.burst_length-1, arsize: zeroExtend(info.transfer_size), arburst: 'b10, arid:'d1}; // arburst: 00-FIXED 01-INCR 10-WRAP
 			imem_xactor.i_rd_addr.enq(read_request);	
 			`ifdef verbose $display($time,"\tCORE: Sending Read Request from ICACHE for Address: %h Burst Length: %h",info.address,info.burst_length); `endif
 		endrule
@@ -263,7 +266,6 @@ package core;
    		method ActionValue#(Bit#(XLEN))	rw_csr (Bit#(12) r, Bool write, Bit#(XLEN) data)=riscv.rw_csr(r,write,data);
 			method Action reset=riscv.reset;
 		`endif
-		method Action boot_sequence(Bit#(1) bootseq)=riscv.boot_sequence(bootseq);
 		method Action set_external_interrupt(Tuple2#(Bool,Bool) i)=riscv.set_external_interrupt(i);
 		`ifdef CLINT
 			method Action clint_msip(Bit#(1) intrpt)=riscv.clint_msip(intrpt);

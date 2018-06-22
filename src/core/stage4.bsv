@@ -41,7 +41,7 @@ package stage4;
 
   interface Ifc_stage4;
     interface RXe#(PIPE3) rx_in;
-    interface Put#(Tuple3#(Bit#(XLEN), Bool, Access_type)) memory_response;
+    interface Put#(Maybe#(Tuple3#(Bit#(XLEN), Bool, Access_type))) memory_response;
     interface Get#(CommitData) commit_rd;
     interface Get#(Tuple2#(Bit#(XLEN), Bit#(TLog#(PRFDEPTH)))) fwd_from_mem;
     method Tuple2#(Bool, Bit#(VADDR)) flush;
@@ -49,7 +49,6 @@ package stage4;
 	  method Action clint_msip(Bit#(1) intrpt);
 		method Action clint_mtip(Bit#(1) intrpt);
 		method Action clint_mtime(Bit#(XLEN) c_mtime);
-    method Action externalinterrupt(Bit#(1) intrpt);
     method Bool csr_updated;
     method Bool interrupt;
     `ifdef simulate
@@ -63,6 +62,7 @@ package stage4;
     `ifdef spfpu
   		method Bit#(3) roundingmode;
     `endif
+	  method Action set_external_interrupt(Tuple2#(Bool,Bool) ex_i);
   endinterface
 
   (*synthesize*)
@@ -205,8 +205,8 @@ package stage4;
     endrule
 
     interface  memory_response= interface Put
-      method Action put (Tuple3#(Bit#(XLEN), Bool,  Access_type) response);
-        wr_memory_response <= tagged Valid response;
+      method Action put (Maybe#(Tuple3#(Bit#(XLEN), Bool,  Access_type)) response);
+        wr_memory_response <= response;
       endmethod
     endinterface;
 
@@ -238,9 +238,6 @@ package stage4;
 		method Action clint_mtime(Bit#(XLEN) c_mtime);
       csr.clint_mtime(c_mtime);
     endmethod
-		method Action externalinterrupt(Bit#(1) intrpt);
-      csr.externalinterrupt(intrpt);
-    endmethod
     `ifdef simulate
       interface dump = interface Get
         method ActionValue#(DumpType) get ;
@@ -258,5 +255,6 @@ package stage4;
     `ifdef spfpu
   		method roundingmode=csr.roundingmode;
     `endif
+	  method Action set_external_interrupt(Tuple2#(Bool,Bool) ex_i)=csr.set_external_interrupt(ex_i);
   endmodule
 endpackage

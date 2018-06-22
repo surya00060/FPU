@@ -12,13 +12,13 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 */
 package dTLB;
-import defined_types::*;
+import common_types::*;
 import FIFO::*;
 import SpecialFIFOs::*;
 import GetPut::*;
 import ConfigReg::*;
 
-`include "defined_parameters.bsv"
+`include "common_params.bsv"
 
 `define TLB_entries	16	
 
@@ -351,14 +351,14 @@ provisos( Add#(vpn, page_size, vaddr),
 endmodule
 
 interface Ifc_dTLB;
-	method Action get_vaddr(DTLB_access#(`ADDR) addr `ifdef atomic , Bit#(5) atomic `endif );
-	method ActionValue#(From_TLB#(`ADDR)) send_ppn;
-	method ActionValue#(Bit#(`VADDR)) send_vaddress_for_cache_index;
-	method Action translation_protection_frm_csr(bit tlb_disable, Chmod per_bits, Bit#(TAdd#(4,`ASID)) asid);
-	interface Get#(Request_PPN_PTW#(`VADDR,`OFFSET)) to_PTW; 
-	interface Put#(Tuple2#(Bool, To_TLB#(`PADDR,`OFFSET,`ASID))) refill_TLB;
+	method Action get_vaddr(DTLB_access#(ADDR) addr `ifdef atomic , Bit#(5) atomic `endif );
+	method ActionValue#(From_TLB#(ADDR)) send_ppn;
+	method ActionValue#(Bit#(VADDR)) send_vaddress_for_cache_index;
+	method Action translation_protection_frm_csr(bit tlb_disable, Chmod per_bits, Bit#(TAdd#(4,ASID)) asid);
+	interface Get#(Request_PPN_PTW#(VADDR,OFFSET)) to_PTW; 
+	interface Put#(Tuple2#(Bool, To_TLB#(PADDR,OFFSET,ASID))) refill_TLB;
 	method Action flush(Bool _flush);
-	method Action fence_TLB(Fence_VMA_type#(`VADDR) rsdata);
+	method Action fence_TLB(Fence_VMA_type#(VADDR) rsdata);
 	//method ActionValue#(Bool) page_fault;
 	//method Action page_fault_frm_PTW;
 endinterface
@@ -367,14 +367,14 @@ endinterface
 (*synthesize*)
 module mkdTLB(Ifc_dTLB);
 
-Ifc_TLB#(`ADDR,`VADDR,`PADDR,`OFFSET,`ASID) dtlb <- mkTLB();
+Ifc_TLB#(ADDR,VADDR,PADDR,OFFSET,ASID) dtlb <- mkTLB();
 
-	method Action get_vaddr(DTLB_access#(`ADDR) addr `ifdef atomic , Bit#(5) atomic `endif );
+	method Action get_vaddr(DTLB_access#(ADDR) addr `ifdef atomic , Bit#(5) atomic `endif );
 		dtlb.get_vaddr(addr `ifdef atomic ,atomic `endif );
 	endmethod
-	method ActionValue#(From_TLB#(`ADDR)) send_ppn = dtlb.send_ppn;
-	method ActionValue#(Bit#(`VADDR)) send_vaddress_for_cache_index = dtlb.send_vaddress_for_cache_index;
-	method Action translation_protection_frm_csr(bit tlb_disable, Chmod per_bits, Bit#(TAdd#(4,`ASID)) asid);
+	method ActionValue#(From_TLB#(ADDR)) send_ppn = dtlb.send_ppn;
+	method ActionValue#(Bit#(VADDR)) send_vaddress_for_cache_index = dtlb.send_vaddress_for_cache_index;
+	method Action translation_protection_frm_csr(bit tlb_disable, Chmod per_bits, Bit#(TAdd#(4,ASID)) asid);
 		dtlb.translation_protection_frm_csr(tlb_disable,per_bits,asid);
 	endmethod
 	interface  to_PTW = dtlb.to_PTW; 
@@ -382,7 +382,7 @@ Ifc_TLB#(`ADDR,`VADDR,`PADDR,`OFFSET,`ASID) dtlb <- mkTLB();
 	method Action flush(Bool _flush);
 		dtlb.flush(_flush);
 	endmethod
-	method Action fence_TLB(Fence_VMA_type#(`VADDR) rsdata);
+	method Action fence_TLB(Fence_VMA_type#(VADDR) rsdata);
 		dtlb.fence_TLB(rsdata);
 	endmethod
 	

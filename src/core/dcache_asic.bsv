@@ -25,22 +25,23 @@ package dcache_asic;
 	import mem_config1::*;
 	import Vector::*;
 	/*===== project imports==== */
-	import defined_types::*;
-	`include "defined_parameters.bsv"
+	import common_types::*;
+	`include "common_params.bsv"
 	import QuadMem::*;
 	import Assert::*;
 	/*========================= */
 	interface Ifc_dcache;
-		method Action virtual_address(Bit#(`VADDR) vaddress, Access_type load_store, Bit#(TMul#(`DCACHE_WORD_SIZE,8)) writedata, Bit#(3) transfer_size, `ifdef atomic Bit#(5) atomic_op, `endif Bool signextend, Bit#(1) insnepoch);
-		method Maybe#(Tuple4#(Bit#(`Reg_width), Trap_type,Bit#(`PERFMONITORS),Bit#(1))) response_to_core;
-		method ActionValue#(To_Memory#(`PADDR)) read_request_to_memory;
+		method Action virtual_address(Bit#(VADDR) vaddress, Access_type load_store,
+    Bit#(TMul#(DCACHE_WORD_SIZE,8)) writedata, Bit#(2) transfer_size, `ifdef atomic Bit#(5) atomic_op, `endif Bool signextend, Bit#(1) insnepoch);
+		method Maybe#(Tuple4#(Bit#(XLEN), Trap_type,Bit#(PERFMONITORS),Bit#(1))) response_to_core;
+		method ActionValue#(To_Memory#(PADDR)) read_request_to_memory;
 		method ActionValue#(To_Memory_Write) write_request_to_memory;
-		method Action read_response_from_memory(From_Memory#(`DCACHE_WORD_SIZE) resp);
-		method Action write_response_from_memory(From_Memory#(`DCACHE_WORD_SIZE) resp);
+		method Action read_response_from_memory(From_Memory#(DCACHE_WORD_SIZE) resp);
+		method Action write_response_from_memory(From_Memory#(DCACHE_WORD_SIZE) resp);
 		method Bool init_complete;
 		method Action flush_from_wb;
 		`ifdef MMU
-			method Action physical_address(Bit#(`PADDR) paddr, Trap_type exception);
+			method Action physical_address(Bit#(PADDR) paddress, Trap_type exception);
 		`endif
 	endinterface
 
@@ -60,24 +61,24 @@ package dcache_asic;
 	(*preempts="read_from_lbdata_into_hold_reg,keep_polling_on_stall"*)
 	module mkdcache(Ifc_dcache);
 		/* VAddr = [tag_bits|set_bits|word_bits|byte_bits] */
-		let byte_bits=valueOf(TLog#(`DCACHE_WORD_SIZE));	// number of bits to select a byte within a word. = 2
-		let word_bits=valueOf(TLog#(`DCACHE_BLOCK_SIZE));	// number of bits to select a word within a block. = 4
-		let set_bits=valueOf(TLog#(`DCACHE_SETS));			// number of bits to select a set from the cache. = 
-		Reg#(Maybe#(Tuple2#(Bit#(1),Bit#(`PADDR)))) rg_lr_paddress<-mkReg(tagged Invalid);
+		let byte_bits=valueOf(TLog#(DCACHE_WORD_SIZE));	// number of bits to select a byte within a word. = 2
+		let word_bits=valueOf(TLog#(DCACHE_BLOCK_SIZE));	// number of bits to select a word within a block. = 4
+		let set_bits=valueOf(TLog#(DCACHE_SETS));			// number of bits to select a set from the cache. = 
+		Reg#(Maybe#(Tuple2#(Bit#(1),Bit#(PADDR)))) rg_lr_paddress<-mkReg(tagged Invalid);
 		`ifdef atomic
-		function ActionValue#(Tuple3#(Maybe#(Bit#(1)),Bool, Bit#(TMul#(`DCACHE_WORD_SIZE,8)))) atomic_operation(Bit#(TMul#(`DCACHE_WORD_SIZE,8)) loaded_value, Bit#(TMul#(`DCACHE_WORD_SIZE,8)) rs2, Bit#(5) atomic_op, Bit#(`PADDR) addr);
+		function ActionValue#(Tuple3#(Maybe#(Bit#(1)),Bool, Bit#(TMul#(DCACHE_WORD_SIZE,8)))) atomic_operation(Bit#(TMul#(DCACHE_WORD_SIZE,8)) loaded_value, Bit#(TMul#(DCACHE_WORD_SIZE,8)) rs2, Bit#(5) atomic_op, Bit#(PADDR) addr);
 		return (
 		actionvalue 
-			Bit#(TMul#(`DCACHE_WORD_SIZE,8)) atomic_result=rs2;
-			Bit#(TMul#(`DCACHE_WORD_SIZE,8)) op1;
+			Bit#(TMul#(DCACHE_WORD_SIZE,8)) atomic_result=rs2;
+			Bit#(TMul#(DCACHE_WORD_SIZE,8)) op1;
 			Maybe#(Bit#(1)) sc_done=tagged Invalid;
 			if(atomic_op[4]==1)
 				op1=signExtend(loaded_value[31:0]);
 			else
 				op1=loaded_value;
-			Bit#(TMul#(`DCACHE_WORD_SIZE,8)) op2=(atomic_op[4]==1)?signExtend(rs2[31:0]):rs2;
-			Int#(TMul#(`DCACHE_WORD_SIZE,8)) s_op1=unpack(op1);
-			Int#(TMul#(`DCACHE_WORD_SIZE,8)) s_op2 = unpack(op2);
+			Bit#(TMul#(DCACHE_WORD_SIZE,8)) op2=(atomic_op[4]==1)?signExtend(rs2[31:0]):rs2;
+			Int#(TMul#(DCACHE_WORD_SIZE,8)) s_op1=unpack(op1);
+			Int#(TMul#(DCACHE_WORD_SIZE,8)) s_op2 = unpack(op2);
 			Bool store_result = True;
 			`ifdef verbose $display($time,"\tDCACHE: atomic instruction atomic op %b op1: %h op2: %h", atomic_op,op1,op2); `endif
 			case (atomic_op[3:0])
@@ -122,52 +123,56 @@ package dcache_asic;
 			endactionvalue );
 		endfunction
 		`endif
-		function Bit#(TMul#(TMul#(8,`DCACHE_WORD_SIZE),`DCACHE_BLOCK_SIZE)) update_line (Bit#(TMul#(`DCACHE_BLOCK_SIZE,`DCACHE_WORD_SIZE)) we, Bit#(TMul#(TMul#(8,`DCACHE_WORD_SIZE),`DCACHE_BLOCK_SIZE)) data, Bit#(TMul#(TMul#(8,`DCACHE_WORD_SIZE),`DCACHE_BLOCK_SIZE)) data_reg);
-         Bit#(TMul#(TMul#(8,`DCACHE_WORD_SIZE),`DCACHE_BLOCK_SIZE)) mask=0;
+		function Bit#(TMul#(TMul#(8,DCACHE_WORD_SIZE),DCACHE_BLOCK_SIZE)) update_line (Bit#(TMul#(DCACHE_BLOCK_SIZE,DCACHE_WORD_SIZE)) we, Bit#(TMul#(TMul#(8,DCACHE_WORD_SIZE),DCACHE_BLOCK_SIZE)) data, Bit#(TMul#(TMul#(8,DCACHE_WORD_SIZE),DCACHE_BLOCK_SIZE)) data_reg);
+         Bit#(TMul#(TMul#(8,DCACHE_WORD_SIZE),DCACHE_BLOCK_SIZE)) mask=0;
          for(Integer i=0;i<32;i=i+1)begin
             Bit#(8) ex_we=duplicate(we[i]);
             mask[(i*8)+7:i*8]=ex_we;
          end
-         Bit#(TMul#(TMul#(8,`DCACHE_WORD_SIZE),`DCACHE_BLOCK_SIZE)) x = mask& data;
-         Bit#(TMul#(TMul#(8,`DCACHE_WORD_SIZE),`DCACHE_BLOCK_SIZE)) y = ~mask& data_reg;
+         Bit#(TMul#(TMul#(8,DCACHE_WORD_SIZE),DCACHE_BLOCK_SIZE)) x = mask& data;
+         Bit#(TMul#(TMul#(8,DCACHE_WORD_SIZE),DCACHE_BLOCK_SIZE)) y = ~mask& data_reg;
          data_reg=x|y;
 			return data_reg;
       endfunction
-		
-		Ifc_dcache_data data [`DCACHE_WAYS];
-		Ifc_dcache_tag	 tag  [`DCACHE_WAYS];
-		for(Integer i=0;i<`DCACHE_WAYS;i=i+1)begin
+
+    let dcache_ways = valueOf(DCACHE_WAYS);
+    let dcache_sets = valueOf(DCACHE_SETS);
+    let paddr = valueOf(PADDR);
+
+		Ifc_dcache_data data [dcache_ways];
+		Ifc_dcache_tag	 tag  [dcache_ways];
+		for(Integer i=0;i<dcache_ways;i=i+1)begin
 			tag[i] <- mkdcache_tag;		
 			data[i] <-mkdcache_data;
 		end
 
 		/*====== Hit buffer data structur======*/
 		Reg#(Bool) hb_valid <-mkReg(False);
-		Reg#(Bit#(`DCACHE_WAYS)) hb_way <-mkReg(0);
-		Reg#(Bit#(`DCACHE_TAG_BITS)) hb_tag <-mkReg(0);
-		Reg#(Bit#(TLog#(`DCACHE_SETS))) hb_setindex <- mkReg(0);
+		Reg#(Bit#(DCACHE_WAYS)) hb_way <-mkReg(0);
+		Reg#(Bit#(DCACHE_TAG_BITS)) hb_tag <-mkReg(0);
+		Reg#(Bit#(TLog#(DCACHE_SETS))) hb_setindex <- mkReg(0);
 		Ifc_QuadMem hb_data <-mkQuadMem;
 		/*=====================================*/
 
 		/*-====== Line buffer data structure ====*/
 		Ifc_QuadMem lb_data <-mkQuadMem;
-		FIFOF#(Tuple4#(Bit#(20),Bit#(TLog#(`DCACHE_SETS)),Bit#(`DCACHE_WAYS),Bit#(TMul#(`DCACHE_WORD_SIZE,`DCACHE_BLOCK_SIZE)))) memoperation <-mkUGSizedFIFOF(2);
+		FIFOF#(Tuple4#(Bit#(20),Bit#(TLog#(DCACHE_SETS)),Bit#(DCACHE_WAYS),Bit#(TMul#(DCACHE_WORD_SIZE,DCACHE_BLOCK_SIZE)))) memoperation <-mkUGSizedFIFOF(2);
 		Reg#(Bit#(1)) lb_dirty <-mkReg(0);
-		Reg#(Bit#(TMul#(`DCACHE_WORD_SIZE,`DCACHE_BLOCK_SIZE))) line_bytes_written<-mkReg(0);
+		Reg#(Bit#(TMul#(DCACHE_WORD_SIZE,DCACHE_BLOCK_SIZE))) line_bytes_written<-mkReg(0);
 		/*=====================================*/
 
 		/*======= Request Capture =========*/
-		Reg#(Bit#(`VADDR)) rg_vaddress <-mkReg(0);
-		Reg#(Bit#(`PADDR)) rg_paddress <-mkReg(0);
-		Reg#(Bit#(`PADDR)) rg_poll_address <-mkReg(0);
-		Reg#(Bit#(3))		rg_transfer_size <-mkReg(0);
+		Reg#(Bit#(VADDR)) rg_vaddress <-mkReg(0);
+		Reg#(Bit#(PADDR)) rg_paddress <-mkReg(0);
+		Reg#(Bit#(PADDR)) rg_poll_address <-mkReg(0);
+		Reg#(Bit#(2))		rg_transfer_size <-mkReg(0);
 		`ifdef atomic Reg#(Bit#(5))		rg_atomic_op <-mkReg(0); `endif
 		Reg#(Access_type) rg_access_type <-mkReg(Load);
-		Reg#(Bit#(TMul#(`DCACHE_WORD_SIZE,`DCACHE_BLOCK_SIZE))) rg_writeenable<-mkReg(0);
+		Reg#(Bit#(TMul#(DCACHE_WORD_SIZE,DCACHE_BLOCK_SIZE))) rg_writeenable<-mkReg(0);
 		Reg#(Bool) rg_signextend<-mkReg(False);
 		Reg#(Bool)		misaligned_addr <-mkReg(False);
 		Reg#(Bit#(1))		rg_insn_epoch <-mkReg(0);
-		Reg#(Bit#(TMul#(`DCACHE_WORD_SIZE,8))) rg_writedata<-mkReg(0);
+		Reg#(Bit#(TMul#(DCACHE_WORD_SIZE,8))) rg_writedata<-mkReg(0);
 		/*=================================*/
 		/* storage for physical translation */
 		Reg#(Bool)	rg_trnslte_done[2] <- mkCReg(2,`ifdef MMU False `else True `endif );
@@ -175,15 +180,15 @@ package dcache_asic;
 		/*==================================== */
 
 		/*===== registers for fencing/initializing ====*/
-		Reg#(Bit#(TLog#(`DCACHE_SETS))) fence_set <-mkReg(0);
-		Reg#(Bit#(TLog#(`DCACHE_WAYS))) fence_way <-mkReg(0);
+		Reg#(Bit#(TLog#(DCACHE_SETS))) fence_set <-mkReg(0);
+		Reg#(Bit#(TLog#(DCACHE_WAYS))) fence_way <-mkReg(0);
 		/*==============================================*/
 		
 		/*========= FIFO for interfaces ================*/
-		FIFOF#(To_Memory#(`PADDR)) ff_read_request_to_memory <-mkLFIFOF();
+		FIFOF#(To_Memory#(PADDR)) ff_read_request_to_memory <-mkLFIFOF();
 		FIFOF#(To_Memory_Write) ff_write_request_to_memory <-mkLFIFOF();
-		FIFOF#(From_Memory#(`DCACHE_WORD_SIZE)) ff_read_response_from_memory <-mkSizedBypassFIFOF(1);
-		FIFOF#(From_Memory#(`DCACHE_WORD_SIZE)) ff_write_response_from_memory <-mkSizedBypassFIFOF(1);
+		FIFOF#(From_Memory#(DCACHE_WORD_SIZE)) ff_read_response_from_memory <-mkSizedBypassFIFOF(1);
+		FIFOF#(From_Memory#(DCACHE_WORD_SIZE)) ff_write_response_from_memory <-mkSizedBypassFIFOF(1);
 		/*===============================================*/
 
 		/*===== State Registers========*/
@@ -193,14 +198,14 @@ package dcache_asic;
 
 		/*============ globals =========*/
 		Reg#(Bool) rg_global_dirty <-mkReg(False);
-		Wire#(Maybe#(Tuple2#(Bit#(20),Bit#(TLog#(`DCACHE_SETS))))) wr_write_info<-mkDWire(tagged Invalid);	
-		Wire#(Maybe#(Tuple4#(Bit#(`Reg_width), Trap_type, Bit#(`PERFMONITORS),Bit#(1)))) wr_response_to_cpu<-mkDWire(tagged Invalid);
-		Reg#(Bit#(`PERFMONITORS)) rg_perf_monitor<-mkReg(0);
+		Wire#(Maybe#(Tuple2#(Bit#(20),Bit#(TLog#(DCACHE_SETS))))) wr_write_info<-mkDWire(tagged Invalid);	
+		Wire#(Maybe#(Tuple4#(Bit#(XLEN), Trap_type, Bit#(PERFMONITORS),Bit#(1)))) wr_response_to_cpu<-mkDWire(tagged Invalid);
+		Reg#(Bit#(PERFMONITORS)) rg_perf_monitor<-mkReg(0);
 		LFSR#(Bit#(2)) random_line<-mkRCounter(3);								// for random line replacement
 		Reg#(Bool) pending_write_response[3]<-mkCReg(3,False);
 		Reg#(Bool) capture_counters <-mkDReg(False);
 		Reg#(Bool) rg_initialize <-mkReg(True);
-		Reg#(Bit#(TMul#(`DCACHE_WORD_SIZE,`DCACHE_BLOCK_SIZE))) rg_we<-mkReg(0);
+		Reg#(Bit#(TMul#(DCACHE_WORD_SIZE,DCACHE_BLOCK_SIZE))) rg_we<-mkReg(0);
 		Reg#(Bool) rg_bus_error<-mkReg(False);
 		/*==============================*/
 		rule display_state;
@@ -218,7 +223,7 @@ package dcache_asic;
 		rule pre_fence_updating(rg_state[0]==FenceStart && !memoperation.notEmpty && !pending_write_response[2]);
 			if(wbEpoch[0]==rg_insn_epoch)begin
 				if(hb_valid)begin
-					for(Integer i=0;i<`DCACHE_WAYS;i=i+1)begin	
+					for(Integer i=0;i<dcache_ways;i=i+1)begin	
 						tag[i].write_request(unpack(hb_way[i]),hb_setindex,{2'b11,hb_tag});
 						data[i].write_request(duplicate(hb_way[i]),hb_setindex,hb_data.response_portA);
 					end
@@ -239,10 +244,10 @@ package dcache_asic;
 		/*====== Invalidate all the entries in the cache on startup or during Fence ==== */
 		rule fencing_the_cache(rg_state[0]==Initialize && !memoperation.notEmpty && !pending_write_response[2]);
 			`ifdef verbose $display($time,"\tDCACHE: Initializing index: %d",fence_set," ",fshow(rg_access_type)); `endif
-			for(Integer i=0;i<`DCACHE_WAYS;i=i+1)begin
+			for(Integer i=0;i<dcache_ways;i=i+1)begin
 				tag[i].write_request(True,truncate(fence_set),0);
 			end
-			if(fence_set==fromInteger(`DCACHE_SETS-1)) begin
+			if(fence_set==fromInteger(dcache_sets-1)) begin
 				rg_state[0]<=Dummy;
 				fence_set<=0;
 				fence_way<=0;
@@ -260,26 +265,26 @@ package dcache_asic;
 			Bit#(20) tag_values=tag[fence_way].read_response[20-1:0];	// hold the tag values
 			Bit#(1) dirty_value=tag[fence_way].read_response[20+1];		// holds the dirty bits
 			Bit#(1) valid_value=tag[fence_way].read_response[20];		// holds the dirty bits
-			Bit#(TMul#(8,TMul#(`DCACHE_WORD_SIZE,`DCACHE_BLOCK_SIZE))) data_values; // holds the cache lines.
-			Bit#(TAdd#(TLog#(`DCACHE_WORD_SIZE),TLog#(`DCACHE_BLOCK_SIZE))) p_offset =0;
+			Bit#(TMul#(8,TMul#(DCACHE_WORD_SIZE,DCACHE_BLOCK_SIZE))) data_values; // holds the cache lines.
+			Bit#(TAdd#(TLog#(DCACHE_WORD_SIZE),TLog#(DCACHE_BLOCK_SIZE))) p_offset =0;
 			data_values=data[fence_way].read_response;
 
-			Bit#(`PADDR) write_addr={tag_values,truncate(fence_set),p_offset};
+			Bit#(PADDR) write_addr={tag_values,truncate(fence_set),p_offset};
 			`ifdef verbose $display($time,"\tDCACHE: Handling Fence.tag %h setindex: %d fence_way: %d Dirty: %b Valid: %b",tag_values,fence_set,fence_way,dirty_value,valid_value); `endif
 			`ifdef verbose $display($time,"\tDCACHE: Fence addr: %h line: %h ",write_addr,data_values); `endif 
-			Bit#(TLog#(`DCACHE_SETS)) new_set=fence_set;
-			Bit#(TLog#(`DCACHE_SETS)) old_set=fence_set;
-			Bit#(TLog#(`DCACHE_WAYS)) next_way=fence_way;
+			Bit#(TLog#(DCACHE_SETS)) new_set=fence_set;
+			Bit#(TLog#(DCACHE_SETS)) old_set=fence_set;
+			Bit#(TLog#(DCACHE_WAYS)) next_way=fence_way;
 			if(!pending_write_response[1])begin
 				if(dirty_value==1 && valid_value==1)begin // valid and dirty
 					ff_write_request_to_memory.enq(To_Memory_Write { // send the request to memory to 
 	            	 address:write_addr,  data_line:data_values,
-							burst_length:`DCACHE_BLOCK_SIZE,  transfer_size:3, ld_st:Store});
+							burst_length:fromInteger(valueOf(DCACHE_BLOCK_SIZE)),  transfer_size:3, ld_st:Store});
 					pending_write_response[1]<=True;
 				end
-				if(fence_way==fromInteger(`DCACHE_WAYS-1))begin
+				if(fence_way==fromInteger(dcache_ways-1))begin
 					new_set=fence_set+1;
-					if(fence_set==fromInteger(`DCACHE_SETS-1))begin
+					if(fence_set==fromInteger(dcache_sets-1))begin
 						rg_state[0]<=Dummy;
 						rg_global_dirty<=False;
 						wr_response_to_cpu<= tagged Valid (tuple4(0,tagged None,0,rg_insn_epoch));
@@ -301,7 +306,7 @@ package dcache_asic;
 		rule read_from_lbdata_into_hold_reg(line_bytes_written=='1 && memoperation.notEmpty);
 			let lb_hold_reg=lb_data.response_portB;
 			let {cputag,setindex,replaceblock,writeenable}=memoperation.first;
-			for(Integer i=0;i<`DCACHE_WAYS;i=i+1)begin	
+			for(Integer i=0;i<dcache_ways;i=i+1)begin	
 				tag[i].write_request((unpack(replaceblock[i])&&True),setindex,{lb_dirty,1'b1,cputag});
 				data[i].write_request(duplicate(replaceblock[i]),setindex,lb_hold_reg);
 			end
@@ -324,14 +329,14 @@ package dcache_asic;
 			if(|line_bytes_written!=0)begin
 				we=rg_we;
 			end
-			Bit#(TMul#(2,TMul#(`DCACHE_WORD_SIZE,`DCACHE_BLOCK_SIZE))) extended_mask=zeroExtend(we)<<8;
+			Bit#(TMul#(2,TMul#(DCACHE_WORD_SIZE,DCACHE_BLOCK_SIZE))) extended_mask=zeroExtend(we)<<8;
 			lb_data.write_portB(we,duplicate(memresp.data_line));
 			`ifdef verbose $display($time,"\tDCACHE: linebytes: %h currently writing into: %h",line_bytes_written,we); `endif
 			if(memresp.last_word)begin // if all the data words have been fetched exit	
 				`ifdef verbose $display($time,"\tDCACHE: Received Last response from Memory set: %d ",setindex); `endif
 			end
 			line_bytes_written<=line_bytes_written|we;
-			rg_we<=extended_mask[2*`DCACHE_BLOCK_SIZE*`DCACHE_WORD_SIZE-1:`DCACHE_BLOCK_SIZE*`DCACHE_WORD_SIZE]|extended_mask[`DCACHE_BLOCK_SIZE*`DCACHE_WORD_SIZE-1:0];
+			rg_we<=extended_mask[2*valueOf(DCACHE_BLOCK_SIZE)*valueOf(DCACHE_WORD_SIZE)-1:valueOf(DCACHE_BLOCK_SIZE)*valueOf(DCACHE_WORD_SIZE)]|extended_mask[valueOf(DCACHE_BLOCK_SIZE)*valueOf(DCACHE_WORD_SIZE)-1:0];
 		endrule
 
 		rule drop_incoming_request(rg_state[0]==ReadingCache && memoperation.notFull && wbEpoch[0]!=rg_insn_epoch);
@@ -343,8 +348,8 @@ package dcache_asic;
 		endrule
 		/*============== One cycle delay to ensure the write is reflected in the BRAM ========= */
 		rule stall_the_next_request_by_one_cycle(rg_state[1]==Stall1);
-			Bit#(TLog#(`DCACHE_SETS)) setindex=rg_vaddress[set_bits+word_bits+byte_bits-1:word_bits+byte_bits];
-			for(Integer i=0;i<`DCACHE_WAYS;i=i+1)begin // send address to the Block_rams
+			Bit#(TLog#(DCACHE_SETS)) setindex=rg_vaddress[set_bits+word_bits+byte_bits-1:word_bits+byte_bits];
+			for(Integer i=0;i<dcache_ways;i=i+1)begin // send address to the Block_rams
 				tag[i].read_request(setindex);
 				data[i].read_request(setindex);
 			end
@@ -353,7 +358,7 @@ package dcache_asic;
 		/*===================================================================================== */
 		
 		rule keep_polling_on_stall(rg_state[1]==KeepPolling);
-			Bit#(`PERFMONITORS) perf_monitor=rg_perf_monitor;
+			Bit#(PERFMONITORS) perf_monitor=rg_perf_monitor;
 			if(capture_counters)begin
 				`ifdef verbose $display($time,"\tDCACHE: Miss during polling for ",fshow(rg_access_type)); `endif
 				if(rg_access_type==Load)begin
@@ -364,19 +369,21 @@ package dcache_asic;
 					perf_monitor[`DCACHE_STORE_MISS]=1;
 					perf_monitor[`DCACHE_CACHEABLE_STORE]=1;
 				end
+        `ifdef atomic
 				else if(rg_access_type==Atomic) begin
 					perf_monitor[`DCACHE_ATOMIC_MISS]=1;
 					perf_monitor[`DCACHE_CACHEABLE_ATOMIC]=1;
 				end
+        `endif
 				rg_perf_monitor<=perf_monitor;
 			end
-			Bit#(TLog#(`DCACHE_SETS)) setindex=rg_vaddress[set_bits+word_bits+byte_bits-1:word_bits+byte_bits];
-			Bit#(20) cpu_tag=rg_poll_address[`PADDR-1:`PADDR-20];
+			Bit#(TLog#(DCACHE_SETS)) setindex=rg_vaddress[set_bits+word_bits+byte_bits-1:word_bits+byte_bits];
+			Bit#(20) cpu_tag=rg_poll_address[paddr-1:paddr-20];
 			let {lbtag,lbset,lbreplaceblock,lbwriteenable}=memoperation.first;
 			if((line_bytes_written & rg_writeenable) == rg_writeenable && (lbset==setindex && lbtag==cpu_tag))begin
 				`ifdef verbose $display($time,"\tDCACHE: Accessing LB"); `endif
 				rg_state[1]<=ReadingCache; 
-				for(Integer i=0;i<`DCACHE_WAYS;i=i+1)begin // send address to the Block_rams
+				for(Integer i=0;i<dcache_ways;i=i+1)begin // send address to the Block_rams
 					tag[i].read_request(setindex);
 					data[i].read_request(setindex);
 				end
@@ -391,13 +398,13 @@ package dcache_asic;
 					tagged Exception Load_addr_misaligned:tagged Exception Store_addr_misaligned): rg_bus_error?
 						(rg_access_type==Load?tagged Exception Load_access_fault:tagged Exception Store_access_fault):rg_tlb_exception[0];
 			/*====== Get the states of the request ======*/
-			Bit#(20) cpu_tag=rg_paddress[`PADDR-1:`PADDR-20];
-			Bit#(TLog#(`DCACHE_BLOCK_SIZE))	word_offset=rg_vaddress[word_bits+byte_bits-1:byte_bits];
-			Bit#(TLog#(`DCACHE_WORD_SIZE))	byte_offset=rg_vaddress[byte_bits-1:0];
-			Bit#(TLog#(`DCACHE_SETS))			setindex=rg_vaddress[set_bits+word_bits+byte_bits-1:word_bits+byte_bits];
+			Bit#(20) cpu_tag=rg_paddress[paddr-1:paddr-20];
+			Bit#(TLog#(DCACHE_BLOCK_SIZE))	word_offset=rg_vaddress[word_bits+byte_bits-1:byte_bits];
+			Bit#(TLog#(DCACHE_WORD_SIZE))	byte_offset=rg_vaddress[byte_bits-1:0];
+			Bit#(TLog#(DCACHE_SETS))			setindex=rg_vaddress[set_bits+word_bits+byte_bits-1:word_bits+byte_bits];
 
-			Bit#(TMul#(TMul#(`DCACHE_BLOCK_SIZE,`DCACHE_WORD_SIZE),8)) hbdataline=0;
-			Bit#(TMul#(TMul#(`DCACHE_BLOCK_SIZE,`DCACHE_WORD_SIZE),8)) lbdataline=0;
+			Bit#(TMul#(TMul#(DCACHE_BLOCK_SIZE,DCACHE_WORD_SIZE),8)) hbdataline=0;
+			Bit#(TMul#(TMul#(DCACHE_BLOCK_SIZE,DCACHE_WORD_SIZE),8)) lbdataline=0;
 						
 			/*========== Check hit on Hit buffer =======*/
 			Bool hb_hit = False;
@@ -419,15 +426,15 @@ package dcache_asic;
 			/*===========================================*/
 
 			/*======= Check SRAMS ==============*/
-			Bit#(`DCACHE_WAYS) tag_hit=0;
+			Bit#(DCACHE_WAYS) tag_hit=0;
 
-			Bit#(TMul#(TMul#(`DCACHE_BLOCK_SIZE,`DCACHE_WORD_SIZE),8)) dataline0=data[0].read_response;
-			Bit#(TMul#(TMul#(`DCACHE_BLOCK_SIZE,`DCACHE_WORD_SIZE),8)) dataline1=data[1].read_response;
-			Bit#(TMul#(TMul#(`DCACHE_BLOCK_SIZE,`DCACHE_WORD_SIZE),8)) dataline2=data[2].read_response;
-			Bit#(TMul#(TMul#(`DCACHE_BLOCK_SIZE,`DCACHE_WORD_SIZE),8)) dataline3=data[3].read_response;
+			Bit#(TMul#(TMul#(DCACHE_BLOCK_SIZE,DCACHE_WORD_SIZE),8)) dataline0=data[0].read_response;
+			Bit#(TMul#(TMul#(DCACHE_BLOCK_SIZE,DCACHE_WORD_SIZE),8)) dataline1=data[1].read_response;
+			Bit#(TMul#(TMul#(DCACHE_BLOCK_SIZE,DCACHE_WORD_SIZE),8)) dataline2=data[2].read_response;
+			Bit#(TMul#(TMul#(DCACHE_BLOCK_SIZE,DCACHE_WORD_SIZE),8)) dataline3=data[3].read_response;
 
-			Bit#(`DCACHE_WAYS) valid_values={tag[3].read_response[20],tag[2].read_response[20],tag[1].read_response[20],tag[0].read_response[20]};
-			Bit#(`DCACHE_WAYS) dirty_values={tag[3].read_response[21],tag[2].read_response[21],tag[1].read_response[21],tag[0].read_response[21]};
+			Bit#(DCACHE_WAYS) valid_values={tag[3].read_response[20],tag[2].read_response[20],tag[1].read_response[20],tag[0].read_response[20]};
+			Bit#(DCACHE_WAYS) dirty_values={tag[3].read_response[21],tag[2].read_response[21],tag[1].read_response[21],tag[0].read_response[21]};
 						
 			if(cpu_tag==tag[0].read_response[19:0] && valid_values[0]==1) tag_hit[0]=1; 
 			if(cpu_tag==tag[1].read_response[19:0] && valid_values[1]==1) tag_hit[1]=1; 
@@ -445,19 +452,19 @@ package dcache_asic;
 				hit=False;
 			dynamicAssert(!(lb_hit&&hb_hit),"ASSERT: lb_hit and hb_hit are both 1");
 			
-			Bit#(TMul#(TMul#(`DCACHE_BLOCK_SIZE,`DCACHE_WORD_SIZE),8)) temp0=duplicate(tag_hit[0]&pack(hit));
-			Bit#(TMul#(TMul#(`DCACHE_BLOCK_SIZE,`DCACHE_WORD_SIZE),8)) temp1=duplicate(tag_hit[1]&pack(hit));
-			Bit#(TMul#(TMul#(`DCACHE_BLOCK_SIZE,`DCACHE_WORD_SIZE),8)) temp2=duplicate(tag_hit[2]&pack(hit));
-			Bit#(TMul#(TMul#(`DCACHE_BLOCK_SIZE,`DCACHE_WORD_SIZE),8)) temp3=duplicate(tag_hit[3]&pack(hit));
-			Bit#(TMul#(TMul#(`DCACHE_BLOCK_SIZE,`DCACHE_WORD_SIZE),8)) hitline0=temp0&dataline0;
-			Bit#(TMul#(TMul#(`DCACHE_BLOCK_SIZE,`DCACHE_WORD_SIZE),8)) hitline1=temp1&dataline1;
-			Bit#(TMul#(TMul#(`DCACHE_BLOCK_SIZE,`DCACHE_WORD_SIZE),8)) hitline2=temp2&dataline2;
-			Bit#(TMul#(TMul#(`DCACHE_BLOCK_SIZE,`DCACHE_WORD_SIZE),8)) hitline3=temp3&dataline3;
-			Bit#(TMul#(TMul#(`DCACHE_BLOCK_SIZE,`DCACHE_WORD_SIZE),8)) sram_dataline=hitline0|hitline1|hitline2|hitline3;
+			Bit#(TMul#(TMul#(DCACHE_BLOCK_SIZE,DCACHE_WORD_SIZE),8)) temp0=duplicate(tag_hit[0]&pack(hit));
+			Bit#(TMul#(TMul#(DCACHE_BLOCK_SIZE,DCACHE_WORD_SIZE),8)) temp1=duplicate(tag_hit[1]&pack(hit));
+			Bit#(TMul#(TMul#(DCACHE_BLOCK_SIZE,DCACHE_WORD_SIZE),8)) temp2=duplicate(tag_hit[2]&pack(hit));
+			Bit#(TMul#(TMul#(DCACHE_BLOCK_SIZE,DCACHE_WORD_SIZE),8)) temp3=duplicate(tag_hit[3]&pack(hit));
+			Bit#(TMul#(TMul#(DCACHE_BLOCK_SIZE,DCACHE_WORD_SIZE),8)) hitline0=temp0&dataline0;
+			Bit#(TMul#(TMul#(DCACHE_BLOCK_SIZE,DCACHE_WORD_SIZE),8)) hitline1=temp1&dataline1;
+			Bit#(TMul#(TMul#(DCACHE_BLOCK_SIZE,DCACHE_WORD_SIZE),8)) hitline2=temp2&dataline2;
+			Bit#(TMul#(TMul#(DCACHE_BLOCK_SIZE,DCACHE_WORD_SIZE),8)) hitline3=temp3&dataline3;
+			Bit#(TMul#(TMul#(DCACHE_BLOCK_SIZE,DCACHE_WORD_SIZE),8)) sram_dataline=hitline0|hitline1|hitline2|hitline3;
 			`ifdef verbose $display($time,"\tDCACHE: valid_values: %b dirty_values: %b stall_on_lb: %b we: %h Access_type: ",valid_values,dirty_values,stall_on_lb,rg_writeenable,fshow(rg_access_type)); `endif
 			/*================================================*/
 			/*===== replacement line selection ==============*/
-			Bit#(`DCACHE_WAYS) replace_vec=valid_values;
+			Bit#(DCACHE_WAYS) replace_vec=valid_values;
 			if(&(valid_values)==1)
 				replace_vec=dirty_values;
 			case (replace_vec) matches
@@ -479,17 +486,17 @@ package dcache_asic;
 			`ifdef verbose $display($time,"\tDCACHE: CPUTAG: %h lb_tag: %h hb_tag :%h",cpu_tag,lb_tag,hb_tag); `endif
 			`ifdef verbose $display($time,"\tDCACHE: CPUIndex: %d lb_index: %d hb_inex :%d",setindex,lb_setindex,hb_setindex); `endif
 			
-			Bit#(TAdd#(TLog#(`DCACHE_WORD_SIZE),TLog#(`DCACHE_BLOCK_SIZE))) offset_zeros='d0;
-			Bit#(`PADDR) r0=duplicate(replace_vec[0]);
-			Bit#(`PADDR) r1=duplicate(replace_vec[1]);
-			Bit#(`PADDR) r2=duplicate(replace_vec[2]);
-			Bit#(`PADDR) r3=duplicate(replace_vec[3]);
-			Bit#(`PADDR) write_address0=r0&{tag[0].read_response[20-1:0],setindex[6:0],offset_zeros};
-			Bit#(`PADDR) write_address1=r1&{tag[1].read_response[20-1:0],setindex[6:0],offset_zeros};
-			Bit#(`PADDR) write_address2=r2&{tag[2].read_response[20-1:0],setindex[6:0],offset_zeros};
-			Bit#(`PADDR) write_address3=r3&{tag[3].read_response[20-1:0],setindex[6:0],offset_zeros};
-			Bit#(`PADDR) write_address = write_address0 | write_address1 | write_address2 | write_address3;
-			Bit#(TMul#(TMul#(`DCACHE_BLOCK_SIZE,`DCACHE_WORD_SIZE),8)) replace_dataline =
+			Bit#(TAdd#(TLog#(DCACHE_WORD_SIZE),TLog#(DCACHE_BLOCK_SIZE))) offset_zeros='d0;
+			Bit#(PADDR) r0=duplicate(replace_vec[0]);
+			Bit#(PADDR) r1=duplicate(replace_vec[1]);
+			Bit#(PADDR) r2=duplicate(replace_vec[2]);
+			Bit#(PADDR) r3=duplicate(replace_vec[3]);
+			Bit#(PADDR) write_address0=r0&{tag[0].read_response[20-1:0],setindex[6:0],offset_zeros};
+			Bit#(PADDR) write_address1=r1&{tag[1].read_response[20-1:0],setindex[6:0],offset_zeros};
+			Bit#(PADDR) write_address2=r2&{tag[2].read_response[20-1:0],setindex[6:0],offset_zeros};
+			Bit#(PADDR) write_address3=r3&{tag[3].read_response[20-1:0],setindex[6:0],offset_zeros};
+			Bit#(PADDR) write_address = write_address0 | write_address1 | write_address2 | write_address3;
+			Bit#(TMul#(TMul#(DCACHE_BLOCK_SIZE,DCACHE_WORD_SIZE),8)) replace_dataline =
 				case(replace_vec)
 					'b0001:dataline0; 
 					'b0010:dataline1; 
@@ -501,8 +508,8 @@ package dcache_asic;
 			/*==============================================*/
 
 			/*==== capture the word to be operated on and perform the atomic operation as well on it=======*/
-			Bit#(TMul#(TMul#(`DCACHE_BLOCK_SIZE,`DCACHE_WORD_SIZE),8)) dataline=hbdataline|lbdataline|sram_dataline;
-			Bit#(`Reg_width) data_word=(dataline>>{6'd0,word_offset}*64)[`Reg_width-1:0];
+			Bit#(TMul#(TMul#(DCACHE_BLOCK_SIZE,DCACHE_WORD_SIZE),8)) dataline=hbdataline|lbdataline|sram_dataline;
+			Bit#(XLEN) data_word=(dataline>>{6'd0,word_offset}*64)[valueOf(XLEN)-1:0];
 			data_word=data_word>>({4'b0,byte_offset}*8);
 
 			if(!rg_signextend)
@@ -516,7 +523,7 @@ package dcache_asic;
 				if(success matches tagged Valid .sc)
 					data_word = zeroExtend(sc);
 			`endif
-			Bit#(`Reg_width) final_word = `ifdef atomic (rg_access_type==Atomic)?atomicdata: `endif (rg_access_type==Store)?rg_writedata:data_word;
+			Bit#(XLEN) final_word = `ifdef atomic (rg_access_type==Atomic)?atomicdata: `endif (rg_access_type==Store)?rg_writedata:data_word;
 			`ifdef verbose $display($time,"\tDCACHE: hbhit: %b hbdataline: %h",hb_hit,hbdataline); `endif
 			`ifdef verbose $display($time,"\tDCACHE: lb_hit: %b lbdataline: %h",lb_hit,lbdataline); `endif
 			`ifdef verbose $display($time,"\tDCACHE: tag_hit: %b hit  : %b srdataline: %h",tag_hit,hit , sram_dataline); `endif
@@ -580,7 +587,7 @@ package dcache_asic;
 				if(hb_valid &&!hb_hit)begin
 					`ifdef verbose $display($time,"\tDCACHE: HB updating SRAM Tag: %h Data: %h Way: %h setindex: %d",hb_tag,hb_data.response_portA,hb_way,hb_setindex); `endif
 					wr_write_info<=tagged Valid tuple2(hb_tag,hb_setindex);
-					for(Integer i=0;i<`DCACHE_WAYS;i=i+1)begin	
+					for(Integer i=0;i<dcache_ways;i=i+1)begin	
 						tag[i].write_request(unpack(hb_way[i]),hb_setindex,{2'b11,hb_tag});
 						data[i].write_request(duplicate(hb_way[i]),hb_setindex,hb_data.response_portA);
 					end
@@ -588,20 +595,22 @@ package dcache_asic;
 				/*============================================================================*/
 				if(!hit && !lb_hit && !hb_hit && !misaligned_addr)begin// a complete miss 
 					`ifdef verbose $display($time,"\tDCACHE: A complete miss in Data Cache. Enquing into the memoperation FIFO"); `endif
-					Bit#(TLog#(`DCACHE_BLOCK_SIZE)) val1=(rg_vaddress&'hfffffff8)[word_bits+byte_bits-1:byte_bits];
-					Bit#(TMul#(`DCACHE_WORD_SIZE,`DCACHE_BLOCK_SIZE)) writeenable='hFF;
+					Bit#(TLog#(DCACHE_BLOCK_SIZE)) val1=(rg_vaddress&'hfffffff8)[word_bits+byte_bits-1:byte_bits];
+					Bit#(TMul#(DCACHE_WORD_SIZE,DCACHE_BLOCK_SIZE)) writeenable='hFF;
 					writeenable=writeenable<<{3'b0,val1}*8;
 					memoperation.enq(tuple4(cpu_tag,rg_vaddress[set_bits+word_bits+byte_bits-1:word_bits+byte_bits],replace_vec,writeenable));
-					ff_read_request_to_memory.enq(To_Memory {address:rg_paddress&'hfffffff8,burst_length:fromInteger(`DCACHE_BLOCK_SIZE),ld_st:Load, transfer_size:3});
+					ff_read_request_to_memory.enq(To_Memory
+          {address:rg_paddress&'hfffffff8,burst_length:fromInteger(valueOf(DCACHE_BLOCK_SIZE)),ld_st:Load, transfer_size:3});
 					if((valid_values&dirty_values&replace_vec)==replace_vec)begin // if the replacing is dirty
 						`ifdef verbose $display($time,"\tDCACHE: Line being replaced is dirty. Addr: %h Data: %h",write_address,replace_vec); `endif
-						ff_write_request_to_memory.enq(To_Memory_Write {address:write_address,burst_length:fromInteger(`DCACHE_BLOCK_SIZE),ld_st:Load, transfer_size:3,
+						ff_write_request_to_memory.enq(To_Memory_Write
+            {address:write_address,burst_length:fromInteger(valueOf(DCACHE_BLOCK_SIZE)),ld_st:Load, transfer_size:3,
 								data_line:replace_dataline });
 						pending_write_response[0]<=True;
 					end
 				end
 			end
-			else if(rg_access_type==Load || rg_access_type==Atomic)begin
+			else if(rg_access_type==Load `ifdef atomic || rg_access_type==Atomic `endif )begin
 				ff_read_request_to_memory.enq(To_Memory {address:rg_paddress,burst_length:1,ld_st:Load,transfer_size:rg_transfer_size});
 				rg_state[0]<=IOReadResp;
 			end
@@ -627,8 +636,8 @@ package dcache_asic;
 		endrule
 		rule wait_for_ioread_response(rg_state[0]==IOReadResp && !memoperation.notEmpty);
 			`ifdef verbose $display($time,"\tDCACHE: Received IO Read Response"); `endif
-			Bit#(TLog#(`DCACHE_WORD_SIZE)) byte_offset=rg_vaddress[byte_bits-1:0];
-			Bit#(`Reg_width) data_value=ff_read_response_from_memory.first.data_line;
+			Bit#(TLog#(DCACHE_WORD_SIZE)) byte_offset=rg_vaddress[byte_bits-1:0];
+			Bit#(XLEN) data_value=ff_read_response_from_memory.first.data_line;
 			ff_read_response_from_memory.deq;
 			data_value=data_value>>({4'b0,byte_offset}*8);
 			if(!rg_signextend)
@@ -657,24 +666,27 @@ package dcache_asic;
 		rule wait_for_iowrite_response(rg_state[0]==IOWriteResp && !memoperation.notEmpty && !pending_write_response[2]);
 			`ifdef verbose $display($time,"\tDCACHE: Received IO Write Response"); `endif
 			ff_write_response_from_memory.deq;
-			if(rg_access_type!=Atomic) begin
-				wr_response_to_cpu<=tagged Valid (tuple4(0,ff_write_response_from_memory.first.bus_error==1?tagged Exception Store_access_fault:tagged None,rg_perf_monitor,rg_insn_epoch));
-				wbEpoch[0]<=ff_write_response_from_memory.first.bus_error==1?~wbEpoch[0]:wbEpoch[0];
-			end
+			`ifdef atomic
+        if(rg_access_type!=Atomic) begin
+			  	wr_response_to_cpu<=tagged Valid (tuple4(0,ff_write_response_from_memory.first.bus_error==1?tagged Exception Store_access_fault:tagged None,rg_perf_monitor,rg_insn_epoch));
+				  wbEpoch[0]<=ff_write_response_from_memory.first.bus_error==1?~wbEpoch[0]:wbEpoch[0];
+  			end
+      `endif
 			rg_perf_monitor<=0;
 			rg_state[0]<=Idle;
 		endrule
-		method Action virtual_address(Bit#(`VADDR) vaddress, Access_type load_store, Bit#(TMul#(`DCACHE_WORD_SIZE,8)) writedata, Bit#(3) transfer_size, `ifdef atomic Bit#(5) atomic_op, `endif Bool signextend, Bit#(1) insnepoch) if(rg_state[1]==Idle);
+		method Action virtual_address(Bit#(VADDR) vaddress, Access_type load_store,
+    Bit#(TMul#(DCACHE_WORD_SIZE,8)) writedata, Bit#(2) transfer_size, `ifdef atomic Bit#(5) atomic_op, `endif Bool signextend, Bit#(1) insnepoch) if(rg_state[1]==Idle);
 			if((transfer_size=='b01 && vaddress[0]!='b0) || (transfer_size=='b10 && vaddress[1:0]!=0) || (transfer_size=='b11 && vaddress[2:0]!=0))
 				misaligned_addr<=True;
 			else
 				misaligned_addr<=False;
-			Bit#(`PERFMONITORS) perf_monitor=0;
-			Bit#(TLog#(`DCACHE_SETS)) setindex=vaddress[set_bits+word_bits+byte_bits-1:word_bits+byte_bits];
+			Bit#(PERFMONITORS) perf_monitor=0;
+			Bit#(TLog#(DCACHE_SETS)) setindex=vaddress[set_bits+word_bits+byte_bits-1:word_bits+byte_bits];
 			`ifdef verbose $display($time,"\tDCACHE: ",fshow(load_store)," Request of VAddr: %h transfersize: %d signextend: %b setindex: %d data:%h",vaddress,transfer_size, signextend,setindex,writedata); `endif
-			Bit#(TMul#(`DCACHE_WORD_SIZE,`DCACHE_BLOCK_SIZE)) we=transfer_size==0?'b1:transfer_size==1?'b11:transfer_size==2?'hF:'hFF;
-			Bit#(TLog#(`DCACHE_BLOCK_SIZE)) word_offset= vaddress[word_bits+byte_bits-1:byte_bits];
-			Bit#(TLog#(`DCACHE_WORD_SIZE)) byte_offset=vaddress[byte_bits-1:0];
+			Bit#(TMul#(DCACHE_WORD_SIZE,DCACHE_BLOCK_SIZE)) we=transfer_size==0?'b1:transfer_size==1?'b11:transfer_size==2?'hF:'hFF;
+			Bit#(TLog#(DCACHE_BLOCK_SIZE)) word_offset= vaddress[word_bits+byte_bits-1:byte_bits];
+			Bit#(TLog#(DCACHE_WORD_SIZE)) byte_offset=vaddress[byte_bits-1:0];
 			we=we<<{4'b0,word_offset}*8;
 			we=we<<byte_offset;
 			rg_access_type<=load_store;
@@ -696,7 +708,7 @@ package dcache_asic;
 			end
 			else begin
 				if(proceed)begin
-					for(Integer i=0;i<`DCACHE_WAYS;i=i+1)begin // send address to the Block_rams
+					for(Integer i=0;i<dcache_ways;i=i+1)begin // send address to the Block_rams
 						tag[i].read_request(setindex);
 						data[i].read_request(setindex);
 					end
@@ -708,18 +720,18 @@ package dcache_asic;
 				end
 			end
 		endmethod
-		method Maybe#(Tuple4#(Bit#(`Reg_width), Trap_type,Bit#(`PERFMONITORS),Bit#(1))) response_to_core;
+		method Maybe#(Tuple4#(Bit#(XLEN), Trap_type,Bit#(PERFMONITORS),Bit#(1))) response_to_core;
 			return wr_response_to_cpu;
 		endmethod
 		`ifdef MMU
-			method Action physical_address(Bit#(`PADDR) paddr, Trap_type exception);
+			method Action physical_address(Bit#(PADDR) paddress, Trap_type exception);
 				`ifdef verbose $display($time,"\tDCACHE: Sending physical address %h to dcache ",paddr); `endif
-				rg_paddress<=paddr;
+				rg_paddress<=paddress;
 				rg_trnslte_done[1] <= True;
 				rg_tlb_exception[1]<=exception;
 			endmethod
 		`endif
-		method ActionValue#(To_Memory#(`PADDR)) read_request_to_memory;
+		method ActionValue#(To_Memory#(PADDR)) read_request_to_memory;
 			ff_read_request_to_memory.deq;
 			return ff_read_request_to_memory.first;
 		endmethod
@@ -730,11 +742,11 @@ package dcache_asic;
 		method Bool init_complete;
 			return (rg_state[0]!=Fence);	
 		endmethod
-		method Action read_response_from_memory(From_Memory#(`DCACHE_WORD_SIZE) resp);
+		method Action read_response_from_memory(From_Memory#(DCACHE_WORD_SIZE) resp);
 			`ifdef verbose $display($time,"\tDCACHE: Memory has responded"); `endif
 			ff_read_response_from_memory.enq(resp);
 		endmethod
-		method Action write_response_from_memory(From_Memory#(`DCACHE_WORD_SIZE) resp);
+		method Action write_response_from_memory(From_Memory#(DCACHE_WORD_SIZE) resp);
 			ff_write_response_from_memory.enq(resp);
 		endmethod
 		method Action flush_from_wb;

@@ -392,7 +392,7 @@ package decoder;
       exception = tagged Exception Inst_access_fault;
     `ifdef supervisor
       else if(err[1]==1)
-        exception = tagged Exception Inst_page_fault;
+        exception = tagged Exception Inst_pagefault;
     `endif
     else if( `ifdef spfpu (inst_type==FLOAT && funct7[0]==0 && misa[5]==0) || `endif
              `ifdef dpfpu (inst_type==FLOAT && funct7[0]==1 && misa[3]==0) || `endif

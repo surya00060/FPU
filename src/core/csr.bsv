@@ -48,7 +48,6 @@ package csr;
 	  method Action clint_msip(Bit#(1) intrpt);
 		method Action clint_mtip(Bit#(1) intrpt);
 		method Action clint_mtime(Bit#(XLEN) c_mtime);
-    method Action externalinterrupt(Bit#(1) intrpt);
     method Action incr_minstret;
     method Bool interrupt;
     `ifdef RV64 method Bool inferred_xlen; `endif // False-32bit,  True-64bit 
@@ -59,6 +58,7 @@ package csr;
     `ifdef spfpu
   		method Bit#(3) roundingmode;
     `endif
+	  method Action set_external_interrupt(Tuple2#(Bool,Bool) ex_i);
   endinterface:Ifc_csr
 
 
@@ -133,9 +133,6 @@ package csr;
 	  method Action clint_mtime(Bit#(XLEN) c_mtime);
 	  	csrfile.clint_mtime(c_mtime);
 	  endmethod
-    method Action externalinterrupt(Bit#(1) intrpt);
-      csrfile.externalinterrupt(intrpt);
-    endmethod
     method incr_minstret=csrfile.incr_minstret;
     `ifdef RV64 method inferred_xlen = csrfile.inferred_xlen; `endif // False-32bit,  True-64bit 
     method  interrupt=csrfile.interrupt;
@@ -146,5 +143,7 @@ package csr;
     `ifdef spfpu
   		method roundingmode=csrfile.roundingmode;
     `endif
+	  method Action set_external_interrupt(Tuple2#(Bool,Bool)
+                                                        ex_i)=csrfile.set_external_interrupt(ex_i);
   endmodule
 endpackage
