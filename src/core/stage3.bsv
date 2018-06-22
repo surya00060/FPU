@@ -76,12 +76,18 @@ package stage3;
 		interface RXe#(PIPE2) rx_in;
 		interface TXe#(PIPE3) tx_out;
     method Action update_wEpoch;
-    method Tuple2#(Bool, Bit#(VADDR)) flush_from_exe;
+    method Tuple2#(Flush_type2, Bit#(VADDR)) flush_from_exe;
     interface Put#(Tuple2#(Bit#(XLEN), Bit#(TLog#(PRFDEPTH)))) fwd_from_mem;
     interface Get#(Bit#(TLog#(PRFDEPTH))) get_index;
     `ifdef bpu
   		method Maybe#(Training_data#(VADDR)) training_data;
 		  method Maybe#(Bit#(VADDR)) ras_push;
+    `endif
+    `ifdef RV64
+      method Action inferred_xlen(Bool xlen);
+    `endif
+    `ifdef spfpu
+      method Action roundingmode(Bit#(3) rm);
     `endif
 		interface Get#(Tuple2#(Memrequest,Bit#(1))) to_dmem;
   endinterface
@@ -89,7 +95,9 @@ package stage3;
   module mkstage3(Ifc_stage3);
 		RX#(PIPE2) rx <-mkRX;								// receive from the decode stage
 		TX#(PIPE3) tx <-mkTX;							// send to the memory stage;
-
+    `ifdef RV64
+      Wire#(Bool) wr_inferred_xlen <- mkWire();
+    `endif
     `ifdef bpu
       Reg#(Tuple3#(Flush_type, Bit#(VADDR), Bit#(VADDR))) check_rpc <- mkReg(tuple3(None, 0, 0));
 		  Reg#(Maybe#(Training_data#(VADDR))) wr_training_data <-mkDReg(tagged Invalid);
@@ -97,15 +105,18 @@ package stage3;
     `else
       Reg#(Tuple2#(Flush_type, Bit#(VADDR))) check_rpc <- mkReg(tuple2(None, 0));
     `endif
+    `ifdef spfpu
+      Wire#(Bit#(3)) wr_roundingmode <- mkWire();
+    `endif
     Ifc_fwding fwding <- mkfwding();
 		Reg#(Bit#(1)) eEpoch <-mkReg(0);
 		Reg#(Bit#(1)) wEpoch <-mkReg(0);
-    Wire#(Bool) wr_flush_from_exe <- mkDWire(False);
+    Wire#(Flush_type2) wr_flush_from_exe <- mkDWire(None);
     Wire#(Bool) wr_flush_from_wb <- mkDWire(False);
     Wire#(Bit#(VADDR)) wr_redirect_pc <- mkDWire(0);
 		FIFOF#(Tuple2#(Memrequest,Bit#(1))) ff_memory_request <-mkBypassFIFOF;
 
-    rule flush_mapping(wr_flush_from_exe||wr_flush_from_wb);
+    rule flush_mapping(wr_flush_from_exe!=None||wr_flush_from_wb);
       fwding.flush_mapping;
     endrule
 
@@ -144,7 +155,7 @@ package stage3;
         if(redirect_result==CheckRPC && pc!=redirect_pc `ifdef bpu || 
                                                   redirect_result==CheckNPC && pc!=npc `endif )begin
             // generate flush here
-          wr_flush_from_exe<=True;
+          wr_flush_from_exe<=Regular;
           if(redirect_result==CheckRPC)
             wr_redirect_pc<= redirect_pc;
           `ifdef bpu
@@ -190,6 +201,10 @@ package stage3;
             `else
               check_rpc<= tuple2(redirect, addr);
             `endif
+            if(redirect==Fence)
+              wr_flush_from_exe<=Fence;
+            else if(redirect!=None)
+              wr_flush_from_exe<= Regular;
 
             if(cmtype==MEMORY &&& trap1 matches tagged None)begin
               ff_memory_request.enq(tuple2(Memrequest{address:zeroExtend(addr), memory_data:x2, 
@@ -230,6 +245,11 @@ package stage3;
         // else you need to simply drop the execution since epochs have changed.
       end
     endrule
+    `ifdef RV64
+      method Action inferred_xlen(Bool xlen);
+        wr_inferred_xlen <= xlen;
+      endmethod
+    `endif
 		interface rx_in = rx.e;
 		interface tx_out = tx.e;
     method Action update_wEpoch;
@@ -247,6 +267,11 @@ package stage3;
     `ifdef bpu
   		method training_data=wr_training_data;
 		  method ras_push=wr_ras_push;
+    `endif
+    `ifdef spfpu
+      method Action roundingmode(Bit#(3) rm);
+        wr_roundingmode<= rm;
+      endmethod
     `endif
 		interface to_dmem = interface Get 
 			method ActionValue#(Tuple2#(Memrequest,Bit#(1))) get ;
