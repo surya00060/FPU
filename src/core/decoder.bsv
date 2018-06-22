@@ -186,6 +186,7 @@ package decoder;
     Bool utype= (opcode=='b01101 || opcode=='b00101);
     Bool jtype= (opcode=='b11011);
     Bool r4type= (opcode[4:2]=='b100);
+    Bool fencetype=(opcode=='b00011);
 
     // refer to section 2.3 (Immediate Encoding Variants) of the risc-v iser spec for more details
     // on the following logic.
@@ -231,6 +232,8 @@ package decoder;
 		Access_type mem_access=Load;
 		if(stype)
 			mem_access=Store;
+    if(fencetype)
+      mem_access=Fence;
     `ifdef atomic
       else if(opcode=='b01011)
         mem_access=Atomic;
