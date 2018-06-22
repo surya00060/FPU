@@ -957,7 +957,8 @@ endfunction
 				badaddr=pc;
 			else if(ex==Illegal_inst)
 				badaddr=0;
-      else badaddr=0;
+      else if(ex!=Load_pagefault && ex!=Load_access_fault && ex!=Load_addr_misaligned && ex!=Store_addr_misaligned && ex!=Store_pagefault && ex!=Store_access_fault)
+        badaddr=0;
 		end
     else
       badaddr=0;
