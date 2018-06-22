@@ -115,9 +115,6 @@ package TbSoc;
 //			Memory_vme_16#(32'h40000000,`Addr_space) vme_memory<-mkMemory_16("test_vme.mem","MainMEM");
 
 
-rule connect_boot;
-			soc.boot_sequence('b1);	
-		endrule
 
 	`ifdef Debug
 		rule drive_constants;

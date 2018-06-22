@@ -66,8 +66,6 @@ package Soc;
 	/*========================= */
 	interface Ifc_Soc;
 		interface SP_ios slow_ios;
-		(*always_ready,always_enabled*)
-		method Action boot_sequence(Bit#(1) bootseq);
 		
 		`ifdef SDRAM 
 			(*always_ready*) interface Ifc_sdram_out sdram_out; 
@@ -96,18 +94,14 @@ package Soc;
 			(*always_ready,always_enabled*)
 			method Bit#(1) tdo_oe;
 		`endif
-		`ifdef HYPER
-			(*always_ready,always_enabled*)	
-		   interface Ifc_flash ifc_flash;
-		`endif
 	/*=============================================== */
-	   `ifdef VME
-        		interface Vme_out  proc_ifc;
+	  `ifdef VME
+    	interface Vme_out  proc_ifc;
 			interface Data_bus_inf proc_dbus;
 		`endif
-        `ifdef FlexBus
-            interface FlexBus_Master_IFC flexbus_out;
-        `endif
+    `ifdef FlexBus
+        interface FlexBus_Master_IFC flexbus_out;
+    `endif
 
 	endinterface
 	(*synthesize*)
@@ -293,7 +287,6 @@ package Soc;
 		`ifdef FlexBus
             interface flexbus_out = flexbus.flexbus_side;
 		`endif 
-      method Action boot_sequence(Bit#(1) bootseq) = core.boot_sequence(bootseq);
 		`ifdef SDRAM
 			interface sdram_out=sdram.ifc_sdram_out;
 		`endif
