@@ -41,10 +41,11 @@ package riscv;
   interface Ifc_riscv;
     
     interface Get#(Tuple5#(Bit#(2),Bit#(VADDR),Bit#(VADDR),Bool,Bit#(3))) request_to_imem;
-    method Action instruction_response_from_imem(Maybe#(Tuple7#(Bit#(VADDR),Bit#(2),Bit#(VADDR),Bit#(32), Trap_type, Bit#(3),Bit#(3))) x);
-    interface Put#(Tuple4#(Bit#(3),Bit#(`VADDR),Bit#(`VADDR),Bit#(2))) prediction_response;
-    interface Get#(Tuple2#(Bit#(3),Bit#(`VADDR))) send_prediction_request;
-method Maybe#(Training_data#(`VADDR)) training_data;
+    method Action
+    instruction_response_from_imem(Maybe#(Tuple7#(Bit#(VADDR),Bit#(2),Bit#(VADDR),Bit#(32),
+    Trap_type, Bit#(PERFMONITORS),Bit#(3))) x);
+    interface Put#(Tuple4#(Bit#(3),Bit#(VADDR),Bit#(VADDR),Bit#(2))) prediction_response;
+    interface Get#(Tuple2#(Bit#(3),Bit#(VADDR))) send_prediction_request;
     interface Get#(Tuple2#(Memrequest,Bit#(1))) to_dmem;
     `ifdef bpu
       method Maybe#(Training_data#(VADDR)) training_data;
@@ -88,17 +89,22 @@ method Maybe#(Training_data#(`VADDR)) training_data;
     let {flush_from_exe, flushpc_from_exe}=stage3.flush_from_exe;
     let {flush_from_wb, flushpc_from_wb}=stage4.flush;
 
-    // Connections for stage2 to other pipes
     mkConnection(stage2.commit_rd, stage4.commit_rd);
     mkConnection(stage3.get_index,  stage2.get_index);
     mkConnection(stage3.fwd_from_mem, stage4.fwd_from_mem);
+    rule flush_stage1(flush_from_exe!=None||flush_from_wb);
+      if(flush_from_wb)
+        stage1.flush(flushpc_from_wb, Regular);
+      else
+        stage1.flush(flushpc_from_exe, flush_from_exe);
+    endrule
     rule connect_csrs;
       stage2.csrs(stage4.csrs_to_decode);
     endrule
     rule check_csr_update;
       stage2.csr_updated(stage4.csr_updated);
     endrule
-    rule upd_stage2eEpoch(flush_from_exe);
+    rule upd_stage2eEpoch(flush_from_exe!=None);
       stage2.update_eEpoch();
     endrule
     rule upd_stage2wEpoch(flush_from_wb);
@@ -108,15 +114,27 @@ method Maybe#(Training_data#(`VADDR)) training_data;
     rule ras_push_connect;
       stage1.push_ras(stage3.ras_push);
     endrule
+    `ifdef RV64
+      rule connect_inferred_xlen;
+        stage3.inferred_xlen(stage4.inferred_xlen);
+      endrule
+    `endif
+    `ifdef spfpu
+      rule connect_roundingmode;
+        stage3.roundingmode(stage4.roundingmode);
+      endrule
+    `endif
     ///////////////////////////////////////////
+
 //    method Bool interrupt;
-//    `ifdef RV64 method Bool inferred_xlen; `endif // TODO False-32bit,  True-64bit 
 //    `ifdef spfpu
 //  		method Bit#(3) roundingmode; TODO
 //    `endif
 
     interface request_to_imem=stage1.request_to_imem;
-    method Action instruction_response_from_imem(Maybe#(Tuple7#(Bit#(VADDR),Bit#(2),Bit#(VADDR),Bit#(32), Trap_type, Bit#(3),Bit#(3))) x)=stage1.instruction_response_from_imem(x);
+    method Action
+    instruction_response_from_imem(Maybe#(Tuple7#(Bit#(VADDR),Bit#(2),Bit#(VADDR),Bit#(32),
+    Trap_type, Bit#(PERFMONITORS),Bit#(3))) x)=stage1.instruction_response_from_imem(x);
     interface prediction_response =stage1.prediction_response;
     interface send_prediction_request=stage1.send_prediction_request;
     `ifdef Debug
