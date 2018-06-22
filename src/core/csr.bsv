@@ -69,14 +69,14 @@ package csr;
   
     Ifc_csrfile csrfile <- mkcsrfile();
     
-	  method ActionValue#(Tuple3#(Bool, Bit#(PADDR), Bit#(XLEN))) system_instruction(
+	  method ActionValue#(Tuple3#(Bool, Bit#(VADDR), Bit#(XLEN))) system_instruction(
             Bit#(12) csr_address, Bit#(5) rs1_addr, Bit#(XLEN) op1, Bit#(3) funct3);
       if(verbosity>1)
         $display($time, "\tCSR: csr: %h rs1addr: %d, op1: %h, funct3: %b", csr_address, rs1_addr, 
             op1, funct3);
 
       Bool flush = False;
-      Bit#(PADDR) jump_add=0;
+      Bit#(VADDR) jump_add=0;
 	  	let csrread=csrfile.read_csr(csr_address);
       Bit#(XLEN) writecsrdata=0;
 	  	Bit#(XLEN) destination_value=0;
