@@ -208,9 +208,9 @@ typedef struct {
   // ------------------------------------------------------------------------------------------
 
   `ifdef spfpu
-    typedef Tuple7#(Bit#(XLEN), Bit#(XLEN), Bit#(XLEN), Bit#(2), Bit#(2), Bit#(2), Bit#(2)) Operands ;
+    typedef Tuple6#(Bit#(XLEN), Bit#(XLEN), Bit#(XLEN), Bit#(2), Bit#(2), Bit#(2)) Operands ;
   `else
-    typedef Tuple5#(Bit#(XLEN), Bit#(XLEN), Bit#(2), Bit#(2), Bit#(2)) Operands ;
+    typedef Tuple4#(Bit#(XLEN), Bit#(XLEN), Bit#(2), Bit#(2)) Operands ;
   `endif
 
   // define all tuples here
@@ -278,7 +278,6 @@ typedef struct {
   typedef struct{
   	Bit#(VADDR) program_counter;
   	Bit#(32) instruction;
-  	Bit#(VADDR) nextpc; // TODO get rid of this
   	Bit#(2) prediction;
   	Bit#(2) epochs;
     Bit#(2) accesserr_pagefault;
@@ -315,6 +314,9 @@ typedef struct {
                    ) OpData;
   `endif
   
+  // for the following,  funct3 & fn is required for memory ops which will need both type of atomic
+  // op and also the type of acess: byte, half-word, word,  double word.
+  // TODO see if in the current technique this can be avoided.
   `ifdef bpu
   typedef Tuple8#(  Bit#(5),    // rd
                     Bool,       // word32
@@ -390,4 +392,23 @@ typedef struct {
   `else
     typedef Tuple3#(Bit#(5), Bit#(XLEN), Bit#(TLog#(PRFDEPTH))) CommitData;
   `endif
+
+/*======= AXI4 master/slave numbers ======*/
+typedef 0 Sdram_slave_num;
+typedef  TAdd#(Sdram_slave_num	 ,`ifdef SDRAM		1 `else 0 `endif )		Sdram_cfg_slave_num;
+typedef	TAdd#(Sdram_cfg_slave_num,`ifdef BOOTROM	1 `else 0 `endif )		BootRom_slave_num	;
+typedef	TAdd#(BootRom_slave_num  ,`ifdef Debug		1 `else 0 `endif )		Debug_slave_num	;
+typedef  TAdd#(Debug_slave_num	 , `ifdef TCMemory	1 `else 0 `endif )		TCM_slave_num;
+typedef  TAdd#(TCM_slave_num	 ,`ifdef DMA			1 `else 0 `endif )	Dma_slave_num;
+typedef  TAdd#(Dma_slave_num	  ,1 )		SlowPeripheral_slave_num;
+typedef  TAdd#(SlowPeripheral_slave_num,`ifdef VME	1 `else 0 `endif )       VME_slave_num;
+typedef  TAdd#(VME_slave_num,`ifdef FlexBus	1 `else 0 `endif )              FlexBus_slave_num;
+typedef	TAdd#(FlexBus_slave_num,1)						 Num_Slaves;
+typedef 0 Dmem_master_num;
+typedef 1 Imem_master_num;
+typedef TAdd#(Imem_master_num , `ifdef Debug 1 `else 0 `endif ) Debug_master_num;
+typedef TAdd#(Debug_master_num, `ifdef DMA 1 `else 0 `endif ) DMA_master_num;
+typedef TAdd#(DMA_master_num,1) Num_Masters;
+
+/*=============================================================================== */
 endpackage

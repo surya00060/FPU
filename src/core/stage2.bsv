@@ -106,6 +106,7 @@ package stage2;
 		method Action update_eEpoch;
 		method Action update_wEpoch;
     interface Put#(Bit#(2))  get_index;
+    method Tuple2#(Bool, Bit#(TLog#(PRFDEPTH))) fetch_rd_index;
 	endinterface:Ifc_stage2
 
   (*synthesize*)
@@ -123,11 +124,12 @@ package stage2;
     Reg#(Bool) rg_stall <- mkReg(False);
     Reg#(Bool) rg_wfi <- mkReg(False);
     Wire#(Bool) wr_op_complete <-mkDWire(False);
+    Reg#(Bit#(TLog#(PRFDEPTH))) rd_index <- mkReg(0);
+    Wire#(Bit#(TLog#(PRFDEPTH))) wr_rd_index <- mkDWire(0);
 
     rule decode_and_fetch(!rg_stall);
 	    let pc=rx.u.first.program_counter;
 	    let inst=rx.u.first.instruction;
-	    let npc=rx.u.first.nextpc; // TODO get rid of this
 	    let pred=rx.u.first.prediction;
 	    let epochs=rx.u.first.epochs;
       let err=rx.u.first.accesserr_pagefault;
@@ -148,11 +150,18 @@ package stage2;
         let {fn, instrType, memaccess, imm, funct3, wfi}=meta;
       `endif
       
-      if(!wfi && {eEpoch, wEpoch}==epochs)
+      if(!wfi && {eEpoch, wEpoch}==epochs)begin
         wr_op_complete<= True;
+        
+        if(rd_index==2)
+          rd_index<= 0;
+        else
+          rd_index<= rd_index+ 1;
+      end
+      wr_rd_index<= rd_index;
 
-      let {rs1, rs2 `ifdef spfpu , rs3 `endif , rs1index, rs2index `ifdef spfpu , rs3index `endif
-        , rd_index }<-registerfile.opaddress(rs1addr, rs2addr, rd
+      let {rs1, rs2 `ifdef spfpu , rs3 `endif , rs1index, rs2index `ifdef spfpu , rs3index `endif }
+           <-registerfile.opaddress(rs1addr, rs2addr, rd, rd_index
             `ifdef spfpu , rs1type, rs2type, rs3addr, rs3type, rdtype `endif );
 
       Bit#(XLEN) op1=(rs1type==PC)?signExtend(pc):rs1;
@@ -179,11 +188,23 @@ package stage2;
         MetaData t3 = tuple7(rd, word32, memaccess, fn, funct3, epochs, trap);
       `endif
 
+      if(verbosity>0)begin
+        $display($time, "\tDECODE: PC: %h Inst: %h Epoch: %b CurrEpochs: %b WFI: %b", pc, inst, 
+            epochs, {eEpoch, wEpoch}, wfi);
+        $display($time, "\tDECODE: rs1addr: %d rs2addr: %d", rs1addr, rs2addr);
+        $display($time, "\tDECODE: rs1type: ", fshow(rs1type), " rs2type ", fshow(rs2type));
+        $display($time, "\tDECODE: rs1index: %d rs2index: %d rdindex: %d instrtype: ", rs1index,
+        rs2index, rd_index, fshow(instrType));
+        $display($time, "\tDECODE: op1: %h op2: %h op3: %h op4: %h", op1, op2, op3, op4);
+        $display($time, "\tDECODE: rd: %d, word32: %b, memaccess:",rd, word32, fshow(memaccess));
+        $display($time, "\tDECODE: fn: %b funt3: %b trap:", fn, funct3, fshow(trap) );
+      end
+
       if(!wfi && {eEpoch, wEpoch}==epochs)
-	`ifdef simulate
-	  tx.u.enq(tuple4(t1, t2, t3, inst));
-	`else
-	  tx.u.enq(tuple3(t1, t2, t3));
+	      `ifdef simulate
+	        tx.u.enq(tuple4(t1, t2, t3, inst));
+	      `else
+	        tx.u.enq(tuple3(t1, t2, t3));
         `endif
       if((rg_wfi && resume_wfi) || (!rg_wfi))
         rx.u.deq; 
@@ -193,6 +214,9 @@ package stage2;
           rg_stall<= True;
         rg_wfi<=wfi;
       end  
+    endrule
+    rule display_op_complete;
+      $display($time, "\tEXECUTE: wr_op_complete: %b", wr_op_complete); 
     endrule
 
 		method tx_out=tx.e;
@@ -218,8 +242,10 @@ package stage2;
       if(upd)
         rg_stall<= False;
     endmethod
+    method fetch_rd_index = tuple2(wr_op_complete, wr_rd_index);
     interface get_index= interface Put
-      method Action put (Bit#(2) index)if(wr_op_complete);
+      method Action put (Bit#(2) index);
+        $display($time, "\tREGFILE: Got renamed index for rd:", index);
         registerfile.get_index(index);
       endmethod
     endinterface;

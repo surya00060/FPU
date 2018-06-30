@@ -1,4 +1,12 @@
 // ------------ NEEDS TO BE REVISED ------------------
+`define SDRAMMemBase	'h80000000	
+`define SDRAMMemEnd  'h8FFFFFFF // 1GB
+
+`ifdef verilog
+	`define Addr_space 22	//since we are leaving off the lower 2 bits of address(byte addressable memory), we have to 
+`else
+	`define Addr_space 30
+`endif
 `define ICACHE_MISS							0
 `define ICACHE_CACHEABLE	 				`ICACHE_MISS+1	
 `define ICACHE_LINEREPLACE 				`ICACHE_CACHEABLE+1

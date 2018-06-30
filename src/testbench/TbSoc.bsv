@@ -114,6 +114,28 @@ package TbSoc;
 //		 	Vme_slave#(32'h40000000,`Addr_space) vme_memory <-mkMemory("test_vme.mem","MainMEM");
 //			Memory_vme_16#(32'h40000000,`Addr_space) vme_memory<-mkMemory_16("test_vme.mem","MainMEM");
 
+    Reg#(Bit#(1)) rg_cnt <-mkReg(0);
+ 	  let dump <- mkReg(InvalidFile) ;
+    rule open_file1(rg_cnt==0);
+      String dumpFile = "rtl.dump" ;
+    	File lfh <- $fopen( dumpFile, "w" ) ;
+    	if ( lfh == InvalidFile )begin
+    	  `ifdef verbose $display("cannot open %s", dumpFile); `endif
+    	  $finish(0);
+    	end
+    	dump <= lfh ;
+    	rg_cnt <= 1 ;
+    endrule
+
+    `ifdef simulate
+      rule write_dump_file(rg_cnt!=0);
+        let {prv, pc, instruction, rd, data}<- soc.dump.get;
+        if(instruction=='h00006f)
+          $finish(0);
+		  	$fwrite(dump, prv, " 0x%16h", pc, " (0x%8h", instruction, ")"); 
+		  	$fwrite(dump, " x%d", rd, " 0x%16h", data, "\n"); 
+      endrule
+    `endif
 
 
 	`ifdef Debug

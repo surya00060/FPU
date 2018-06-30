@@ -68,6 +68,8 @@ package stage4;
   (*synthesize*)
   module mkstage4(Ifc_stage4);
 
+    let verbosity = `VERBOSITY ;
+
     RX#(PIPE3) rx<-mkRX;
     Ifc_csr csr <- mkcsr();
     Wire#(Bool) wr_csr_updated <- mkDWire(False);
@@ -93,7 +95,6 @@ package stage4;
       let prv=tpl_1(csr.csrs_to_decode);
     `endif
 
-    Integer verbosity = `VERBOSITY;
 
     rule instruction_commit;
       `ifdef simulate
@@ -109,13 +110,18 @@ package stage4;
       Bit#(VADDR) jump_address=0;
       Bool fl = False;
       // continue commit only if epochs match. Else deque the ex fifo
+      if(verbosity>0)begin
+        $display($time, "\tWBMEM: PC: %h Epoch: %b CurrEpoch: %b", pc, epoch, rg_epoch);
+        $display($time, "\tWBMEM: Rd: %d Value: %h committype: ", rdaddr, rd, fshow(committype));
+        $display($time, "\tWBMEM: CSRField: %h trap: ", csrfield, fshow(trap));
+      end
       if(trap matches tagged Interrupt .in)begin
         let newpc<-  csr.take_trap(trap, pc, ?);
         wr_flush<=tuple2(True, newpc);
         rg_epoch <= ~rg_epoch;
         rx.u.deq;
         if(verbosity!=0)
-          $display($time, "\tSTAGE3: Received Interrupt: ", fshow(trap));
+          $display($time, "\tWBMEM: Received Interrupt: ", fshow(trap));
       end
       else if(rg_epoch==epoch)begin
         // in case of a flush also flip the local epoch register.
@@ -125,7 +131,7 @@ package stage4;
           fl= True;
           rx.u.deq;
           if(verbosity!=0)
-            $display($time, "\tSTAGE3: Received Exception: ", fshow(trap));
+            $display($time, "\tWBMEM: Received Exception: ", fshow(trap));
         end
         else if(committype == MEMORY) begin
           if (wr_memory_response matches tagged Valid .resp)begin
@@ -143,7 +149,7 @@ package stage4;
             end
             else begin
               if(verbosity!=0)
-                $display($time, "\tSTAGE3: Received Exception from Memory: ", fshow(resp));
+                $display($time, "\tWBMEM: Received Exception from Memory: ", fshow(resp));
               if(access_type == Load)
                 trap = tagged Exception Load_access_fault;
               else
@@ -164,15 +170,16 @@ package stage4;
           `endif
           `ifdef spfpu
             wr_commit <= tagged Valid (tuple4(rdaddr, dest, rdindex, rdtype));
+            // TODO fwding
           `else
             wr_commit <= tagged Valid (tuple3(rdaddr, dest, rdindex));
+            wr_operand_fwding <= tagged Valid tuple2(dest,  rdindex);
           `endif
           rx.u.deq;
         end
         else begin
           // in case of regular instruction simply update RF and forward the data.
-          $display($time, "\tSTAGE3: Commiting PC: %h", pc);
-          wr_operand_fwding <= tagged Valid tuple2(rd,  rdindex);
+          $display($time, "\tWBMEM: Commiting PC: %h", pc);
           `ifdef spfpu
             wr_commit <= tagged Valid (tuple4(rdaddr, rd, rdindex, rdtype));
           `else
@@ -195,7 +202,7 @@ package stage4;
       end
       else begin
         if(verbosity!=0)
-          $display($time, "\tSTAGE3: Dropping instruction");
+          $display($time, "\tWBMEM: Dropping instruction");
         rx.u.deq;
       end
     endrule

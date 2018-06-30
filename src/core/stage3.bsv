@@ -78,7 +78,7 @@ package stage3;
     method Action update_wEpoch;
     method Tuple2#(Flush_type2, Bit#(VADDR)) flush_from_exe;
     interface Put#(Tuple2#(Bit#(XLEN), Bit#(TLog#(PRFDEPTH)))) fwd_from_mem;
-    interface Get#(Bit#(TLog#(PRFDEPTH))) get_index;
+    method Action invalidate_index(Bit#(TLog#(PRFDEPTH)) ind);
     `ifdef bpu
   		method Maybe#(Training_data#(VADDR)) training_data;
 		  method Maybe#(Bit#(VADDR)) ras_push;
@@ -93,6 +93,9 @@ package stage3;
   endinterface
 
   module mkstage3(Ifc_stage3);
+
+    let verbosity = `VERBOSITY ;
+
 		RX#(PIPE2) rx <-mkRX;								// receive from the decode stage
 		TX#(PIPE3) tx <-mkTX;							// send to the memory stage;
     `ifdef RV64
@@ -148,21 +151,34 @@ package stage3;
         let x4=op4;
       `endif
 
+      if(verbosity>0)begin
+        $display($time, "\tEXECUTE: PC: %h epochs: %b currEpochs: %b ", pc, epochs, {eEpoch, wEpoch});
+        $display($time, "\tEXECUTE: rs1: ", fshow(rs1), " rs2 ", fshow(rs2));
+      end
 
+      // TODO here the trap could be because the misprediction from the previous jump.branch might
+      // have caused the cpu to fetch an illegal instruction. So trap check should happen after the
+      // redirection has been checked.
       if(trap matches tagged None &&& execute_instruction)begin
 
         let {redirect_result, redirect_pc `ifdef bpu , npc `endif }=check_rpc;
+        $display($time, "\tEXECUTE: Redirect_result: ", fshow(redirect_result), " rpc: %h",
+            redirect_pc);
         if(redirect_result==CheckRPC && pc!=redirect_pc `ifdef bpu || 
                                                   redirect_result==CheckNPC && pc!=npc `endif )begin
             // generate flush here
           wr_flush_from_exe<=Regular;
-          if(redirect_result==CheckRPC)
+          if(redirect_result==CheckRPC)begin
+            $display($time, "\tEXECUTE: Raising a flush due to pc mismatch. New PC: %h", redirect_pc);
             wr_redirect_pc<= redirect_pc;
+          end
           `ifdef bpu
             // incase a branch predictor is involved we need to check if the next pc is redirected
             // or is pc+ 4?
-            else
+            else begin
               wr_redirect_pc<= npc;
+              $display($time, "\tEXECUTE: Raising a flush due to pc mismatch. New PC: %h", npc);
+            end
           `endif
           eEpoch<= ~eEpoch;
           rx.u.deq;
@@ -171,8 +187,22 @@ package stage3;
           if(rs1 matches tagged Present .x1 &&& rs2 matches tagged Present .x2 
                                       `ifdef spfpu &&& rs3 matches tagged Present .x4 `endif )begin
             rx.u.deq;
-            let {cmtype, out, addr, trap1, redirect} = fn_alu(fn, x1, x2, op3, truncate(x4), 
+            Bit#(XLEN) new_op1=x1;
+            Bit#(VADDR) t3=op3;
+            // TODO: here we need to exchange op1 (which has been fetched from the prf) and op3 in
+            // case of JALR. See if this can be avoided.
+            if(instrtype==JALR)begin 
+              new_op1=op1;
+              t3=truncate(x1);
+            end
+            let {cmtype, out, addr, trap1, redirect} = fn_alu(fn, new_op1, x2, t3, truncate(x4), 
                                 instrtype, funct3, pc, memaccess, word32 `ifdef bpu ,pred `endif );
+            
+            if(verbosity>0)begin
+              $display($time, "\tEXECUTE: cmtype: ", fshow(cmtype), " out: %h addr: %h trap:", out,
+                   addr, fshow(trap1), "redirect ", fshow(redirect));
+              $display($time, "\tEXECUTE: x1: %h,  x2: %h,  op3: %h, x4: %h", x1, x2, op3, x4);
+            end
 
             `ifdef bpu
               // in case of bimodal branch predictor we need to train the bpu and write new status
@@ -203,8 +233,8 @@ package stage3;
             `endif
             if(redirect==Fence)
               wr_flush_from_exe<=Fence;
-            else if(redirect!=None)
-              wr_flush_from_exe<= Regular;
+//            else if(redirect!=None)
+//              wr_flush_from_exe<= Regular;
 
             if(cmtype==MEMORY &&& trap1 matches tagged None)begin
               ff_memory_request.enq(tuple2(Memrequest{address:zeroExtend(addr), memory_data:x2, 
@@ -223,7 +253,8 @@ package stage3;
             `else
               tx.u.enq(tuple2(t1, rd_index));
             `endif
-            fwding.fwd_from_exe(out, rd_index);
+            if(cmtype==REGULAR)
+              fwding.fwd_from_exe(out, rd_index);
           end
         end
       end
@@ -263,7 +294,7 @@ package stage3;
         fwding.fwd_from_mem(d, index);
       endmethod
     endinterface;
-    interface get_index = fwding.get_index;
+    method Action invalidate_index(Bit#(TLog#(PRFDEPTH)) ind)=fwding.invalidate_index(ind);
     `ifdef bpu
   		method training_data=wr_training_data;
 		  method ras_push=wr_ras_push;

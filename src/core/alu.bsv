@@ -105,7 +105,7 @@ package alu;
 		Flush_type flush=None;
     `ifdef bpu
       if(inst_type==JAL || inst_type==JALR) 
-        flush=CheckNPC;
+        flush=CheckRPC;
       else if(inst_type==BRANCH)
         if(final_output[0]==1) // actually taken then check the NPC for target address.
           flush=CheckRPC;

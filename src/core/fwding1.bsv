@@ -43,21 +43,20 @@ package fwding1;
 
 		method Action fwd_from_exe (Bit#(XLEN) d, Bit#(TLog#(PRFDEPTH)) index);
 		method Action fwd_from_mem (Bit#(XLEN) d, Bit#(TLog#(PRFDEPTH)) index);
-    interface Get#(Bit#(TLog#(PRFDEPTH))) get_index;
+    method Action invalidate_index(Bit#(TLog#(PRFDEPTH)) ind);
     method Action flush_mapping;
   endinterface
 
   (*synthesize*)
   (*conflict_free="fwd_from_exe, fwd_from_mem"*)
-  (*conflict_free="fwd_from_exe, get_index_get"*)
-  (*conflict_free="get_index_get, fwd_from_mem"*)
+  (*conflict_free="fwd_from_exe, invalidate_index"*)
+  (*conflict_free="invalidate_index, fwd_from_mem"*)
   module mkfwding(Ifc_fwding);
     Reg#(FwdType#(XLEN)) fwd_data [valueOf(PRFDEPTH)-1];
     for(Integer i=0;i<= 32;i=i+ 1)begin
       if(i<valueOf(PRFDEPTH)-1)
         fwd_data[i]<- mkReg(tagged Absent); 
     end
-    Reg#(Bit#(TLog#(PRFDEPTH))) rg_index <- mkReg(0);
     method Action flush_mapping;
       for(Integer i=0;i<valueOf(PRFDEPTH)-1;i=i+1)begin
         fwd_data[i]<= tagged Absent;
@@ -65,14 +64,18 @@ package fwding1;
     endmethod
     method ActionValue#(FwdType#(XLEN)) read_rs1 (Bit#(XLEN) rfvalue, Bit#(TLog#(PRFDEPTH)) index);
       FwdType#(XLEN) ret= tagged Present rfvalue;
-      if(index!=3)
+      if(index!=3)begin
         ret=fwd_data[index];
+        $display($time, "\tFWDING: Reading rs1 from prf. Data: %h index %d",fwd_data[index], index);
+      end
       return ret;
     endmethod
     method ActionValue#(FwdType#(XLEN)) read_rs2 (Bit#(XLEN) rfvalue, Bit#(TLog#(PRFDEPTH)) index);
       FwdType#(XLEN) ret= tagged Present rfvalue;
-      if(index!=3)
+      if(index!=3)begin
         ret=fwd_data[index];
+        $display($time, "\tFWDING: Reading rs2 from prf. Data: %h index %d",fwd_data[index], index);
+      end
       return ret;
     endmethod
     `ifdef spfpu                                                            
@@ -84,21 +87,17 @@ package fwding1;
     endmethod
     `endif
 		method Action fwd_from_exe (Bit#(XLEN) d, Bit#(TLog#(PRFDEPTH)) index);
+      $display($time, "\tFWDING: Got fwded data from exe. Data: %h index: %d", d, index);
 			fwd_data[index]<=tagged Present d;	
 		endmethod
 		method Action fwd_from_mem (Bit#(XLEN) d, Bit#(TLog#(PRFDEPTH)) index);
+      $display($time, "\tFWDING: Got fwded data from mem. Data: %h index: %d", d, index);
 			fwd_data[index]<=tagged Present d;	
 		endmethod
-    interface get_index = interface Get
-      method ActionValue#(Bit#(TLog#(PRFDEPTH))) get;
-        fwd_data[rg_index]<= tagged Absent;
-        if(rg_index==2)
-          rg_index<= 0;
-        else
-          rg_index<= rg_index+ 1;
-        return rg_index;
+    method Action invalidate_index(Bit#(TLog#(PRFDEPTH)) ind);
+        fwd_data[ind]<= tagged Absent;
+        $display($time, "\tFWDING: Sending renamed index for rd: %d", ind);
       endmethod
-    endinterface;
   endmodule
 
 endpackage

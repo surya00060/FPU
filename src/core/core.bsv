@@ -62,6 +62,9 @@ package core;
 			method Action clint_mtip(Bit#(1) intrpt);
 			method Action clint_mtime(Bit#(XLEN) c_mtime);
 		`endif
+    `ifdef simulate
+      interface Get#(DumpType) dump;
+    `endif
 		/*-========================================================================== */
 	endinterface
 
@@ -272,5 +275,8 @@ package core;
 			method Action clint_mtip(Bit#(1) intrpt)=riscv.clint_mtip(intrpt);
 			method Action clint_mtime(Bit#(XLEN) c_mtime)=riscv.clint_mtime(c_mtime);
 		`endif
+    `ifdef simulate
+      interface dump = riscv.dump;
+    `endif
 	endmodule
 endpackage

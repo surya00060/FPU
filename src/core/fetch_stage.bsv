@@ -100,7 +100,6 @@ package fetch_stage;
 				end
 				tx.u.enq(IF_ID_type{program_counter:pc,
 										  instruction:instruction[31:0],
-										  nextpc:npc,
 										  prediction:prediction,
 										  accesserr_pagefault:'d0,  // TODO captuer only 2 bits for errors
 										  epochs:{eEpoch,wEpoch}

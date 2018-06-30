@@ -26,11 +26,11 @@ package Soc;
 	import ConcatReg::*;
 	import AXI4_Types::*;
 	import AXI4_Fabric::*;
-	import defined_types::*;
+	import common_types::*;
 	import MemoryMap		 :: *;
 	import slow_peripherals::*;
 	`include "defines.bsv"
-	`include "defined_parameters.bsv"
+	`include "common_params.bsv"
 
 		`ifdef DMA
 			import DMA				 :: *;
@@ -102,10 +102,13 @@ package Soc;
     `ifdef FlexBus
         interface FlexBus_Master_IFC flexbus_out;
     `endif
+    `ifdef simulate
+      interface Get#(DumpType) dump;
+    `endif
 
 	endinterface
 	(*synthesize*)
-	module mkSoc #(Bit#(`VADDR) reset_vector, Clock slow_clock, Reset slow_reset, Clock uart_clock, 
+	module mkSoc #(Bit#(VADDR) reset_vector, Clock slow_clock, Reset slow_reset, Clock uart_clock, 
                  Reset uart_reset, Clock clk0, Clock tck, Reset trst
                  `ifdef PWM_AXI4Lite ,Clock ext_pwm_clock `endif )(Ifc_Soc);
 		Clock core_clock <-exposeCurrentClock; // slow peripheral clock
@@ -149,7 +152,7 @@ package Soc;
           `ifdef PWM_AXI4Lite , ext_pwm_clock `endif );	
 
    	// Fabric
-   	AXI4_Fabric_IFC #(Num_Masters, Num_Slaves, `PADDR, `Reg_width,`USERSPACE)
+   	AXI4_Fabric_IFC #(Num_Masters, Num_Slaves, PADDR, XLEN,0)
 		 		fabric <- mkAXI4_Fabric(fn_addr_to_slave_num);
 
    	// Connect traffic generators to fabric
@@ -257,7 +260,7 @@ package Soc;
 		`ifdef CLINT
 			SyncBitIfc#(Bit#(1)) clint_mtip_int <-mkSyncBitToCC(slow_clock,slow_reset);
 			SyncBitIfc#(Bit#(1)) clint_msip_int <-mkSyncBitToCC(slow_clock,slow_reset);
-			Reg#(Bit#(`Reg_width)) clint_mtime_value <-mkSyncRegToCC(0,slow_clock,slow_reset);
+			Reg#(Bit#(XLEN)) clint_mtime_value <-mkSyncRegToCC(0,slow_clock,slow_reset);
 			rule synchronize_clint_data;
 				clint_mtip_int.send(slow_peripherals.mtip_int);
 				clint_msip_int.send(slow_peripherals.msip_int);
@@ -275,9 +278,11 @@ package Soc;
 				let note <- slow_peripherals.intrpt_note;
 				plic_interrupt_note<=note;
 			endrule
-         rule rl_send_external_interrupt_to_csr;
+      /* TODO
+      rule rl_send_external_interrupt_to_csr;
 				core.set_external_interrupt(plic_interrupt_note);
 			endrule
+      */
 		`endif
 
 		`ifdef VME
@@ -310,6 +315,9 @@ package Soc;
 			method Bit#(1) tdo_oe=tap.tdo_oe;
 		`endif
 		interface slow_ios=slow_peripherals.slow_ios;
+    `ifdef simulate
+      interface dump=core.dump;
+    `endif
 
 	endmodule
 endpackage

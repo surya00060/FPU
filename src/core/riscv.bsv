@@ -89,9 +89,24 @@ package riscv;
 
     let {flush_from_exe, flushpc_from_exe}=stage3.flush_from_exe;
     let {flush_from_wb, flushpc_from_wb}=stage4.flush;
+    let {decode_firing, rd_index}=stage2.fetch_rd_index;
 
     mkConnection(stage2.commit_rd, stage4.commit_rd);
-    mkConnection(stage3.get_index,  stage2.get_index);
+
+    rule flush_stage1_2(flush_from_exe != None || flush_from_wb);
+      $display($time, "\tRISCV: Clearing all FIFOs: flush_from_wb: %b flush_from_exe: ",
+          flush_from_wb, fshow(flush_from_exe));
+      pipe1.clear;
+      pipe2.clear;
+    endrule
+    rule flush_stage3(flush_from_wb);
+      pipe3.clear;
+    endrule
+
+    rule connect_get_index(decode_firing);
+      $display($time, "\tFIRING");
+      stage3.invalidate_index(rd_index);
+    endrule
     mkConnection(stage3.fwd_from_mem, stage4.fwd_from_mem);
     rule flush_stage1(flush_from_exe!=None||flush_from_wb);
       if(flush_from_wb)
@@ -107,8 +122,10 @@ package riscv;
     endrule
     rule upd_stage2eEpoch(flush_from_exe!=None);
       stage2.update_eEpoch();
+      stage1.update_eEpoch();
     endrule
     rule upd_stage2wEpoch(flush_from_wb);
+      stage1.update_wEpoch();
       stage2.update_wEpoch();
       stage3.update_wEpoch();
     endrule
