@@ -145,8 +145,10 @@ package registerfile;
           arr_rename_float[rd]<= tagged Valid rd_index; 
         else
       `endif
-      if(rd!=0)
+      if(rd!=0) begin
+        $display($time, "\tRF: Renaming Register: %d with index: %d", rd, rd_index);
         arr_rename_int[rd]<= tagged Valid rd_index; 
+      end
         
       `ifdef spfpu
         return tuple6(rs1, rs2, rs3, rs1index, rs2index, rs3index);
@@ -206,6 +208,7 @@ package registerfile;
       endmethod
 		`endif
     method Action reset_renaming;
+      $display($time, "\tRF: flushing all renaming");
       for (Integer i=0;i<32;i=i+1) begin
         arr_rename_int[i]<= tagged Invalid;
         `ifdef spfpu
