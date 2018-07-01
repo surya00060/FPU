@@ -671,6 +671,9 @@ package dcache_asic;
 			  	wr_response_to_cpu<=tagged Valid (tuple4(0,ff_write_response_from_memory.first.bus_error==1?tagged Exception Store_access_fault:tagged None,rg_perf_monitor,rg_insn_epoch));
 				  wbEpoch[0]<=ff_write_response_from_memory.first.bus_error==1?~wbEpoch[0]:wbEpoch[0];
   			end
+      `else
+			  wr_response_to_cpu<=tagged Valid (tuple4(0,ff_write_response_from_memory.first.bus_error==1?tagged Exception Store_access_fault:tagged None,rg_perf_monitor,rg_insn_epoch));
+				wbEpoch[0]<=ff_write_response_from_memory.first.bus_error==1?~wbEpoch[0]:wbEpoch[0];
       `endif
 			rg_perf_monitor<=0;
 			rg_state[0]<=Idle;
