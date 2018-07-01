@@ -262,7 +262,7 @@ package decoder;
         (opcode==`SYSTEM_INSTR_op && funct3[2]==1))	
 			rs1=0;
 		if (opcode==`SYSTEM_INSTR_op || opcode[4:2]=='b000 || opcode==`LUI_op // CSR or (Load) or LUI 
-  			 ||opcode == `AUIPC_op || opcode==`JAL_op || opcode==`JALR_op	// AUIPC or JAL or JALR
+  			 ||opcode[4:2] == 'b001 || opcode==`JAL_op || opcode==`JALR_op	// AUIPC or JAL or JALR
          `ifdef spfpu || (opcode[4:2]=='b101 && funct7[5]==1) `endif )
 			rs2=0;
 		if (opcode==`BRANCH_op || opcode[4:1]=='b0100)	
