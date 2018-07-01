@@ -8,7 +8,7 @@ export SHAKTI_C_HOME=$$PWD
 
 TOP_MODULE:=mkTbSoc
 TOP_FILE:=TbSoc.bsv
-TOP_DIR:=./src/testbench/
+TOP_DIR:=./src/testbench
 WORKING_DIR := $(shell pwd)
 
 ifneq (,$(findstring RV64,$(ISA)))
@@ -80,6 +80,9 @@ endif
 ifeq ($(FlexBus_verify),enable)
   define_macros += -D FlexBus_verify=True
 endif
+ifeq ($(VERBOSE),enable)
+	define_macros += -D verbose=True
+endif
 ifeq ($(FlexBus),enable)
   define_macros += -D FlexBus=True
   ifeq ($(VERBOSE),enable)
@@ -130,7 +133,7 @@ ifeq ($(PWM),AXI4)
   define_macros += -D PWM=True -D PWM_AXI4=True
 endif
 
-define_macros += -D supervisor=$(SUPERVISOR) -D user=$(USER) -D usertraps=$(USERTRAPS) -D VERBOSITY=$(VERBOSITY)
+define_macros += -D supervisor=$(SUPERVISOR) -D user=$(USER) -D usertraps=$(USERTRAPS) -D VERBOSITY=$(VERBOSITY) 
 
 PERIPHERALS:=src/peripherals/bootrom:src/peripherals/clint:./src/peripherals/vme:src/peripherals/plic:./src/peripherals/uart/:./src/peripherals/tcm/:./src/peripherals/jtagdtm:./src/peripherals/gpio:./src/peripherals/qspi:./src/peripherals/i2c/:./src/peripherals/sdram:./src/peripherals/axiexp:./src/peripherals/dma:./src/peripherals/pwm:./src/peripherals/flexbus
 UNCORE:=./src/uncore:./src/uncore/debug:./src/uncore/axi4lite
