@@ -66,6 +66,8 @@ package registerfile;
 	endinterface
 
 	(*synthesize*)
+  (*preempts="reset_renaming, commit_rd_put"*)
+  (*preempts="reset_renaming, opaddress"*)
 	module mkregisterfile(Ifc_registerfile);
     Integer verbosity = `VERBOSITY;
 		RegFile#(Bit#(5),Bit#(XLEN)) integer_rf <-mkRegFileWCF(0,31);
@@ -146,7 +148,8 @@ package registerfile;
         else
       `endif
       if(rd!=0) begin
-        $display($time, "\tRF: Renaming Register: %d with index: %d", rd, rd_index);
+        if(verbosity>1)
+          $display($time, "\tRF: Renaming Register: %d with index: %d", rd, rd_index);
         arr_rename_int[rd]<= tagged Valid rd_index; 
       end
         
@@ -178,7 +181,8 @@ package registerfile;
 				if(r!=0)begin
 					integer_rf.upd(r,d);
           if(arr_rename_int[r] matches tagged Valid .x &&& x == index)begin
-            $display($time, "\tRF: Rename value: %d", x);
+            if(verbosity>1)
+              $display($time, "\tRF: Rename value: %d", x);
             arr_rename_int[r]<= tagged Invalid;
           end
 				end
@@ -208,7 +212,8 @@ package registerfile;
       endmethod
 		`endif
     method Action reset_renaming;
-      $display($time, "\tRF: flushing all renaming");
+      if(verbosity>1)
+        $display($time, "\tRF: flushing all renaming");
       for (Integer i=0;i<32;i=i+1) begin
         arr_rename_int[i]<= tagged Invalid;
         `ifdef spfpu

@@ -107,6 +107,7 @@ package stage2;
 		method Action update_wEpoch;
     interface Put#(Bit#(2))  get_index;
     method Tuple2#(Bool, Bit#(TLog#(PRFDEPTH))) fetch_rd_index;
+    method Action reset_renaming;
 	endinterface:Ifc_stage2
 
   (*synthesize*)
@@ -215,9 +216,6 @@ package stage2;
         rg_wfi<=wfi;
       end  
     endrule
-    rule display_op_complete;
-      $display($time, "\tEXECUTE: wr_op_complete: %b", wr_op_complete); 
-    endrule
 
 		method tx_out=tx.e;
 		method rx_in=rx.e;
@@ -245,9 +243,11 @@ package stage2;
     method fetch_rd_index = tuple2(wr_op_complete, wr_rd_index);
     interface get_index= interface Put
       method Action put (Bit#(2) index);
-        $display($time, "\tREGFILE: Got renamed index for rd:", index);
+        if(verbosity>1)
+          $display($time, "\tREGFILE: Got renamed index for rd:", index);
         registerfile.get_index(index);
       endmethod
     endinterface;
+    method reset_renaming=registerfile.reset_renaming;
   endmodule
 endpackage

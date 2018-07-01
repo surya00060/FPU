@@ -71,6 +71,8 @@ package riscv;
 
   (*synthesize*)
   module mkriscv(Ifc_riscv);
+    let verbosity = `VERBOSITY ;
+
     Ifc_fetch stage1 <- mkfetch('h1000);
     Ifc_stage2 stage2 <- mkstage2();
     Ifc_stage3 stage3 <- mkstage3();
@@ -94,6 +96,7 @@ package riscv;
     mkConnection(stage2.commit_rd, stage4.commit_rd);
 
     rule flush_stage1_2(flush_from_exe != None || flush_from_wb);
+      if(verbosity>1)
       $display($time, "\tRISCV: Clearing all FIFOs: flush_from_wb: %b flush_from_exe: ",
           flush_from_wb, fshow(flush_from_exe));
       pipe1.clear;
@@ -102,9 +105,11 @@ package riscv;
     rule flush_stage3(flush_from_wb);
       pipe3.clear;
     endrule
+    rule flush_rename_mapping(flush_from_exe!=None || flush_from_wb);
+      stage2.reset_renaming;
+    endrule
 
     rule connect_get_index(decode_firing);
-      $display($time, "\tFIRING");
       stage3.invalidate_index(rd_index);
     endrule
     mkConnection(stage3.fwd_from_mem, stage4.fwd_from_mem);
