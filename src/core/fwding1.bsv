@@ -52,6 +52,7 @@ package fwding1;
   (*conflict_free="fwd_from_exe, invalidate_index"*)
   (*conflict_free="invalidate_index, fwd_from_mem"*)
   module mkfwding(Ifc_fwding);
+    let verbosity = `VERBOSITY ;
     Reg#(FwdType#(XLEN)) fwd_data [valueOf(PRFDEPTH)-1];
     for(Integer i=0;i<= 32;i=i+ 1)begin
       if(i<valueOf(PRFDEPTH)-1)
@@ -66,7 +67,8 @@ package fwding1;
       FwdType#(XLEN) ret= tagged Present rfvalue;
       if(index!=3)begin
         ret=fwd_data[index];
-        $display($time, "\tFWDING: Reading rs1 from prf. Data: %h index %d",fwd_data[index], index);
+        if(verbosity>1)
+          $display($time, "\tFWDING: Reading rs1 from prf. Data: %h index %d",fwd_data[index], index);
       end
       return ret;
     endmethod
@@ -74,7 +76,8 @@ package fwding1;
       FwdType#(XLEN) ret= tagged Present rfvalue;
       if(index!=3)begin
         ret=fwd_data[index];
-        $display($time, "\tFWDING: Reading rs2 from prf. Data: %h index %d",fwd_data[index], index);
+        if(verbosity>1)
+          $display($time, "\tFWDING: Reading rs2 from prf. Data: %h index %d",fwd_data[index], index);
       end
       return ret;
     endmethod
@@ -87,17 +90,20 @@ package fwding1;
     endmethod
     `endif
 		method Action fwd_from_exe (Bit#(XLEN) d, Bit#(TLog#(PRFDEPTH)) index);
-      $display($time, "\tFWDING: Got fwded data from exe. Data: %h index: %d", d, index);
+      if(verbosity>1)
+        $display($time, "\tFWDING: Got fwded data from exe. Data: %h index: %d", d, index);
 			fwd_data[index]<=tagged Present d;	
 		endmethod
 		method Action fwd_from_mem (Bit#(XLEN) d, Bit#(TLog#(PRFDEPTH)) index);
-      $display($time, "\tFWDING: Got fwded data from mem. Data: %h index: %d", d, index);
+      if(verbosity>1)
+        $display($time, "\tFWDING: Got fwded data from mem. Data: %h index: %d", d, index);
 			fwd_data[index]<=tagged Present d;	
 		endmethod
     method Action invalidate_index(Bit#(TLog#(PRFDEPTH)) ind);
-        fwd_data[ind]<= tagged Absent;
+      fwd_data[ind]<= tagged Absent;
+      if(verbosity>1)
         $display($time, "\tFWDING: Sending renamed index for rd: %d", ind);
-      endmethod
+    endmethod
   endmodule
 
 endpackage

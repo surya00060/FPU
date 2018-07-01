@@ -162,14 +162,13 @@ package stage3;
       if(trap matches tagged None &&& execute_instruction)begin
 
         let {redirect_result, redirect_pc `ifdef bpu , npc `endif }=check_rpc;
-        $display($time, "\tEXECUTE: Redirect_result: ", fshow(redirect_result), " rpc: %h",
-            redirect_pc);
         if(redirect_result==CheckRPC && pc!=redirect_pc `ifdef bpu || 
                                                   redirect_result==CheckNPC && pc!=npc `endif )begin
             // generate flush here
           wr_flush_from_exe<=Regular;
           if(redirect_result==CheckRPC)begin
-            $display($time, "\tEXECUTE: Raising a flush due to pc mismatch. New PC: %h", redirect_pc);
+            if(verbosity>0)
+              $display($time, "\tEXECUTE: Raising a flush due to pc mismatch. New PC: %h", redirect_pc);
             wr_redirect_pc<= redirect_pc;
           end
           `ifdef bpu
@@ -177,7 +176,8 @@ package stage3;
             // or is pc+ 4?
             else begin
               wr_redirect_pc<= npc;
-              $display($time, "\tEXECUTE: Raising a flush due to pc mismatch. New PC: %h", npc);
+              if(verbosity>0)
+                $display($time, "\tEXECUTE: Raising a flush due to pc mismatch. New PC: %h", npc);
             end
           `endif
           eEpoch<= ~eEpoch;
@@ -198,7 +198,7 @@ package stage3;
             let {cmtype, out, addr, trap1, redirect} = fn_alu(fn, new_op1, x2, t3, truncate(x4), 
                                 instrtype, funct3, pc, memaccess, word32 `ifdef bpu ,pred `endif );
             
-            if(verbosity>0)begin
+            if(verbosity>1)begin
               $display($time, "\tEXECUTE: cmtype: ", fshow(cmtype), " out: %h addr: %h trap:", out,
                    addr, fshow(trap1), "redirect ", fshow(redirect));
               $display($time, "\tEXECUTE: x1: %h,  x2: %h,  op3: %h, x4: %h", x1, x2, op3, x4);

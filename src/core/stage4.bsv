@@ -120,7 +120,7 @@ package stage4;
         wr_flush<=tuple2(True, newpc);
         rg_epoch <= ~rg_epoch;
         rx.u.deq;
-        if(verbosity!=0)
+        if(verbosity>0)
           $display($time, "\tWBMEM: Received Interrupt: ", fshow(trap));
       end
       else if(rg_epoch==epoch)begin
@@ -135,6 +135,9 @@ package stage4;
         end
         else if(committype == MEMORY) begin
           if (wr_memory_response matches tagged Valid .resp)begin
+            if(verbosity>1)
+              $display($time, "\tWBMEM: Got response from the Memory");
+            
             let {data, err, access_type}=resp;
             if(!err)begin // no bus error
               wr_operand_fwding <= tagged Valid tuple2(data, rdindex);
@@ -148,7 +151,7 @@ package stage4;
               `endif
             end
             else begin
-              if(verbosity!=0)
+              if(verbosity>1)
                 $display($time, "\tWBMEM: Received Exception from Memory: ", fshow(resp));
               if(access_type == Load)
                 trap = tagged Exception Load_access_fault;
@@ -159,6 +162,8 @@ package stage4;
             end
             rx.u.deq;
           end
+          else if(verbosity>1)
+            $display($time, "\tWBMEM: Waiting for response from the Memory");
         end
         else if(committype == SYSTEM_INSTR)begin
           let {drain, newpc, dest}<-csr.system_instruction(csrfield[11:0], 
@@ -179,7 +184,6 @@ package stage4;
         end
         else begin
           // in case of regular instruction simply update RF and forward the data.
-          $display($time, "\tWBMEM: Commiting PC: %h", pc);
           `ifdef spfpu
             wr_commit <= tagged Valid (tuple4(rdaddr, rd, rdindex, rdtype));
           `else
@@ -201,7 +205,7 @@ package stage4;
 
       end
       else begin
-        if(verbosity!=0)
+        if(verbosity>1)
           $display($time, "\tWBMEM: Dropping instruction");
         rx.u.deq;
       end
