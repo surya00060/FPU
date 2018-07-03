@@ -208,9 +208,9 @@ typedef struct {
   // ------------------------------------------------------------------------------------------
 
   `ifdef spfpu
-    typedef Tuple6#(Bit#(XLEN), Bit#(XLEN), Bit#(XLEN), Bit#(2), Bit#(2), Bit#(2)) Operands ;
+    typedef Tuple6#(Bit#(XLEN), Bit#(XLEN), Bit#(XLEN), Bit#(3), Bit#(3), Bit#(3)) Operands ;
   `else
-    typedef Tuple4#(Bit#(XLEN), Bit#(XLEN), Bit#(2), Bit#(2)) Operands ;
+    typedef Tuple4#(Bit#(XLEN), Bit#(XLEN), Bit#(3), Bit#(3)) Operands ;
   `endif
 
   // define all tuples here
@@ -285,16 +285,16 @@ typedef struct {
   
   // ---------- Tuples for the second Pipeline Stage -----------//
   `ifdef spfpu
-    typedef Tuple6#(Bit#(2),     // rs1addr
-                  Bit#(2),     // rs2addr
-                  Bit#(2),   // rs3addr ifdef spfpu
+    typedef Tuple6#(Bit#(3),     // rs1addr
+                  Bit#(3),     // rs2addr
+                  Bit#(3),   // rs3addr ifdef spfpu
                   Bit#(2),  // rd rename index 
                   Op3type,  // rdtype
                   Instruction_type // instr_type
                   ) OpTypes;
   `else
-    typedef Tuple4#(Bit#(2),     // rs1addr
-                    Bit#(2),     // rs2addr
+    typedef Tuple4#(Bit#(3),     // rs1addr
+                    Bit#(3),     // rs2addr
                     Bit#(2),  // rd rename index 
                     Instruction_type // instr_type
                   ) OpTypes;

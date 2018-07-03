@@ -35,15 +35,15 @@ package fwding1;
   import GetPut::*;
 
   interface Ifc_fwding;
-    method ActionValue#(FwdType#(XLEN)) read_rs1 (Bit#(XLEN) rfvalue, Bit#(TLog#(PRFDEPTH)) index);
-    method ActionValue#(FwdType#(XLEN)) read_rs2 (Bit#(XLEN) rfvalue, Bit#(TLog#(PRFDEPTH)) index);
+    method ActionValue#(FwdType#(XLEN)) read_rs1 (Bit#(XLEN) rfvalue, Bit#(3) index);
+    method ActionValue#(FwdType#(XLEN)) read_rs2 (Bit#(XLEN) rfvalue, Bit#(3) index);
     `ifdef spfpu                                              
-    method ActionValue#(FwdType#(XLEN)) read_rs3 (Bit#(XLEN) rfvalue, Bit#(TLog#(PRFDEPTH)) index);
+    method ActionValue#(FwdType#(XLEN)) read_rs3 (Bit#(XLEN) rfvalue, Bit#(3) index);
     `endif
 
-		method Action fwd_from_exe (Bit#(XLEN) d, Bit#(TLog#(PRFDEPTH)) index);
-		method Action fwd_from_mem (Bit#(XLEN) d, Bit#(TLog#(PRFDEPTH)) index);
-    method Action invalidate_index(Bit#(TLog#(PRFDEPTH)) ind);
+		method Action fwd_from_exe (Bit#(XLEN) d, Bit#(2) index);
+		method Action fwd_from_mem (Bit#(XLEN) d, Bit#(2) index);
+    method Action invalidate_index(Bit#(2) ind);
     method Action flush_mapping;
   endinterface
 
@@ -53,9 +53,9 @@ package fwding1;
   (*conflict_free="invalidate_index, fwd_from_mem"*)
   module mkfwding(Ifc_fwding);
     let verbosity = `VERBOSITY ;
-    Reg#(FwdType#(XLEN)) fwd_data [valueOf(PRFDEPTH)-1];
+    Reg#(FwdType#(XLEN)) fwd_data [valueOf(PRFDEPTH)];
     for(Integer i=0;i<= 32;i=i+ 1)begin
-      if(i<valueOf(PRFDEPTH)-1)
+      if(i<valueOf(PRFDEPTH))
         fwd_data[i]<- mkReg(tagged Absent); 
     end
     method Action flush_mapping;
@@ -63,43 +63,45 @@ package fwding1;
         fwd_data[i]<= tagged Absent;
       end
     endmethod
-    method ActionValue#(FwdType#(XLEN)) read_rs1 (Bit#(XLEN) rfvalue, Bit#(TLog#(PRFDEPTH)) index);
+    method ActionValue#(FwdType#(XLEN)) read_rs1 (Bit#(XLEN) rfvalue, Bit#(3) index);
       FwdType#(XLEN) ret= tagged Present rfvalue;
-      if(index!=3)begin
-        ret=fwd_data[index];
+      if(index!=4)begin
+        ret=fwd_data[index[1:0]];
         if(verbosity>1)
-          $display($time, "\tFWDING: Reading rs1 from prf. Data: %h index %d",fwd_data[index], index);
+          $display($time, "\tFWDING: Reading rs1 from prf. Data: %h index\
+                %d",fwd_data[index[1:0]], index);
       end
       return ret;
     endmethod
-    method ActionValue#(FwdType#(XLEN)) read_rs2 (Bit#(XLEN) rfvalue, Bit#(TLog#(PRFDEPTH)) index);
+    method ActionValue#(FwdType#(XLEN)) read_rs2 (Bit#(XLEN) rfvalue, Bit#(3) index);
       FwdType#(XLEN) ret= tagged Present rfvalue;
-      if(index!=3)begin
-        ret=fwd_data[index];
+      if(index!=4)begin
+        ret=fwd_data[index[1:0]];
         if(verbosity>1)
-          $display($time, "\tFWDING: Reading rs2 from prf. Data: %h index %d",fwd_data[index], index);
+          $display($time, "\tFWDING: Reading rs2 from prf. Data: %h index\
+                %d",fwd_data[index[1:0]], index);
       end
       return ret;
     endmethod
     `ifdef spfpu                                                            
-    method ActionValue#(FwdType#(XLEN)) read_rs3 (Bit#(XLEN) rfvalue, Bit#(TLog#(PRFDEPTH)) index);
+    method ActionValue#(FwdType#(XLEN)) read_rs3 (Bit#(XLEN) rfvalue, Bit#(3) index);
       FwdType#(XLEN) ret= tagged Present rfvalue;
-      if(index!=3)
-        ret=fwd_data[index];
+      if(index!=4)
+        ret=fwd_data[truncate(index)];
       return ret;
     endmethod
     `endif
-		method Action fwd_from_exe (Bit#(XLEN) d, Bit#(TLog#(PRFDEPTH)) index);
+		method Action fwd_from_exe (Bit#(XLEN) d, Bit#(2) index);
       if(verbosity>1)
         $display($time, "\tFWDING: Got fwded data from exe. Data: %h index: %d", d, index);
 			fwd_data[index]<=tagged Present d;	
 		endmethod
-		method Action fwd_from_mem (Bit#(XLEN) d, Bit#(TLog#(PRFDEPTH)) index);
+		method Action fwd_from_mem (Bit#(XLEN) d, Bit#(2) index);
       if(verbosity>1)
         $display($time, "\tFWDING: Got fwded data from mem. Data: %h index: %d", d, index);
 			fwd_data[index]<=tagged Present d;	
 		endmethod
-    method Action invalidate_index(Bit#(TLog#(PRFDEPTH)) ind);
+    method Action invalidate_index(Bit#(2) ind);
       fwd_data[ind]<= tagged Absent;
       if(verbosity>1)
         $display($time, "\tFWDING: Sending renamed index for rd: %d", ind);

@@ -60,28 +60,28 @@ package registerfile;
       method ActionValue#(Bit#(XLEN)) read_write_gprs(Bit#(5) r, Bit#(XLEN) data, Bool rw 
           `ifdef spfpu ,Op3type rfselect `endif );
 		`endif
-    interface Put#(CommitData) commit_rd;
-    method Action get_index(Bit#(2) index);
+		method Action commit_rd (Maybe#(CommitData) commit);
     method Action reset_renaming;
 	endinterface
 
 	(*synthesize*)
-  (*preempts="reset_renaming, commit_rd_put"*)
   (*preempts="reset_renaming, opaddress"*)
+  (*conflict_free="opaddress, commit_rd"*)
+  (*conflict_free="reset_renaming, commit_rd"*)
 	module mkregisterfile(Ifc_registerfile);
     Integer verbosity = `VERBOSITY;
 		RegFile#(Bit#(5),Bit#(XLEN)) integer_rf <-mkRegFileWCF(0,31);
-    Reg#(Maybe#(Bit#(2))) arr_rename_int [32];
+    Reg#(Maybe#(Bit#(TLog#(PRFDEPTH)))) arr_rename_int [32];
 		`ifdef spfpu 
 			RegFile#(Bit#(5),Bit#(XLEN)) floating_rf <-mkRegFileWCF(0,31);
       Reg#(Maybe#(Bit#(2))) arr_rename_float [32];
 		`endif
 		Reg#(Bool) initialize<-mkReg(True);
 		Reg#(Bit#(5)) rg_index<-mkReg(0);
-    Wire#(Bit#(2)) wr_rename_index <- mkDWire(3);
+    Wire#(Bit#(5)) wr_rename_reg<- mkDWire(0);
 
     for (Integer i=0;i<32;i=i+1) begin
-      arr_rename_int[i]<- mkReg(tagged Invalid);
+      arr_rename_int[i]<- mkConfigReg(tagged Invalid);
       `ifdef spfpu
         arr_rename_float[i]<- mkReg(tagged Invalid);
       `endif
@@ -114,14 +114,19 @@ package registerfile;
 
       Bit#(XLEN) rs1, rs2 `ifdef spfpu , rs3 `endif ;
 
-      Bit#(2) rs1index=fromMaybe(3, arr_rename_int[rs1addr]); 
-      Bit#(2) rs2index=fromMaybe(3, arr_rename_int[rs2addr]); 
+      
+      Bit#(3) rs1index=4;
+      if(arr_rename_int[rs1addr] matches tagged Valid .r1index) 
+        rs1index=zeroExtend(r1index);
+      Bit#(3) rs2index=4; 
+      if(arr_rename_int[rs2addr] matches tagged Valid .r2index) 
+        rs2index=zeroExtend(r2index);
 
       `ifdef spfpu
-        Bit#(2) rs3index=fromMaybe(3, arr_rename_int[rs3addr]); 
+        Bit#(3) rs3index=fromMaybe(4, arr_rename_int[rs3addr]); 
         if(rs1type==FloatingRF)begin
           rs1=rs1frf;
-          rs1index=fromMaybe(3, arr_rename_float[rs1addr]); 
+          rs1index=fromMaybe(4, arr_rename_float[rs1addr]); 
         end
         else 
       `endif
@@ -130,7 +135,7 @@ package registerfile;
       `ifdef spfpu
         if(rs2type==FloatingRF)begin
           rs2=rs2frf;
-          rs2index=fromMaybe(3, arr_rename_float[rs2addr]); 
+          rs2index=fromMaybe(4, arr_rename_float[rs2addr]); 
         end
         else
       `endif
@@ -147,6 +152,7 @@ package registerfile;
           arr_rename_float[rd]<= tagged Valid rd_index; 
         else
       `endif
+      wr_rename_reg<= rd;
       if(rd!=0) begin
         if(verbosity>1)
           $display($time, "\tRF: Renaming Register: %d with index: %d", rd, rd_index);
@@ -160,34 +166,37 @@ package registerfile;
       `endif
 		endmethod
 
-    interface commit_rd= interface Put
-		method Action put (CommitData in) if(!initialize);
-      `ifdef spfpu
-        let{r, d, index, rdtype}=in;
-      `else
-        let{r, d, index}=in;
-      `endif
-			if(verbosity>0)
-        $display($time,"\tRF: Writing Rd: %d(%h) index: %d",r,d, index `ifdef spfpu ,fshow(rdtype) `endif ); 
+    // Here we invaildate the renaming regifile on each commit. This is done to make sure that
+    // we avoid reading into the wrong renamed-register in the next stage. 
+		method Action commit_rd (Maybe#(CommitData) commit) if(!initialize);
+      if(commit matches tagged Valid .in)begin
+        `ifdef spfpu
+          let{r, d, index, rdtype}=in;
+        `else
+          let{r, d, index}=in;
+        `endif
+			  if(verbosity>0)
+          $display($time,"\tRF: Writing Rd: %d(%h) index: %d ",r,d, index);
 
-      `ifdef spfpu
-        if(rdtype==FRF)begin
-				  floating_rf.upd(r,d);
-          if(arr_rename_float[r] matches tagged Valid .x &&& x == index)
-            arr_rename_float[r]<= tagged Invalid;
-        end
-        else
-      `endif
-				if(r!=0)begin
-					integer_rf.upd(r,d);
-          if(arr_rename_int[r] matches tagged Valid .x &&& x == index)begin
-            if(verbosity>1)
-              $display($time, "\tRF: Rename value: %d", x);
-            arr_rename_int[r]<= tagged Invalid;
+        `ifdef spfpu
+          if(rdtype==FRF)begin
+			  	  floating_rf.upd(r,d);
+            if(arr_rename_float[r] matches tagged Valid .x &&& x == index)
+              arr_rename_float[r]<= tagged Invalid;
           end
-				end
+          else
+        `endif
+			  if(r!=0)begin
+			  	integer_rf.upd(r,d);
+          if(arr_rename_int[r] matches tagged Valid .x &&& x == index &&& wr_rename_reg!=r)begin
+            if(verbosity>1)
+              $display($time, "\tRF: Commit rename index: %d rd: %d wr_rename_reg: %d", x, r,
+              wr_rename_reg);
+              arr_rename_int[r]<= tagged Invalid;
+          end
+			  end
+      end
 		endmethod
-    endinterface;
 		`ifdef Debug
       method ActionValue#(Bit#(XLEN)) read_write_gprs(Bit#(5) r, Bit#(XLEN) data, Bool rw 
           `ifdef spfpu ,Op3type rfselect `endif ) if(!initialize);
@@ -221,5 +230,6 @@ package registerfile;
         `endif
       end
     endmethod
+
 	endmodule
 endpackage
