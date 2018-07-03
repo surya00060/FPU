@@ -143,7 +143,7 @@ package stage3;
       Bit#(VADDR) pc = (instrtype==MEMORY || instrtype==JALR)?truncate(op1):truncate(op3);
       
       Bool execute_instruction = ({eEpoch, wEpoch}==epochs);
-      let rs1<- fwding.read_rs1(op1, truncate(rs1addr) );
+      let rs1<- fwding.read_rs1((instrtype==MEMORY || instrtype==JALR)?zeroExtend(op3):op1, truncate(rs1addr) );
       let rs2<- fwding.read_rs2(op2, truncate(rs2addr) );
       `ifdef spfpu
         let rs3<- fwding.read_rs3(rs3addr, op4);
@@ -191,7 +191,7 @@ package stage3;
             Bit#(VADDR) t3=op3;
             // TODO: here we need to exchange op1 (which has been fetched from the prf) and op3 in
             // case of JALR. See if this can be avoided.
-            if(instrtype==JALR)begin 
+            if(instrtype==JALR || instrtype==MEMORY)begin 
               new_op1=op1;
               t3=truncate(x1);
             end
@@ -201,7 +201,7 @@ package stage3;
             if(verbosity>1)begin
               $display($time, "\tEXECUTE: cmtype: ", fshow(cmtype), " out: %h addr: %h trap:", out,
                    addr, fshow(trap1), "redirect ", fshow(redirect));
-              $display($time, "\tEXECUTE: x1: %h,  x2: %h,  op3: %h, x4: %h", x1, x2, op3, x4);
+              $display($time, "\tEXECUTE: x1: %h,  x2: %h,  op3: %h, x4: %h", new_op1, x2, t3, x4);
             end
 
             `ifdef bpu
