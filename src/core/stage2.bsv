@@ -91,7 +91,7 @@ package stage2;
 	/* ====================== */
 
 	interface Ifc_stage2;
-    interface Put#(CommitData) commit_rd;
+		method Action commit_rd (Maybe#(CommitData) commit);
 		/* ===== pipe connections ========= */
 		interface RXe#(IF_ID_type) rx_in;
     (*always_ready*)
@@ -105,13 +105,14 @@ package stage2;
     method Action csr_updated (Bool upd);
 		method Action update_eEpoch;
 		method Action update_wEpoch;
-    interface Put#(Bit#(2))  get_index;
     method Tuple2#(Bool, Bit#(TLog#(PRFDEPTH))) fetch_rd_index;
     method Action reset_renaming;
 	endinterface:Ifc_stage2
 
   (*synthesize*)
-  (*conflict_free="commit_rd_put, decode_and_fetch"*)
+  (*conflict_free="commit_rd, decode_and_fetch"*)
+  (*preempts="reset_renaming, decode_and_fetch"*)
+  (*preempts="reset_renaming, commit_rd"*)
   module mkstage2(Ifc_stage2);
 
     Ifc_registerfile registerfile <-mkregisterfile();
@@ -153,13 +154,9 @@ package stage2;
       
       if(!wfi && {eEpoch, wEpoch}==epochs)begin
         wr_op_complete<= True;
-        
-        if(rd_index==2)
-          rd_index<= 0;
-        else
-          rd_index<= rd_index+ 1;
+        rd_index<= rd_index+ 1;
+        wr_rd_index<= rd_index;
       end
-      wr_rd_index<= rd_index;
 
       let {rs1, rs2 `ifdef spfpu , rs3 `endif , rs1index, rs2index `ifdef spfpu , rs3index `endif }
            <-registerfile.opaddress(rs1addr, rs2addr, rd, rd_index
@@ -222,7 +219,9 @@ package stage2;
     method Action csrs (CSRtoDecode csr);
       wr_csrs<= csr;
     endmethod
-    interface commit_rd=registerfile.commit_rd;
+		method Action commit_rd (Maybe#(CommitData) commit);
+      registerfile.commit_rd(commit);
+    endmethod
 
     // This method will get activated when there is a flush from the execute stage
 		method Action update_eEpoch;
@@ -241,13 +240,6 @@ package stage2;
         rg_stall<= False;
     endmethod
     method fetch_rd_index = tuple2(wr_op_complete, wr_rd_index);
-    interface get_index= interface Put
-      method Action put (Bit#(2) index);
-        if(verbosity>1)
-          $display($time, "\tREGFILE: Got renamed index for rd:", index);
-        registerfile.get_index(index);
-      endmethod
-    endinterface;
     method reset_renaming=registerfile.reset_renaming;
   endmodule
 endpackage

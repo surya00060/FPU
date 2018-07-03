@@ -42,7 +42,7 @@ package stage4;
   interface Ifc_stage4;
     interface RXe#(PIPE3) rx_in;
     interface Put#(Maybe#(Tuple3#(Bit#(XLEN), Bool, Access_type))) memory_response;
-    interface Get#(CommitData) commit_rd;
+    method Maybe#(CommitData) commit_rd;
     interface Get#(Tuple2#(Bit#(XLEN), Bit#(TLog#(PRFDEPTH)))) fwd_from_mem;
     method Tuple2#(Bool, Bit#(VADDR)) flush;
     method CSRtoDecode csrs_to_decode;
@@ -78,7 +78,7 @@ package stage4;
     Wire#(Maybe#(Tuple3#(Bit#(XLEN), Bool,  Access_type))) wr_memory_response <- mkDWire(tagged Invalid);
 
     // wire that carriues the information for operand forwarding
-    Wire#(Maybe#(Tuple2#(Bit#(XLEN), Bit#(TLog#(PRFDEPTH))))) wr_operand_fwding <- mkDWire(tagged
+    Wire#(Maybe#(Tuple2#(Bit#(XLEN), Bit#(2)))) wr_operand_fwding <- mkDWire(tagged
                                                                                             Invalid);
 
     // wire that carries the commit data that needs to be written to the integer register file.
@@ -223,14 +223,12 @@ package stage4;
 
     interface rx_in=rx.e;
 
-    interface commit_rd = interface Get
-      method ActionValue#(CommitData) get() if(wr_commit matches tagged Valid .data);
-        return data;
-      endmethod
-    endinterface;
+    method Maybe#(CommitData) commit_rd();
+      return wr_commit;
+    endmethod
 
     interface fwd_from_mem = interface Get
-      method ActionValue#(Tuple2#(Bit#(XLEN), Bit#(TLog#(PRFDEPTH)))) get 
+      method ActionValue#(Tuple2#(Bit#(XLEN), Bit#(2))) get 
                                                     if(wr_operand_fwding matches tagged Valid .data);
         return data;
       endmethod
