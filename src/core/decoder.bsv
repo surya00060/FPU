@@ -251,7 +251,7 @@ package decoder;
     // Branch   OP1   OP2   PC    Imm
     // JAL      PC    'd4   PC    Imm   (rs1=0, rs2=0 since neither required)
     // JALR     PC    'd4   op1   Imm   (rs2=0 since not required)
-    // LOAD     PC    op2   op1   Imm   (rs2=0 since not required)
+    // LOAD     PC    op2   op1   Imm   (rs2=0 since not required) // PC needs to be sent as well
     // STORE    PC    op2   op1   Imm   (both required. op2 is the data)
     // AUIPC    PC    Imm   PC    Imm   (rs1=0, rs2=0 since neither required)
     /////////////////////////////////////////////////////////////////////////////////
