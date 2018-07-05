@@ -201,7 +201,7 @@ elsif ($testType =~ /^p$/) {
   elsif ($testSuite =~ /peripherals/) {
     my $periInc = "$shaktiHome/verification/tests/directed/peripherals";
     systemCmd("riscv$XLEN-unknown-elf-gcc -march=rv$XLEN\imafd  -mcmodel=medany -static -std=gnu99 -fno-common -fno-builtin-printf -D__ASSEMBLY__=1 -c $periInc/common/crt.S -o crt.o");
-    systemCmd("riscv$XLEN-unknown-elf-gcc -march=rvi$XLEN\imafd  -mcmodel=medany -static -std=gnu99 -fno-common -fno-builtin-printf  -c $periInc/common/syscalls.c -o syscalls.o");
+    systemCmd("riscv$XLEN-unknown-elf-gcc -march=rv$XLEN\imafd  -mcmodel=medany -static -std=gnu99 -fno-common -fno-builtin-printf  -c $periInc/common/syscalls.c -o syscalls.o");
     systemCmd("riscv$XLEN-unknown-elf-gcc -w -mcmodel=medany -static -std=gnu99 -fno-builtin-printf -I $periInc/i2c/ -I $periInc/qspi/ -I $periInc/dma/ -I $periInc/plic/ -I $periInc/common/ -c $periInc/smoketests/smoke.c -o smoke.o -march=rv$XLEN\imafd -lm -lgcc");
     systemCmd("riscv$XLEN-unknown-elf-gcc -T $periInc/common/link.ld smoke.o syscalls.o crt.o -o smoke.elf -static -nostartfiles -lm -lgcc");
   }
@@ -273,8 +273,8 @@ if ($simulator =~ /^bluespec$/) {
   }
   systemFileCmd("timeout $timeout ./out -w","log.txt");
 }
-elsif ($testSuite =~ /peripherals.*smoke/ && $simulator =~ /^vcs$/) {
-    systemCmd("echo 53 > i2c.mem");
+elsif ($testSuite =~ /peripherals.*smoke/ && $simulator !~ /^bluespec$/) {
+    systemFileCmd("echo 53","i2c.mem");
     systemFileCmd("timeout 20m ./out -w","log.txt");
 }
 else {
