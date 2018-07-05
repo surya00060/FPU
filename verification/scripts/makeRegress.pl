@@ -54,6 +54,7 @@ GetOptions(
           qw(list=s)        => \my $test_list,
           qw(suite=s)       => \my $test_suite,
           qw(filter=s)      => \my $test_filter,
+          qw(result=s)      => \my $result_filter,
           qw(test_count=s)  => \my $test_count,
           qw(parallel)      => \my $parallel,
           qw(report)        => \my $report,
@@ -346,32 +347,32 @@ elsif ($finalReport) { # waits till all the test results are there/timesout
       my $delete=0;
 
       if (-e $compile_fail) {
-        $result = sprintf("%40s %40s %5s    COMPILE_FAIL\n", $tSuite, $test, $pv);
+        $result = sprintf("%40s %40s %5s    COMPILE_FAIL\n", $test, $tSuite, $pv);
         $delete = 1;
       }
       elsif (-e $model_fail) {
-        $result = sprintf("%40s %40s %5s    MODEL_FAIL\n", $tSuite, $test, $pv);
+        $result = sprintf("%40s %40s %5s    MODEL_FAIL\n", $test, $tSuite, $pv);
         $delete = 1;
       }
       elsif (-e $rtl_fail) {
-        $result = sprintf("%40s %40s %5s    RTL_FAIL\n", $tSuite, $test, $pv);
+        $result = sprintf("%40s %40s %5s    RTL_FAIL\n", $test, $tSuite, $pv);
         $delete = 1;
       }
       elsif (-e $rtl_timeout) {
-        $result = sprintf("%40s %40s %5s    RTL_TIMEOUT\n", $tSuite, $test, $pv);
+        $result = sprintf("%40s %40s %5s    RTL_TIMEOUT\n", $test, $tSuite, $pv);
         $delete = 1;
       }
       elsif (-e $fail) {
-        $result = sprintf("%40s %40s %5s    FAILED\n", $tSuite, $test, $pv);
+        $result = sprintf("%40s %40s %5s    FAILED\n", $test, $tSuite, $pv);
         $delete = 1;
       }
       elsif (-e $pass) {
-        $result = sprintf("%40s %40s %5s    PASSED\n", $tSuite, $test, $pv);
+        $result = sprintf("%40s %40s %5s    PASSED\n", $test, $tSuite, $pv);
         $delete = 1;
         $passCount++;
       }
       else {
-        $result = sprintf("%40s %40s %5s    NOT_RUN\n", $tSuite, $test, $pv);
+        $result = sprintf("%40s %40s %5s    NOT_RUN\n", $test, $tSuite, $pv);
         $delete = 0;
       }
       if ($delete) {
@@ -417,43 +418,41 @@ else {
     my $rtl_timeout = "$workdir/$tSuite/$pv/$test/RTL_TIMEOUT";
     my $result;
 
-    my $test_info=sprintf("%40s %40s %5s", $tSuite, $test, $pv);
+    my $test_info=sprintf("%40s %40s %5s", $test, $tSuite, $pv);
     if (-e $compile_fail) {
-      $result = sprintf("%40s %40s %5s    COMPILE_FAIL\n", $tSuite, $test, $pv);
+      $result = sprintf("%40s %40s %5s    COMPILE_FAIL\n", $test, $tSuite, $pv);
       $result{$test_info}="COMPILE_FAIL";
     }
     elsif (-e $model_fail) {
-      $result = sprintf("%40s %40s %5s    MODEL_FAIL\n", $tSuite, $test, $pv);
+      $result = sprintf("%40s %40s %5s    MODEL_FAIL\n", $test, $tSuite, $pv);
       $result{$test_info}="MODEL_FAIL";
     }
     elsif (-e $rtl_fail) {
-      $result = sprintf("%40s %40s %5s    RTL_FAIL\n", $tSuite, $test, $pv);
+      $result = sprintf("%40s %40s %5s    RTL_FAIL\n", $test, $tSuite, $pv);
       $result{$test_info}="RTL_FAIL";
     }
     elsif (-e $rtl_timeout) {
-      $result = sprintf("%40s %40s %5s    RTL_TIMEOUT\n", $tSuite, $test, $pv);
+      $result = sprintf("%40s %40s %5s    RTL_TIMEOUT\n", $test, $tSuite, $pv);
       $result{$test_info}="RTL_TIMEOUT";
     }
     elsif (-e $fail) {
-      $result = sprintf("%40s %40s %5s    FAILED\n", $tSuite, $test, $pv);
+      $result = sprintf("%40s %40s %5s    FAILED\n", $test, $tSuite, $pv);
       $result{$test_info}="FAILED";
     }
     elsif (-e $pass) {
-      $result = sprintf("%40s %40s %5s    PASSED\n", $tSuite, $test, $pv);
+      $result = sprintf("%40s %40s %5s    PASSED\n", $test, $tSuite, $pv);
       $result{$test_info}="PASSED";
     }
     else {
-      $result = sprintf("%40s %40s %5s    NOT_RUN\n", $tSuite, $test, $pv);
+      $result = sprintf("%40s %40s %5s    NOT_RUN\n", $test, $tSuite, $pv);
       $result{$test_info}="NOT_RUN";
     }
     push @regress_report, $result;
   }
-  if ($filter) {
-    print grep /$filter/, @regress_report;
+  if ($result_filter) {
+    @regress_report = grep /$result_filter/i, @regress_report;
   }
-  else {
-    print @regress_report;
-  }
+  print @regress_report;
   if ($report) {
     my @resultValues = values %result;
     open REPORT, ">$shaktiHome/verification/workdir/regress_report.log" or die "[$scriptLog.pl] ERROR opening file $!\n";

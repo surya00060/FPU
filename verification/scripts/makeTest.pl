@@ -269,7 +269,7 @@ if ($simulator =~ /^bluespec$/) {
     $timeout="5m";
   }
   elsif ($testSuite =~ /riscv-torture/) {
-    $timeout="60m";
+    $timeout="90m";
   }
   systemFileCmd("timeout $timeout ./out -w","log.txt");
 }

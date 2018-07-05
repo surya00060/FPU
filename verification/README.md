@@ -18,6 +18,7 @@ All the commands have to be run from SHAKTI_C_HOME: <repo-path>/c-class
 | make regress opts="--clean"                           | cleans all regression related files | 
 | make regress opts="--help"                            | Displays usage options |
 | make regress opts="--filter=rv64mi"                   | regx filter| 
+| make regress opts="--filter=rv64mi --res=pass"        | filters the rv64mi tests that passed| 
 | make regress opts="--filter=rv64mi --sub"             | runs filtered tests| 
 | make regress opts="--filter=mulh --parallel --sub"    | runs in parallel __not recomended to use__ | 
 | make regress opts="--gen --sub --test_count=5"        | generates & runs random tests along with riscv-tests| 
