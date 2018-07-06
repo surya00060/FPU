@@ -41,9 +41,9 @@ package fwding1;
     method ActionValue#(FwdType#(XLEN)) read_rs3 (Bit#(XLEN) rfvalue, Bit#(3) index);
     `endif
 
-		method Action fwd_from_exe (Bit#(XLEN) d, Bit#(2) index);
-		method Action fwd_from_mem (Bit#(XLEN) d, Bit#(2) index);
-    method Action invalidate_index(Bit#(2) ind);
+		method Action fwd_from_exe (Bit#(XLEN) d, Bit#(3) index);
+		method Action fwd_from_mem (Bit#(XLEN) d, Bit#(3) index);
+    method Action invalidate_index(Bit#(3) ind);
     method Action flush_mapping;
   endinterface
 
@@ -65,8 +65,8 @@ package fwding1;
     endmethod
     method ActionValue#(FwdType#(XLEN)) read_rs1 (Bit#(XLEN) rfvalue, Bit#(3) index);
       FwdType#(XLEN) ret= tagged Present rfvalue;
-      if(index!=4)begin
-        ret=fwd_data[index[1:0]];
+      if(index!=5)begin
+        ret=fwd_data[index];
         if(verbosity>1)
           $display($time, "\tFWDING: Reading rs1 from prf. Data: %h index\
                 %d",fwd_data[index[1:0]], index);
@@ -75,8 +75,8 @@ package fwding1;
     endmethod
     method ActionValue#(FwdType#(XLEN)) read_rs2 (Bit#(XLEN) rfvalue, Bit#(3) index);
       FwdType#(XLEN) ret= tagged Present rfvalue;
-      if(index!=4)begin
-        ret=fwd_data[index[1:0]];
+      if(index!=5)begin
+        ret=fwd_data[index];
         if(verbosity>1)
           $display($time, "\tFWDING: Reading rs2 from prf. Data: %h index\
                 %d",fwd_data[index[1:0]], index);
@@ -86,22 +86,22 @@ package fwding1;
     `ifdef spfpu                                                            
     method ActionValue#(FwdType#(XLEN)) read_rs3 (Bit#(XLEN) rfvalue, Bit#(3) index);
       FwdType#(XLEN) ret= tagged Present rfvalue;
-      if(index!=4)
-        ret=fwd_data[truncate(index)];
+      if(index!=5)
+        ret=fwd_data[index];
       return ret;
     endmethod
     `endif
-		method Action fwd_from_exe (Bit#(XLEN) d, Bit#(2) index);
+		method Action fwd_from_exe (Bit#(XLEN) d, Bit#(3) index);
       if(verbosity>1)
         $display($time, "\tFWDING: Got fwded data from exe. Data: %h index: %d", d, index);
 			fwd_data[index]<=tagged Present d;	
 		endmethod
-		method Action fwd_from_mem (Bit#(XLEN) d, Bit#(2) index);
+		method Action fwd_from_mem (Bit#(XLEN) d, Bit#(3) index);
       if(verbosity>1)
         $display($time, "\tFWDING: Got fwded data from mem. Data: %h index: %d", d, index);
 			fwd_data[index]<=tagged Present d;	
 		endmethod
-    method Action invalidate_index(Bit#(2) ind);
+    method Action invalidate_index(Bit#(3) ind);
       fwd_data[ind]<= tagged Absent;
       if(verbosity>1)
         $display($time, "\tFWDING: Sending renamed index for rd: %d", ind);

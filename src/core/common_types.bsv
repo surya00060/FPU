@@ -147,7 +147,7 @@ typedef struct {
 	typedef 32 PADDR ;
   typedef 39 VADDR ;
 	typedef Bit #(3)  Funct3;
-  typedef 4 PRFDEPTH;
+  typedef 5 PRFDEPTH;
   typedef 8 RAS_DEPTH;
 
 
@@ -288,14 +288,14 @@ typedef struct {
     typedef Tuple6#(Bit#(3),     // rs1addr
                   Bit#(3),     // rs2addr
                   Bit#(3),   // rs3addr ifdef spfpu
-                  Bit#(2),  // rd rename index 
+                  Bit#(3),  // rd rename index 
                   Op3type,  // rdtype
                   Instruction_type // instr_type
                   ) OpTypes;
   `else
     typedef Tuple4#(Bit#(3),     // rs1addr
                     Bit#(3),     // rs2addr
-                    Bit#(2),  // rd rename index 
+                    Bit#(3),  // rd rename index 
                     Instruction_type // instr_type
                   ) OpTypes;
   `endif
@@ -370,12 +370,12 @@ typedef struct {
   `ifdef simulate
   typedef Tuple3#(
     ExecOut,
-    Bit#(2), 
+    Bit#(3), 
     Bit#(32)
     ) PIPE3;
   `else
   // rd index also
-  typedef Tuple2#(ExecOut, Bit#(2)) PIPE3;
+  typedef Tuple2#(ExecOut, Bit#(3)) PIPE3;
   `endif
   // ----------------------------------------------------------//
 

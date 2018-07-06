@@ -154,7 +154,10 @@ package stage2;
       
       if(!wfi && {eEpoch, wEpoch}==epochs)begin
         wr_op_complete<= True;
-        rd_index<= rd_index+ 1;
+        if(rd_index==4)
+          rd_index<= 0;
+        else
+          rd_index<= rd_index+ 1;
         wr_rd_index<= rd_index;
       end
 

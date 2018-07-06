@@ -115,18 +115,18 @@ package registerfile;
       Bit#(XLEN) rs1, rs2 `ifdef spfpu , rs3 `endif ;
 
       
-      Bit#(3) rs1index=4;
+      Bit#(3) rs1index=5;
       if(arr_rename_int[rs1addr] matches tagged Valid .r1index) 
         rs1index=zeroExtend(r1index);
-      Bit#(3) rs2index=4; 
+      Bit#(3) rs2index=5; 
       if(arr_rename_int[rs2addr] matches tagged Valid .r2index) 
         rs2index=zeroExtend(r2index);
 
       `ifdef spfpu
-        Bit#(3) rs3index=fromMaybe(4, arr_rename_int[rs3addr]); 
+        Bit#(3) rs3index=fromMaybe(5, arr_rename_int[rs3addr]); 
         if(rs1type==FloatingRF)begin
           rs1=rs1frf;
-          rs1index=fromMaybe(4, arr_rename_float[rs1addr]); 
+          rs1index=fromMaybe(5, arr_rename_float[rs1addr]); 
         end
         else 
       `endif
