@@ -38,12 +38,16 @@ This module contains single cycle MUL instruction execution.
 
 package alu;
 
-  `ifdef muldiv import muldiv::*; `endif
+  `ifdef muldiv_fpga 
+    import muldiv_fpga::*; 
+  `else
+    import muldiv_asic::*;
+  `endif
   import common_types::*;
   `include "common_params.bsv"
 
 	(*noinline*)
-	function ALU_OUT fn_alu (Bit#(4) fn, Bit#(XLEN) op1, Bit#(XLEN) op2, Bit#(VADDR) imm_value, 
+	function ALU_OUT fn_alu ( Bit#(4) fn, Bit#(XLEN) op1, Bit#(XLEN) op2, Bit#(VADDR) imm_value, 
         Bit#(VADDR) op3, Instruction_type inst_type, Funct3 funct3, Bit#(VADDR) pc, Access_type
         memaccess, Bool word32 `ifdef bpu , Bit#(2) prediction `endif );
 
@@ -154,28 +158,31 @@ package alu;
 	  return tuple5(committype, final_output, effaddr_csrdata, exception, flush);
 	endfunction
 
-//`ifdef MULDIV
-//  interface Ifc_alu;
-//    method ActionValue#(Tuple2#(Bool, ALU_OUT)) get_inputs( Bit#(4) fn, Bit#(XLEN) op1, 
-//        Bit#(XLEN) op2, Bit#(PADDR) imm_value, Bit#(PADDR) op3, Instruction_type inst_type, 
-//        Funct3 funct3, Bool word32);
-//		method ActionValue#(ALU_OUT) delayed_output;
-//  endinterface:Ifc_alu
-//
-//  (*synthesize*)
-//  module mkalu(Ifc_alu);
-//    Ifc_muldiv muldiv <- mkmuldiv;
-//    method ActionValue#(Tuple2#(Bool, ALU_OUT)) get_inputs( Bit#(4) fn, Bit#(XLEN) op1, 
-//      Bit#(XLEN) op2, Bit#(PADDR) imm_value, Bit#(PADDR) op3, Instruction_type inst_type, 
-//      Funct3 funct3, Bool word32);
-//      if(inst_type==MULDIV)begin
-//        let product <- muldiv.get_inputs(op1, op2, funct3, word32);
-//        return product;
-//      end
-//      else
-//        return tuple2(True, fn_alu(fn, op1, op2, imm_value, op3, inst_type, funct3, word32));
-//    endmethod
-//		method delayed_output=muldiv.delayed_output;
-//  endmodule
-//`endif
+`ifdef muldiv
+  interface Ifc_alu;
+    method ActionValue#(Tuple2#(Bool, ALU_OUT)) get_inputs(Bit#(4) fn, Bit#(XLEN) op1, 
+        Bit#(XLEN) op2, Bit#(VADDR) imm_value, Bit#(VADDR) op3, Instruction_type inst_type, 
+        Funct3 funct3, Bit#(VADDR) pc, Access_type memaccess, Bool word32 `ifdef bpu , 
+        Bit#(2) prediction `endif );
+		method ActionValue#(ALU_OUT) delayed_output;
+  endinterface:Ifc_alu
+
+  (*synthesize*)
+  module mkalu(Ifc_alu);
+    Ifc_muldiv muldiv <- mkmuldiv;
+    method ActionValue#(Tuple2#(Bool, ALU_OUT)) get_inputs(Bit#(4) fn, Bit#(XLEN) op1, 
+        Bit#(XLEN) op2, Bit#(VADDR) imm_value, Bit#(VADDR) op3, Instruction_type inst_type, 
+        Funct3 funct3, Bit#(VADDR) pc, Access_type memaccess, Bool word32 `ifdef bpu , 
+        Bit#(2) prediction `endif );
+      if(inst_type==MULDIV)begin
+        let product <- muldiv.get_inputs(op1, op2, funct3, word32);
+        return product;
+      end
+      else
+        return tuple2(True, fn_alu(fn, op1, op2, imm_value, op3, inst_type, funct3, pc, memaccess, 
+            word32 `ifdef bpu , prediction `endif ));
+    endmethod
+		method delayed_output=muldiv.delayed_output;
+  endmodule
+`endif
 endpackage:alu

@@ -112,6 +112,10 @@ package stage3;
     `ifdef spfpu
       Wire#(Bit#(3)) wr_roundingmode <- mkWire();
     `endif
+    `ifdef muldiv
+      Ifc_alu alu <- mkalu();
+      Reg#(Bool) rg_stall <- mkReg(False);
+    `endif
     Ifc_fwding fwding <- mkfwding();
 		Reg#(Bit#(1)) eEpoch <-mkReg(0);
 		Reg#(Bit#(1)) wEpoch <-mkReg(0);
@@ -124,7 +128,7 @@ package stage3;
       fwding.flush_mapping;
     endrule
 
-    rule execute_operation;
+    rule execute_operation ( `ifdef muldiv !rg_stall `endif );
       `ifdef simulate
         let {optypes, opdata, metadata, instruction } = rx.u.first;
       `else
@@ -187,7 +191,6 @@ package stage3;
         else begin
           if(rs1 matches tagged Present .x1 &&& rs2 matches tagged Present .x2 
                                       `ifdef spfpu &&& rs3 matches tagged Present .x4 `endif )begin
-            rx.u.deq;
             Bit#(XLEN) new_op1=x1;
             Bit#(VADDR) t3=op3;
             // TODO: here we need to exchange op1 (which has been fetched from the prf) and op3 in
@@ -196,14 +199,23 @@ package stage3;
               new_op1=op1;
               t3=truncate(x1);
             end
-            let {cmtype, out, addr, trap1, redirect} = fn_alu(fn, new_op1, x2, t3, truncate(x4), 
+            `ifdef muldiv
+              let {done, cmtype, out, addr, trap1, redirect} <- alu.get_inputs(fn, new_op1, x2, t3, 
+                truncate(x4), instrtype, funct3, pc, memaccess, word32 `ifdef bpu ,pred `endif );
+            `else
+              let {cmtype, out, addr, trap1, redirect} = fn_alu(fn, new_op1, x2, t3, truncate(x4), 
                                 instrtype, funct3, pc, memaccess, word32 `ifdef bpu ,pred `endif );
-            
+            `endif
             if(verbosity>1)begin
               $display($time, "\tEXECUTE: cmtype: ", fshow(cmtype), " out: %h addr: %h trap:", out,
                    addr, fshow(trap1), "redirect ", fshow(redirect));
               $display($time, "\tEXECUTE: x1: %h,  x2: %h,  op3: %h, x4: %h", new_op1, x2, t3, x4);
             end
+
+            `ifdef muldiv
+              if(done)begin
+            `endif
+              rx.u.deq;
 
             `ifdef bpu
               // in case of bimodal branch predictor we need to train the bpu and write new status
@@ -254,6 +266,14 @@ package stage3;
             `endif
             if(cmtype==REGULAR)
               fwding.fwd_from_exe(out, rd_index);
+
+            // if the operation is a multicycle one,  then go to stall state.
+            `ifdef muldiv
+              end
+              else begin
+                rg_stall<= True;
+              end
+            `endif
           end
         end
       end
@@ -275,6 +295,41 @@ package stage3;
         // else you need to simply drop the execution since epochs have changed.
       end
     endrule
+    `ifdef muldiv
+      rule capture_stalled_output(rg_stall);
+        `ifdef simulate
+          let {optypes, opdata, metadata, instruction } = rx.u.first;
+        `else
+          let {optypes, opdata, metadata } = rx.u.first;
+        `endif
+        let {op1, op2, op3, op4}=opdata;
+        `ifdef bpu
+          let {rd, word32, memaccess, fn, funct3, pred, epochs, trap}=metadata;
+        `else
+          let {rd, word32, memaccess, fn, funct3, epochs, trap}=metadata;
+        `endif
+        `ifdef spfpu
+          let { rs1addr, rs2addr, rs3addr, rd_index, rdtype, instrtype}=optypes;
+        `else
+          let { rs1addr, rs2addr, rd_index, instrtype}=optypes;
+        `endif
+        Bit#(VADDR) pc = (instrtype==MEMORY || instrtype==JALR)?truncate(op1):truncate(op3);
+        let {cmtype, out, addr, trap1, redirect} <- alu.delayed_output;
+        `ifdef spfpu
+          ExecOut t1 = (tuple8(cmtype, out, rd, pc, truncate(addr), epochs[0], trap1, rdtype));
+        `else
+          ExecOut t1 = (tuple7(cmtype, out, rd, pc, truncate(addr), epochs[0], trap1));
+        `endif
+
+        `ifdef simulate
+          tx.u.enq(tuple3(t1, rd_index, instruction));
+        `else
+          tx.u.enq(tuple2(t1, rd_index));
+        `endif
+        rg_stall<= False;
+        rx.u.deq;
+      endrule
+    `endif
     `ifdef RV64
       method Action inferred_xlen(Bool xlen);
         wr_inferred_xlen <= xlen;
