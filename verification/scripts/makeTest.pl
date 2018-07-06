@@ -259,8 +259,8 @@ if ($simulator =~ /^ncverilog$/) {
   systemCmd("ln -s $shaktiHome/bin/hdl.var hdl.var");
 }
 if ($simulator =~ /^vcs$/) {
-  systemCmd("ln -s /scratch/lavanya/c-class/bin/csrc csrc");
-  systemCmd("ln -s /scratch/lavanya/c-class/bin/out.daidir out.daidir");
+  systemCmd("ln -s $shaktiHome/bin/csrc csrc");
+  systemCmd("ln -s $shaktiHome/bin/out.daidir out.daidir");
 }
 
 if ($simulator =~ /^bluespec$/) {
