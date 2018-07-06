@@ -92,6 +92,7 @@ package stage3;
 		interface Get#(Tuple2#(Memrequest,Bit#(1))) to_dmem;
   endinterface
 
+  (*synthesize*)
   module mkstage3(Ifc_stage3);
 
     let verbosity = `VERBOSITY ;
@@ -114,9 +115,9 @@ package stage3;
     Ifc_fwding fwding <- mkfwding();
 		Reg#(Bit#(1)) eEpoch <-mkReg(0);
 		Reg#(Bit#(1)) wEpoch <-mkReg(0);
-    Wire#(Flush_type2) wr_flush_from_exe <- mkDWire(None);
+    Reg#(Flush_type2) wr_flush_from_exe <- mkDReg(None);
     Wire#(Bool) wr_flush_from_wb <- mkDWire(False);
-    Wire#(Bit#(VADDR)) wr_redirect_pc <- mkDWire(0);
+    Reg#(Bit#(VADDR)) wr_redirect_pc <- mkDReg(0);
 		FIFOF#(Tuple2#(Memrequest,Bit#(1))) ff_memory_request <-mkBypassFIFOF;
 
     rule flush_mapping(wr_flush_from_exe!=None||wr_flush_from_wb);
@@ -233,8 +234,6 @@ package stage3;
             `endif
             if(redirect==Fence)
               wr_flush_from_exe<=Fence;
-//            else if(redirect!=None)
-//              wr_flush_from_exe<= Regular;
 
             if(cmtype==MEMORY &&& trap1 matches tagged None)begin
               ff_memory_request.enq(tuple2(Memrequest{address:zeroExtend(addr), memory_data:x2, 
