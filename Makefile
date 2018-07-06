@@ -19,12 +19,14 @@ ifneq (,$(findstring RV32,$(ISA)))
   XLEN=32
 endif
 ifneq (,$(findstring M,$(ISA)))
-  define_macros += -D muldiv=True
+  ifeq ($(MUL),fpga)
+    define_macros += -D muldiv_fpga=True -D muldiv=True
+  endif
   ifeq ($(MUL),sequential)
-     define_macros	+= -D sequential=True
+     define_macros	+= -D sequential=True -D muldiv=True
   endif
   ifeq ($(MUL),parallel)
-     define_macros	+= -D parallel=True
+     define_macros	+= -D parallel=True -D muldiv=True
   endif
 endif
 ifneq (,$(findstring A,$(ISA)))
@@ -133,12 +135,12 @@ ifeq ($(PWM),AXI4)
   define_macros += -D PWM=True -D PWM_AXI4=True
 endif
 
-define_macros += -D supervisor=$(SUPERVISOR) -D user=$(USER) -D usertraps=$(USERTRAPS) -D VERBOSITY=$(VERBOSITY) 
+define_macros += -D supervisor=$(SUPERVISOR) -D user=$(USER) -D usertraps=$(USERTRAPS) -D VERBOSITY=$(VERBOSITY) -D MULSTAGES=$(MULSTAGES) -D DIVSTAGES=$(DIVSTAGES)
 
 PERIPHERALS:=src/peripherals/bootrom:src/peripherals/clint:./src/peripherals/vme:src/peripherals/plic:./src/peripherals/uart/:./src/peripherals/tcm/:./src/peripherals/jtagdtm:./src/peripherals/gpio:./src/peripherals/qspi:./src/peripherals/i2c/:./src/peripherals/sdram:./src/peripherals/axiexp:./src/peripherals/dma:./src/peripherals/pwm:./src/peripherals/flexbus
 UNCORE:=./src/uncore:./src/uncore/debug:./src/uncore/axi4lite
 FABRIC:=./src/fabric/axi4
-CORE:=./src/core/fpu:./src/core/
+CORE:=./src/core/fpu:./src/core/:./src/wrappers/
 TESTBENCH:=./src/testbench/
 LIB:=./src/lib/
 VERILATOR_FLAGS = --stats -O3 -CFLAGS -O3 -LDFLAGS -static --x-assign fast --x-initial fast --noassert --cc $(TOP_MODULE).v --exe sim_main.cpp -Wno-STMTDLY -Wno-UNOPTFLAT -Wno-WIDTH -Wno-lint -Wno-COMBDLY -Wno-INITIALDLY 
