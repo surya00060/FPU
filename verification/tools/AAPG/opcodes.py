@@ -12,8 +12,15 @@ base_r_x = (
     'srl',
     'sra',
     'or',
-    'and'
-    )
+    'and',
+    'mul',
+    'mulh',
+    'mulhsu',
+    'mulhu',
+    'div',
+    'divu',
+    'rem',
+    'remu')
 base_i_x = ('jalr', 'lb', 'lh', 'lw', 'lbu', 'lhu', 'addi', 'slti',
             'sltiu', 'xori', 'ori', 'andi', 'slli', 'srli', 'srai')
 base_s_x = ('sb', 'sh', 'sw')
@@ -21,8 +28,8 @@ base_sb = ('beq', 'bne', 'blt', 'bge', 'bltu', 'bgeu')
 base_u = ('lui', 'auipc')
 base_uj = ('jal',)
 
-base_r_64 = ('addw', 'subw', 'sllw', 'srlw', 'sraw'
-             )
+base_r_64 = ('addw', 'subw', 'sllw', 'srlw', 'sraw',
+             'mulw', 'divw', 'divuw', 'remw', 'remuw')
 base_i_64 = ('ld', 'lwu', 'addiw', 'slliw', 'srliw', 'sraiw')
 base_s_64 = ('sd',)
 
@@ -69,8 +76,15 @@ base_integer_computational_x = (
     'or',
     'and',
     'nop',
-    'add'
-    )
+    'add',
+    'mul',
+    'mulh',
+    'mulhsu',
+    'mulhu',
+    'div',
+    'divu',
+    'rem',
+    'remu')
 base_integer_computational_64 = (
     'addiw',
     'slliw',
@@ -79,7 +93,12 @@ base_integer_computational_64 = (
     'subw',
     'sllw',
     'srlw',
-    'sraw')
+    'sraw',
+    'mulw',
+    'divw',
+    'divuw',
+    'remw',
+    'remuw')
 base_control_transfer = ('beq', 'bne', 'blt', 'bge',
                          'bltu', 'bgeu', 'jal', 'jalr')
 base_load_store_x = ('sb', 'sh', 'sw', 'lb', 'lh', 'lw', 'lbu', 'lhu')
