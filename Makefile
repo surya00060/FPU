@@ -167,6 +167,13 @@ BSVOUTDIR:=./bin
 check-restore:
 	@if [ "$(define_macros)" != "$(old_define_macros)" ];	then	make clean ;	fi;
 
+.PHONY: ip_build
+ip_build: 
+	vivado -mode tcl -notrace -source $(SHAKTI_C_HOME)/src/tcl/create_ip_project.tcl -tclargs $(FPGA) || (echo "Could \
+not create IP project"; exit 1)
+	@vivado -mode tcl -notrace -source $(SHAKTI_C_HOME)/src/tcl/create_multiplier.tcl -tclargs $(XLEN) $(MULSTAGES) ||\
+(echo "Could not create Multiplier IP"; exit 1)
+
 .PHONY:  compile_bluesim
 compile_bluesim: check-restore check-blue
 	@echo "Compiling $(TOP_MODULE) in Bluesim..."
@@ -198,12 +205,25 @@ generate_verilog: check-restore check-blue
 	@bsc -u -verilog -elab -vdir $(VERILOGDIR) -bdir $(BSVBUILDDIR) -info-dir $(BSVBUILDDIR) $(define_macros) -D verilog=True $(BSVCOMPILEOPTS) -verilog-filter ${BLUESPECDIR}/bin/basicinout -p $(BSVINCDIR) -g $(TOP_MODULE) $(TOP_DIR)/$(TOP_FILE) 2>&1 | tee bsv_compile.log
 	@sed -i "s/39'h0000001000/reset_vector/g" ./verilog/mkfetch.v
 	@sed -i "s/(rg_tdo)/(rg_tdo\$$D_IN)/g" ./verilog/mkTbSoc.v
+	@cp ${BLUESPECDIR}/Verilog/FIFO2.v ./verilog/
+	@cp ${BLUESPECDIR}/Verilog/FIFOL1.v ./verilog/
+	@cp ${BLUESPECDIR}/Verilog/RevertReg.v ./verilog/
+	@cp ${BLUESPECDIR}/Verilog/FIFO1.v ./verilog/
+	@cp ${BLUESPECDIR}/Verilog.Vivado/RegFile.v ./verilog/
 	@echo Compilation finished
 
 .PHONY: link_vcs
 link_vcs: 
 	@mkdir -p bin
-	@vcs -full64 -l vcs_compile.log -sverilog +vpi +nbaopt +delay_mode_zero +v2k +define+TOP=$(TOP_MODULE) +cli+4 +libext+.v +notimingcheck -y ./$(VERILOGDIR)/ -y ${BLUESPECDIR}/Verilog/ -y ./src/bfm -timescale=1ns/1ps ${BLUESPECDIR}/Verilog/main.v -o out
+	@rm -rf bin/*
+	@vcs -full64 -l vcs_compile.log -sverilog +vpi +v2k -lca +define+TOP=$(TOP_MODULE) \
+	+define+BSV_TIMESCALE=1ns/1ps +cli+4 +libext+.v +notimingcheck +vcs+dumpvars+test.vcd \
+  ${XILINX_VIVADO}/data/verilog/src/glbl.v \
+	-y $(VERILOGDIR)/ -y ${BLUESPECDIR}/Verilog/ \
+	-y ${XILINX_VIVADO}/data/verilog/src/unisims +libext+.v \
+	-y ${XILINX_VIVADO}/data/verilog/src/unimacro +libext+.v \
+	-y ${XILINX_VIVADO}/data/verilog/src/retarget +libext+.v \
+	${BLUESPECDIR}/Verilog/main.v -o out
 	@mv csrc out* bin
 
 .PHONY: link_ncverilog
