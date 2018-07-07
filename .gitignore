@@ -16,3 +16,5 @@ fpga/
 verification/tools/AAPG/result/
 
 verification/tools/AAPG/__pycache__/
+
+verification/tests/directed/benchmarks/outputfiles/
