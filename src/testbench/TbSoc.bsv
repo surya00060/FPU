@@ -446,10 +446,10 @@ package TbSoc;
 			rule connect_sin;
 				soc.slow_ios.uart1_coe.sin(uart.rs232.sout);
 	   	endrule
-	/*		rule connect_sout;
+			rule connect_sout;
 				uart.rs232.sin(soc.slow_ios.uart1_coe.sout);
 	   	endrule
-	*/
+	
 		`endif
 `ifdef VME		
 //Connection b/w vme_controller and slave	
@@ -531,10 +531,10 @@ package TbSoc;
 			rule connect_uart0_sin;	//dummy rule to connect uart0 sin since its always_enabled
 				soc.slow_ios.uart0_coe.modem_input(uart.rs232.sout,0,0,0,0);
 			endrule
-			rule connect_uart0_sout;
+/*			rule connect_uart0_sout;
 				uart.rs232.sin(soc.slow_ios.uart0_coe.modem_output_stx);
 			endrule
-		`endif
+	*/	`endif
 		
 
 		rule write_recieved_character_in_file(rg_count!=0);
