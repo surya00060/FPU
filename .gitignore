@@ -12,3 +12,7 @@ verilog/
 \.Xil/
 
 fpga/
+
+verification/tools/AAPG/result/
+
+verification/tools/AAPG/__pycache__/
