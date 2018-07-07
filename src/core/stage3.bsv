@@ -158,7 +158,8 @@ package stage3;
 
       if(verbosity>0)begin
         $display($time, "\tEXECUTE: PC: %h epochs: %b currEpochs: %b ", pc, epochs, {eEpoch, wEpoch});
-        $display($time, "\tEXECUTE: rs1: ", fshow(rs1), " rs2 ", fshow(rs2));
+        $display($time, "\tEXECUTE: rs1: ", fshow(rs1), " rs2 ", fshow(rs2), "check_rpc: ",
+                                                                                  fshow(check_rpc));
       end
 
       // TODO here the trap could be because the misprediction from the previous jump.branch might
@@ -182,7 +183,7 @@ package stage3;
             else begin
               wr_redirect_pc<= npc;
               if(verbosity>0)
-                $display($time, "\tEXECUTE: Raising a flush due to pc mismatch. New PC: %h", npc);
+                $display($time, "\tEXECUTE: Raising a flush due to pc mismatch. New1 PC: %h", npc);
             end
           `endif
           eEpoch<= ~eEpoch;
@@ -206,6 +207,7 @@ package stage3;
               let {cmtype, out, addr, trap1, redirect} = fn_alu(fn, new_op1, x2, t3, truncate(x4), 
                                 instrtype, funct3, pc, memaccess, word32 `ifdef bpu ,pred `endif );
             `endif
+            Bit#(VADDR) nextpc=pc+ 4;
             if(verbosity>1)begin
               $display($time, "\tEXECUTE: cmtype: ", fshow(cmtype), " out: %h addr: %h trap:", out,
                    addr, fshow(trap1), "redirect ", fshow(redirect));
@@ -221,7 +223,9 @@ package stage3;
               // in case of bimodal branch predictor we need to train the bpu and write new status
               // bits. The following logic calculates the next set of status bits depending on
               // whether the branch was actually taken or not.
-		          if(out[0]==1)begin
+              if(instrtype==JAL || instrtype==JALR)
+                pred=3;
+		          else if(out[0]==1 && instrtype==BRANCH)begin
 		          	if(pred<3)
 		          		pred=pred+1;
 		          end
@@ -232,9 +236,10 @@ package stage3;
 
               // if previous instruction was a branch or jump. Need to capture the next pc value to
               // ensure prediction was correct or not.
-              Bit#(VADDR) nextpc=pc+ 4;
               check_rpc<= tuple3(redirect, addr, nextpc);
-              if(instrtype==BRANCH &&& trap1 matches tagged None)
+              Bool perform_training=(instrtype==BRANCH)|| (instrtype==JAL) || ((rd != 'b00101 ||
+                                                                rd!='b00001) && instrtype==JALR);
+              if(perform_training &&& trap1 matches tagged None)
                 wr_training_data<= tagged Valid Training_data{pc:pc, branch_address:addr, state:pred};
 
               // the following logic pushes the new return address on top of the RAS stack. 
@@ -271,6 +276,11 @@ package stage3;
             `ifdef muldiv
               end
               else begin
+                `ifdef bpu
+                  check_rpc<= tuple3(None, addr, nextpc);
+                `else
+                  check_rpc<= tuple2(None, 0);
+                `endif
                 rg_stall<= True;
               end
             `endif
@@ -326,6 +336,7 @@ package stage3;
         `else
           tx.u.enq(tuple2(t1, rd_index));
         `endif
+        fwding.fwd_from_exe(out, rd_index);
         rg_stall<= False;
         rx.u.deq;
       endrule
