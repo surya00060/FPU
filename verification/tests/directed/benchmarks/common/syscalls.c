@@ -165,7 +165,7 @@ int getchar()
    return a0;
 }
 */
-
+/*
 int putchar(int ch)
 {
   register char a0 asm("a0") = ch;
@@ -179,7 +179,8 @@ int putchar(int ch)
 				:"x0","a0","t1","t2", "cc", "memory");
   return 0;
 }
-/*
+*/
+
 int putchar(int ch)
 {
   register char a0 asm("a0") = ch;
@@ -190,7 +191,7 @@ int putchar(int ch)
 				:"a0","t1","cc","memory");
   return 0;
 }
-*/
+
 
 void _init(int cid, int nc)
 {
