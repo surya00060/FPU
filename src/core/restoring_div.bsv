@@ -66,6 +66,7 @@ import Assert::*;
     rule single_step_div;
       let {upper, lower}=singlestep(truncateLSB(partial),truncate(partial), rg_op2); 
       partial<= {upper, lower};
+      $display($time, "DIVIDER: Partial: %h", {upper, lower});
     endrule
 
     method Action get_inputs(Bit#(XLEN) op1, Bit#(XLEN) op2,  Bool qr);

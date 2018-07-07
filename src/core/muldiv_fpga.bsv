@@ -40,6 +40,7 @@ package muldiv_fpga;
 
   (*synthesize*)
 	module mkmuldiv(Ifc_muldiv);
+    let verbosity = `VERBOSITY ;
     Ifc_multiplier#(XLEN) mult <- mkmultiplier;
 //    Ifc_divider#(XLEN) divider <- mkdivider;
     Ifc_restoring_div divider <-mkrestoring_div();
@@ -53,11 +54,14 @@ package muldiv_fpga;
     rule increment_counter(rg_count!=0);
       if((rg_count== fromInteger(`MULSTAGES) && !mul_div) || 
           (rg_count== fromInteger(`DIVSTAGES)+ 1 && mul_div)) begin
-        $display($time, "\tALU: got output from Mul/Div. mul_div: %b", mul_div);
+        if(verbosity>1)
+          $display($time, "\tALU: got output from Mul/Div. mul_div: %b", mul_div);
         rg_count<= 0;
       end
       else begin
-        $display($time, "\tALU: Waiting for mul/div to respond. Count: %d", rg_count);
+        if(verbosity>1)
+          $display($time, "\tALU: Waiting for mul/div to respond. Count: %d word32: %b", rg_count,
+        rg_word32);
         rg_count<= rg_count+ 1;
       end
     endrule
@@ -67,6 +71,10 @@ package muldiv_fpga;
       // logic to choose the upper bits
       // in case of division,  this variable is set is the operation is a remainder operation
       mul_div<=unpack(funct3[2]);
+      if(word32)begin
+        operand1= funct3[0]==0? signExtend(operand1[31:0]): zeroExtend(operand1[31:0]);
+        operand2= funct3[0]==0? signExtend(operand2[31:0]): zeroExtend(operand2[31:0]);
+      end
       Bool lv_upperbits = funct3[2]==0?unpack(|funct3[1:0]):unpack(funct3[1]);
 
       Bool invert_op1=False;
@@ -99,7 +107,8 @@ package muldiv_fpga;
       Bit#(XLEN) default_out='1;
       Bool result_avail=False;
       if(funct3[2]==0)begin // multiplication operation
-        $display($time, "\tALU: Sending inputs to multiplier. A: %h B: %h funct3: %b", op1, op2,
+        if(verbosity>1)
+          $display($time, "\tALU: Sending inputs to multiplier. A: %h B: %h funct3: %b", op1, op2,
         funct3);
         mult.iA(op1);
         mult.iB(op2);
@@ -120,13 +129,15 @@ package muldiv_fpga;
         else
           divider.get_inputs(op1, op2, unpack(funct3[1])); // send inputs to the divider
       end
-      if((funct3[2]==0 && `MULSTAGES!=0) || (funct3[2]==1 && `DIVSTAGES!=0))begin
+      if(word32)
+        default_out=signExtend(default_out[31:0]);
+      if(((funct3[2]==0 && `MULSTAGES!=0) || (funct3[2]==1 && `DIVSTAGES!=0)) && !result_avail)begin
         rg_count<= rg_count+ 1;
         rg_upperbits<= lv_upperbits;
         rg_complement<= lv_take_complement;
         rg_word32<= word32;
       end
-      return tuple2(result_avail, tuple5(REGULAR, default_out, ?, tagged None, None));
+      return tuple2(result_avail, tuple5(REGULAR, default_out, 0, tagged None, None));
     endmethod
 		method ActionValue#(ALU_OUT) delayed_output if((rg_count== fromInteger(`MULSTAGES) && !mul_div)
                                             || (rg_count==(fromInteger(`DIVSTAGES)+ 1) && mul_div));
@@ -136,7 +147,7 @@ package muldiv_fpga;
         reslt=~reslt+ 1;
       Bit#(XLEN) product=rg_word32?signExtend(reslt[31:0]):(!mul_div && rg_upperbits)?truncateLSB(reslt): 
                                                                                     truncate(reslt);
-      return tuple5(REGULAR, mul_div? ?/* div result*/: product, ?, tagged None, None); 
+      return tuple5(REGULAR, mul_div? ?/* div result*/: product, 0, tagged None, None); 
     endmethod
 	endmodule:mkmuldiv
 
