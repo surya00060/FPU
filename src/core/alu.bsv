@@ -47,8 +47,8 @@ package alu;
   `include "common_params.bsv"
 
 	(*noinline*)
-	function ALU_OUT fn_alu ( Bit#(4) fn, Bit#(XLEN) op1, Bit#(XLEN) op2, Bit#(VADDR) imm_value, 
-        Bit#(VADDR) op3, Instruction_type inst_type, Funct3 funct3, Bit#(VADDR) pc, Access_type
+	function ALU_OUT fn_alu ( Bit#(4) fn, Bit#(XLEN) op1, Bit#(XLEN) op2, Bit#(VADDR) op3, 
+        Bit#(VADDR) imm_value, Instruction_type inst_type, Funct3 funct3, Bit#(VADDR) pc, Access_type
         memaccess, Bool word32 `ifdef bpu , Bit#(2) prediction `endif );
 
 	  /*========= Perform all the arithmetic ===== */
@@ -127,10 +127,6 @@ package alu;
 		Bit#(VADDR) effective_address=op3+ truncate(imm_value);
     if(inst_type==JALR)
       effective_address[0]=0;
-		`ifdef simulate
-			if(inst_type==BRANCH)
-				final_output=0;
-		`endif
 
 	  Trap_type exception=tagged None;
 	  if((inst_type==JALR && effective_address[1]!=0) || (inst_type==BRANCH && final_output[0]==1 &&
@@ -154,6 +150,10 @@ package alu;
 	  Bit#(VADDR) effaddr_csrdata = (inst_type==SYSTEM_INSTR)? 
                                             zeroExtend({funct3, imm_value[16:0]}): 
                                             effective_address;
+//		`ifdef simulate
+//			if(inst_type==BRANCH)
+//				final_output=0;
+//		`endif
 
 	  return tuple5(committype, final_output, effaddr_csrdata, exception, flush);
 	endfunction
@@ -161,7 +161,7 @@ package alu;
 `ifdef muldiv
   interface Ifc_alu;
     method ActionValue#(Tuple2#(Bool, ALU_OUT)) get_inputs(Bit#(4) fn, Bit#(XLEN) op1, 
-        Bit#(XLEN) op2, Bit#(VADDR) imm_value, Bit#(VADDR) op3, Instruction_type inst_type, 
+        Bit#(XLEN) op2, Bit#(VADDR) op3, Bit#(VADDR) imm_value, Instruction_type inst_type, 
         Funct3 funct3, Bit#(VADDR) pc, Access_type memaccess, Bool word32 `ifdef bpu , 
         Bit#(2) prediction `endif );
 		method ActionValue#(ALU_OUT) delayed_output;
@@ -171,7 +171,7 @@ package alu;
   module mkalu(Ifc_alu);
     Ifc_muldiv muldiv <- mkmuldiv;
     method ActionValue#(Tuple2#(Bool, ALU_OUT)) get_inputs(Bit#(4) fn, Bit#(XLEN) op1, 
-        Bit#(XLEN) op2, Bit#(VADDR) imm_value, Bit#(VADDR) op3, Instruction_type inst_type, 
+        Bit#(XLEN) op2, Bit#(VADDR) op3, Bit#(VADDR) imm_value, Instruction_type inst_type, 
         Funct3 funct3, Bit#(VADDR) pc, Access_type memaccess, Bool word32 `ifdef bpu , 
         Bit#(2) prediction `endif );
       if(inst_type==MULDIV)begin
@@ -179,7 +179,7 @@ package alu;
         return product;
       end
       else
-        return tuple2(True, fn_alu(fn, op1, op2, imm_value, op3, inst_type, funct3, pc, memaccess, 
+        return tuple2(True, fn_alu(fn, op1, op2, op3, imm_value, inst_type, funct3, pc, memaccess, 
             word32 `ifdef bpu , prediction `endif ));
     endmethod
 		method delayed_output=muldiv.delayed_output;
