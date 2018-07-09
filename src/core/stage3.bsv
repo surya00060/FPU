@@ -158,7 +158,7 @@ package stage3;
 
       if(verbosity>0)begin
         $display($time, "\tEXECUTE: PC: %h epochs: %b currEpochs: %b ", pc, epochs, {eEpoch, wEpoch});
-        $display($time, "\tEXECUTE: rs1: ", fshow(rs1), " rs2 ", fshow(rs2), "check_rpc: ",
+        $display($time, "\tEXECUTE: pc: %h, rs1: ", pc, fshow(rs1), " rs2 ", fshow(rs2), " check_rpc: ",
                                                                                   fshow(check_rpc));
       end
 
@@ -257,6 +257,11 @@ package stage3;
                     transfer_size: funct3[1:0], signextend: ~funct3[2], mem_type: memaccess
                     `ifdef atomic , atomic_op: op4[11:7] `endif }, epochs[0]));
             end
+
+	        	`ifdef simulate
+	        		if(instrtype==BRANCH)
+	        			out=0;
+	        	`endif
 
             `ifdef spfpu
               ExecOut t1 = (tuple8(cmtype, out, rd, pc, truncate(addr), epochs[0], trap1, rdtype));
