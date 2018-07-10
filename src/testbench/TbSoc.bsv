@@ -427,10 +427,10 @@ rule connect_boot;
 			rule connect_sin;
 				soc.slow_ios.uart1_coe.sin(uart.rs232.sout);
 	   	endrule
-	/*		rule connect_sout;
+			rule connect_sout;
 				uart.rs232.sin(soc.slow_ios.uart1_coe.sout);
 	   	endrule
-	*/
+	
 		`endif
 `ifdef VME		
 //Connection b/w vme_controller and slave	
@@ -512,9 +512,10 @@ rule connect_boot;
 			rule connect_uart0_sin;	//dummy rule to connect uart0 sin since its always_enabled
 				soc.slow_ios.uart0_coe.modem_input(uart.rs232.sout,0,0,0,0);
 			endrule
-			rule connect_uart0_sout;
+/*			rule connect_uart0_sout;
 				uart.rs232.sin(soc.slow_ios.uart0_coe.modem_output_stx);
 			endrule
+*/
 		`endif
 		
 
