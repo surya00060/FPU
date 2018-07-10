@@ -69,9 +69,6 @@ endif
 ifeq ($(QSPI1),enable)
   define_macros += -D QSPI1=True
 endif
-ifeq ($(SDRAM),enable)
-  define_macros += -D SDRAM=True
-endif
 ifeq ($(UART0),enable)
   define_macros += -D UART0=True
 endif
@@ -133,7 +130,7 @@ endif
 ifeq ($(PWM),AXI4)
   define_macros += -D PWM=True -D PWM_AXI4=True
 endif
-
+define_macros += -D $(MAINMEM)=True
 PERIPHERALS:=src/peripherals/bootrom:src/peripherals/clint:./src/peripherals/vme:src/peripherals/plic:./src/peripherals/uart/:./src/peripherals/tcm/:./src/peripherals/jtagdtm:./src/peripherals/gpio:./src/peripherals/qspi:./src/peripherals/i2c/:./src/peripherals/sdram:./src/peripherals/axiexp:./src/peripherals/dma:./src/peripherals/pwm:./src/peripherals/flexbus
 UNCORE:=./src/uncore:./src/uncore/axi4:./src/uncore/debug:./src/uncore/axi4lite
 CORE:=./src/core/fpu:./src/core/

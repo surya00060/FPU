@@ -40,7 +40,8 @@ package Soc;
 		`endif
 		`ifdef SDRAM
 			import sdr_top			 :: *;
-		`else
+    `endif
+		`ifdef BRAM
 			import Memory_AXI4	::*;
 		`endif
 		`ifdef TCMemory
@@ -69,9 +70,12 @@ package Soc;
 		(*always_ready,always_enabled*)
 		method Action boot_sequence(Bit#(1) bootseq);
 		
-		`ifdef SDRAM 
-			(*always_ready*) interface Ifc_sdram_out sdram_out; 
-		`endif
+		  `ifdef SDRAM 
+	  		(*always_ready*) interface Ifc_sdram_out sdram_out; 
+  		`endif
+      `ifdef DDR
+        (*prefix="M_AXI"*) interface AXI4_Master_IFC#(`PADDR, `Reg_width, `USERSPACE) master;
+      `endif
       `ifdef Debug
 			(*always_ready,always_enabled*)
 			method Action tms_i(Bit#(1) tms);
@@ -134,7 +138,8 @@ package Soc;
 		`endif
 		`ifdef SDRAM
 			Ifc_sdr_slave			sdram				<- mksdr_axi4_slave(clk0);
-		`else
+		`endif
+    `ifdef BRAM
 			Memory_IFC#(`SDRAMMemBase,`Addr_space) main_memory <- mkMemory("code.mem.MSB","code.mem.LSB","MainMEM");
 		`endif
 		`ifdef TCMemory
@@ -176,7 +181,8 @@ package Soc;
 			`ifdef SDRAM	
 				mkConnection (fabric.v_to_slaves [fromInteger(valueOf(Sdram_slave_num))],	sdram.axi4_slave_sdram); // 
 	   		mkConnection (fabric.v_to_slaves [fromInteger(valueOf(Sdram_cfg_slave_num))],	sdram.axi4_slave_cntrl_reg); // 
-			`else
+      `endif
+      `ifdef BRAM
 				mkConnection(fabric.v_to_slaves[fromInteger(valueOf(Sdram_slave_num))],main_memory.axi_slave);
 			`endif
 			`ifdef BOOTROM
@@ -297,6 +303,9 @@ package Soc;
 		`ifdef SDRAM
 			interface sdram_out=sdram.ifc_sdram_out;
 		`endif
+    `ifdef DDR
+      interface master=fabric.v_to_slaves[fromInteger(valueOf(Sdram_slave_num))];
+    `endif
 		`ifdef Debug
 			method Action tms_i(Bit#(1) tms);
 				tap.tms_i(tms);

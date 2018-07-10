@@ -60,7 +60,7 @@ The soc_config.inc file is used to configure the specs of the core and the Soc t
 |__DEBUG__|enable,disable| A JTAG based Debugger is present or not|
 |__OPENOCD__|enable,disable|OPENOCD is being used to connect to debugger|
 |__QSPI0/1__|enable,disable|Enable/disable the home-grown QSPI0|.
-|__SDRAM__| enable,disable|Instantiates the open-source SDRAM controller. Disabling this instantiates a regular BRAM memory.|
+|__MAINMEN__| SDRAM, BRAM, DDR|SDRAM: Instantiates the open-source SDRAM controller. BRAM:Instantiates a BRAM based Memory block to be used in FPGA or simulations. DDR: Will simply bring all the master signals for the specified address space outside to be integrated with a DDR ip.|
 |__UART0__|enable,disable|Instantiates the UART16550 ip with full support of RTS, CTS, etc.|
 |__UART1__|enable,disable|Instantiates a small uart with just rx and tx capabilities.|
 |__PLIC__|enable,disable|Instantiates a peripheral logic interrupt controller.|
