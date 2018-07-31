@@ -56,7 +56,7 @@ package fpu_divider_pipe;
      } Stage3_type#(numeric type fpexp2, numeric type fpman) deriving (Bits,Eq);
      
      typedef struct {
-            Bit#(TAdd#(fpman,2)) lv_rounded_quotient;
+            Bit#(TAdd#(fpman,4)) lv_quotient;
             Bit#(fpexp2) lv_exponent;
             Bit#(1) lv_sign;
             Bit#(1) lv_infinity;
@@ -67,7 +67,11 @@ package fpu_divider_pipe;
             Bit#(1) lv_zero;
             Bit#(3) lv_rounding_mode;
             bit quiet_nan;
-            bit lv_inexact;
+            bit lv_quotient_is_subnormal;
+            bit lv_round_up;
+            bit lv_round;
+            bit lv_sticky;
+            bit lv_guard;
      } Stage4_type#(numeric type fpexp2, numeric type fpman) deriving (Bits,Eq);
 
       //typedef enum {
@@ -341,49 +345,26 @@ module mkfpu_divider_pipe(Ifc_fpu_divider_pipe#(fpinp,fpman,fpexp))
         `ifdef verbose $display("lv_quotient = %h, lv_remainder = %h, lv_exponent = %h", lv_quotient, lv_remainder, lv_exponent); `endif
 
 		bit lv_guard = lv_quotient[2];  
-		bit lv_round = lv_quotient[1];			
- 		bit lv_inexact = 0;				
+		bit lv_round = lv_quotient[1];						
 		bit lv_round_up = 0;						
            
 		if(lv_remainder!=0 || lv_quotient[0] == 1) // if the remainder is zero, sticky bit is set to 1.
 			lv_sticky = 1;
-
-		if((lv_sticky | lv_guard | lv_round) == 1)// if any of the sticky,guard or round bit is set, the value is inexact.
-			lv_inexact = 1;
-
-        if(lv_inexact == 1 && lv_quotient_is_subnormal == 1) //Was buried deep inside the SPEC. Phew! Maybe Wrong!!!
-            lv_underflow = 1;
-
-		// Following if-else condition determine the value of lv_round_up. If set, the mantissa needs to be incremented, else the mantissa remains unchanged.
-		if(lv_rounding_mode == 'b000) 
-			lv_round_up = lv_guard & (lv_round|lv_sticky|lv_quotient[3]);
-		else if(lv_rounding_mode == 'b100)
-			lv_round_up = lv_guard; //& (lv_round|lv_sticky|lv_sign);
-		else if(lv_rounding_mode == 'b011) 
-			lv_round_up = (lv_guard|lv_round|lv_sticky) & ~lv_sign;
-		else if(lv_rounding_mode == 'b010)
+	
+        // Following if-else condition determine the value of lv_round_up. If set, the mantissa needs to be incremented, else the mantissa remains unchanged.
+	    if(lv_rounding_mode == 'b000) 
+            lv_round_up = lv_guard & (lv_round|lv_sticky|lv_quotient[3]);
+        else if(lv_rounding_mode == 'b100)
+            lv_round_up = lv_guard; //& (lv_round|lv_sticky|lv_sign);
+        else if(lv_rounding_mode == 'b011) 
+            lv_round_up = (lv_guard|lv_round|lv_sticky) & ~lv_sign;
+        else if(lv_rounding_mode == 'b010)
             lv_round_up = (lv_guard|lv_round|lv_sticky) & lv_sign;
 
-        // otherwise if round to zero mode, then do nothing
+// otherwise if round to zero mode, then do nothing
 
-		Bit#(fpman2) lv_rounded_quotient = {1'b0,lv_quotient[fPMAN+3:3]};
-
-		if( lv_round_up == 1) begin
-			lv_rounded_quotient = lv_rounded_quotient + 1;
-		end
-
-		if(lv_rounded_quotient[fPMAN+1] == 1 ) begin
-      `ifdef verbose $display("Exponent Incremented 1"); `endif
-			lv_exponent = lv_exponent + 1;
-			lv_rounded_quotient = lv_rounded_quotient >> 1;
-		end
-		if(lv_quotient[fPMAN+3] == 0 && lv_rounded_quotient[fPMAN] == 1) begin
-      `ifdef verbose $display("Exponent Incremented 2"); `endif
-			lv_exponent = lv_exponent + 1;
-        end
-        
         let stage4 = Stage4_type{ 
-                lv_rounded_quotient     : lv_rounded_quotient,
+                lv_quotient             : lv_quotient,
                 lv_exponent             : lv_exponent,
                 lv_sign                 : lv_sign,
                 lv_infinity             : lv_infinity,
@@ -394,7 +375,11 @@ module mkfpu_divider_pipe(Ifc_fpu_divider_pipe#(fpinp,fpman,fpexp))
                 lv_zero                 : lv_zero,
                 lv_rounding_mode        : lv_rounding_mode,
                 quiet_nan               : quiet_nan,
-                lv_inexact              : lv_inexact 
+                lv_quotient_is_subnormal: lv_quotient_is_subnormal,
+                lv_round_up             : lv_round_up,
+                lv_round                : lv_round,
+                lv_sticky               : lv_sticky,
+                lv_guard                : lv_guard
             };
         ff_stage4.enq(stage4);
 
@@ -404,7 +389,7 @@ module mkfpu_divider_pipe(Ifc_fpu_divider_pipe#(fpinp,fpman,fpexp))
     
     let stage4 = ff_stage4.first ; ff_stage4.deq ;
     
-    let lv_rounded_quotient     = stage4.lv_rounded_quotient;
+    let lv_quotient             = stage4.lv_quotient;
     let lv_exponent             = stage4.lv_exponent;
     let lv_sign                 = stage4.lv_sign;
     let lv_infinity             = stage4.lv_infinity;
@@ -415,7 +400,34 @@ module mkfpu_divider_pipe(Ifc_fpu_divider_pipe#(fpinp,fpman,fpexp))
     let lv_zero                 = stage4.lv_zero;
     let lv_rounding_mode        = stage4.lv_rounding_mode;
     let quiet_nan               = stage4.quiet_nan;
-    let lv_inexact              = stage4.lv_inexact; 
+    let lv_quotient_is_subnormal= stage4.lv_quotient_is_subnormal;
+    let lv_round_up             = stage4.lv_round_up;
+    let lv_round                = stage4.lv_round;
+    let lv_sticky               = stage4.lv_sticky;
+    let lv_guard                = stage4.lv_guard;
+
+    bit lv_inexact = 0;	
+    if((lv_sticky | lv_guard | lv_round) == 1)// if any of the sticky,guard or round bit is set, the value is inexact.
+			lv_inexact = 1;
+
+    if(lv_inexact == 1 && lv_quotient_is_subnormal == 1) //Was buried deep inside the SPEC. Phew! Maybe Wrong!!!
+            lv_underflow = 1;
+
+    Bit#(fpman2) lv_rounded_quotient = {1'b0,lv_quotient[fPMAN+3:3]};
+
+	if( lv_round_up == 1) begin
+		lv_rounded_quotient = lv_rounded_quotient + 1;
+	end
+
+	if(lv_rounded_quotient[fPMAN+1] == 1 ) begin
+    `ifdef verbose $display("Exponent Incremented 1"); `endif
+		lv_exponent = lv_exponent + 1;
+		lv_rounded_quotient = lv_rounded_quotient >> 1;
+	end
+	if(lv_quotient[fPMAN+3] == 0 && lv_rounded_quotient[fPMAN] == 1) begin
+      `ifdef verbose $display("Exponent Incremented 2"); `endif
+		lv_exponent = lv_exponent + 1;
+    end
        
     Bit#(fpexp) out_exp = lv_exponent[fPEXP-1:0];
     Bit#(fpman) out_man = lv_rounded_quotient[fPMAN-1:0];
