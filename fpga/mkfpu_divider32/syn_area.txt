@@ -1,0 +1,27 @@
+Copyright 1986-2016 Xilinx, Inc. All Rights Reserved.
+---------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2016.1 (lin64) Build 1538259 Fri Apr  8 15:45:23 MDT 2016
+| Date         : Tue Jul 31 14:50:00 2018
+| Host         : surya-HP-Pavilion-Power-Laptop-15-cb0xx running 64-bit Ubuntu 16.04.4 LTS
+| Command      : report_utilization -hierarchical -file .//fpga/mkfpu_divider32/syn_area.txt
+| Design       : mkfpu_divider32
+| Device       : 7a100tcsg324-1
+| Design State : Synthesized
+---------------------------------------------------------------------------------------------
+
+Utilization Design Information
+
+Table of Contents
+-----------------
+1. Utilization by Hierarchy
+
+1. Utilization by Hierarchy
+---------------------------
+
++-----------------+--------+------------+------------+---------+------+-----+--------+--------+--------------+
+|     Instance    | Module | Total LUTs | Logic LUTs | LUTRAMs | SRLs | FFs | RAMB36 | RAMB18 | DSP48 Blocks |
++-----------------+--------+------------+------------+---------+------+-----+--------+--------+--------------+
+| mkfpu_divider32 |  (top) |       1034 |       1034 |       0 |    0 | 249 |      0 |      0 |            0 |
++-----------------+--------+------------+------------+---------+------+-----+--------+--------+--------------+
+
+

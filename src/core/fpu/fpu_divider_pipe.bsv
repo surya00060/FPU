@@ -6,7 +6,7 @@ See LICENSE for more details
 Description:
 TODO
 */
-package fpu_divider;
+package fpu_divider_pipe;
     import DReg::*;
     import defined_types::*;                              //contains typedef of exceptions which are generated here
     import integer_divider::*;               //divider module
@@ -55,6 +55,21 @@ package fpu_divider;
             bit quiet_nan;
      } Stage3_type#(numeric type fpexp2, numeric type fpman) deriving (Bits,Eq);
      
+     typedef struct {
+            Bit#(TAdd#(fpman,2)) lv_rounded_quotient;
+            Bit#(fpexp2) lv_exponent;
+            Bit#(1) lv_sign;
+            Bit#(1) lv_infinity;
+            Bit#(1) lv_invalid;
+            Bit#(1) lv_dz;
+            bit lv_underflow;
+            bit lv_overflow;
+            Bit#(1) lv_zero;
+            Bit#(3) lv_rounding_mode;
+            bit quiet_nan;
+            bit lv_inexact;
+     } Stage4_type#(numeric type fpexp2, numeric type fpman) deriving (Bits,Eq);
+
       //typedef enum {
       //              Begin,
       //              Stage1,
@@ -63,20 +78,20 @@ package fpu_divider;
       //            }Div_states deriving (Bits,Eq);
 
 
-    interface Ifc_fpu_divider#(numeric type fpinp, numeric type fpman, numeric type fpexp);
+    interface Ifc_fpu_divider_pipe#(numeric type fpinp, numeric type fpman, numeric type fpexp);
 	    method Action _start(Bit#(1) lv_sign, Bit#(fpman) lv_mantissa1, Bit#(fpexp) lv_exponent1, Bit#(fpman) lv_mantissa2, Bit#(fpexp) lv_exponent2, Bit#(3) rounding_mode, Tuple2#(Bit#(5),Bit#(5)) flags);
     	method Floating_output#(fpinp) final_result_();				 // Output method
         method Action flush;
     endinterface
 
  `ifdef fpu_hierarchical
-    interface Ifc_fpu_divider32;
+    interface Ifc_fpu_divider_pipe32;
 	    method Action _start(Bit#(1) lv_sign, Bit#(23) lv_mantissa1, Bit#(8) lv_exponent1, Bit#(23) lv_mantissa2, Bit#(8) lv_exponent2, Bit#(3) rounding_mode, Tuple2#(Bit#(5),Bit#(5)) flags);
     	method Floating_output#(32) final_result_();				 // Output method
         method Action flush;
     endinterface
 
-    interface Ifc_fpu_divider64;
+    interface Ifc_fpu_divider_pipe64;
 	    method Action _start(Bit#(1) lv_sign, Bit#(52) lv_mantissa1, Bit#(11) lv_exponent1, Bit#(52) lv_mantissa2, Bit#(11) lv_exponent2, Bit#(3) rounding_mode, Tuple2#(Bit#(5),Bit#(5)) flags);
     	method Floating_output#(64) final_result_();				 // Output method
         method Action flush;
@@ -84,7 +99,7 @@ package fpu_divider;
  `endif
     
 //(*synthesize*)
-module mkfpu_divider(Ifc_fpu_divider#(fpinp,fpman,fpexp))
+module mkfpu_divider_pipe(Ifc_fpu_divider_pipe#(fpinp,fpman,fpexp))
        provisos(
                 Add#(TAdd#(fpman,fpexp),1,fpinp), // fpman -23 fpexp=8 fpinp = 32
                 Add#(fpman,2,fpman2), // fpman2 = 25
@@ -115,6 +130,7 @@ module mkfpu_divider(Ifc_fpu_divider#(fpinp,fpman,fpexp))
     FIFOF#(Stage1_type#(fpman,fpexp))   ff_stage1    <-mkFIFOF();
     FIFOF#(Stage2_type#(fpexp2))        ff_stage2    <-mkFIFOF();
     FIFOF#(Stage3_type#(fpexp2,fpman))  ff_stage3    <-mkFIFOF();
+    FIFOF#(Stage4_type#(fpexp2,fpman))  ff_stage4    <-mkFIFOF();
     //Reg#(Div_states) rg_state_handler            <- mkReg(Begin);
     Wire#(Bool) wr_flush <- mkDWire(False);
     let fPINP 	= valueOf(fpinp);
@@ -123,7 +139,7 @@ module mkfpu_divider(Ifc_fpu_divider#(fpinp,fpman,fpexp))
     let fPEXP 	= valueOf(fpexp);
     let aCC   	= valueOf(acc_bits);
 
-    (*mutually_exclusive = "rl_flush,rl_stage2,rl_stage3"*)
+    //(*mutually_exclusive = "rl_flush,rl_stage2,rl_stage3"*)
     //rule rl_flush(wr_flush);
     //    rg_state_handler <= Begin;
         //rg_stage1 <= tagged Invalid;
@@ -140,7 +156,7 @@ module mkfpu_divider(Ifc_fpu_divider#(fpinp,fpman,fpexp))
          //rg_state_handler <= Stage2;
         //`ifdef verbose $display("Dividing Op1: %h (%d) Op2: %h (%d)",{stage1_data.dividend,3'd0},{stage1_data.dividend,3'd0},{stage1_data.divisor,3'd0},{stage1_data.divisor,3'd0});  `endif
         //`ifdef verbose $display("dz : %b",stage1_data.dz); `endif
-        let stage2 <= Stage2_type { exponent : stage1.exponent,
+        let stage2 = Stage2_type { exponent : stage1.exponent,
                                      				sign     : stage1.sign,
                                      				infinity : stage1.infinity,
                                      				invalid  : stage1.invalid,
@@ -364,7 +380,43 @@ module mkfpu_divider(Ifc_fpu_divider#(fpinp,fpman,fpexp))
 		if(lv_quotient[fPMAN+3] == 0 && lv_rounded_quotient[fPMAN] == 1) begin
       `ifdef verbose $display("Exponent Incremented 2"); `endif
 			lv_exponent = lv_exponent + 1;
-		end
+        end
+        
+        let stage4 = Stage4_type{ 
+                lv_rounded_quotient     : lv_rounded_quotient,
+                lv_exponent             : lv_exponent,
+                lv_sign                 : lv_sign,
+                lv_infinity             : lv_infinity,
+                lv_invalid              : lv_invalid,
+                lv_dz                   : lv_dz,
+                lv_underflow            : lv_underflow,
+                lv_overflow             : lv_overflow,
+                lv_zero                 : lv_zero,
+                lv_rounding_mode        : lv_rounding_mode,
+                quiet_nan               : quiet_nan,
+                lv_inexact              : lv_inexact 
+            };
+        ff_stage4.enq(stage4);
+
+    endrule
+
+    rule rl_stage5;
+    
+    let stage4 = ff_stage4.first ; ff_stage4.deq ;
+    
+    let lv_rounded_quotient     = stage4.lv_rounded_quotient;
+    let lv_exponent             = stage4.lv_exponent;
+    let lv_sign                 = stage4.lv_sign;
+    let lv_infinity             = stage4.lv_infinity;
+    let lv_invalid              = stage4.lv_invalid;
+    let lv_dz                   = stage4.lv_dz;
+    let lv_underflow            = stage4.lv_underflow;
+    let lv_overflow             = stage4.lv_overflow;
+    let lv_zero                 = stage4.lv_zero;
+    let lv_rounding_mode        = stage4.lv_rounding_mode;
+    let quiet_nan               = stage4.quiet_nan;
+    let lv_inexact              = stage4.lv_inexact; 
+       
     Bit#(fpexp) out_exp = lv_exponent[fPEXP-1:0];
     Bit#(fpman) out_man = lv_rounded_quotient[fPMAN-1:0];
     Bit#(fpexp) exp_all_zeros = '0;
@@ -533,7 +585,7 @@ endmodule
 
 //(*synthesize*)
 /*
-module mkTb_fpu_divider(Empty);
+module mkTb_fpu_divider_pipe(Empty);
 	
     function Tuple2#(Bit#(5), Bit#(5)) condFlags (Tuple2#(Bit#(52), Bit#(11)) x, Tuple2#(Bit#(52), Bit#(11)) y);
         let man1  = tpl_1(x);
@@ -571,7 +623,7 @@ module mkTb_fpu_divider(Empty);
 	Reg#(Bit#(64)) rg_operand2<-mkReg(64'hbff0000000000000);
 
 	Reg#(Bit#(32)) rg_clock<-mkReg(0); 
-	Ifc_fpu_divider#(64,52,11) divider<-mkfpu_divider();
+	Ifc_fpu_divider_pipe#(64,52,11) divider<-mkfpu_divider_pipe();
 
 	Reg#(Bit#(32)) rg_arbit <-mkReg(0);
 
@@ -597,13 +649,13 @@ module mkTb_fpu_divider(Empty);
 		$finish(0);
 	endrule
 
-endmodule:mkTb_fpu_divider
+endmodule:mkTb_fpu_divider_pipe
 */
 
 `ifdef fpu_hierarchical
 (*synthesize*)
-module mkfpu_divider32(Ifc_fpu_divider32);
-    Ifc_fpu_divider#(32,23,8) uut <- mkfpu_divider();
+module mkfpu_divider_pipe32(Ifc_fpu_divider_pipe32);
+    Ifc_fpu_divider_pipe#(32,23,8) uut <- mkfpu_divider_pipe();
         method Action _start(Bit#(1) lv_sign, Bit#(23) lv_mantissa1, Bit#(8) lv_exponent1, Bit#(23) lv_mantissa2, Bit#(8) lv_exponent2, Bit#(3) rounding_mode, Tuple2#(Bit#(5),Bit#(5)) flags);
             uut._start(lv_sign,lv_mantissa1,lv_exponent1,lv_mantissa2,lv_exponent2,rounding_mode,flags);
         endmethod
@@ -616,8 +668,8 @@ module mkfpu_divider32(Ifc_fpu_divider32);
 endmodule
 
 (*synthesize*)
-module mkfpu_divider64(Ifc_fpu_divider64);
-    Ifc_fpu_divider#(64,52,11) uut <- mkfpu_divider();
+module mkfpu_divider_pipe64(Ifc_fpu_divider_pipe64);
+    Ifc_fpu_divider_pipe#(64,52,11) uut <- mkfpu_divider_pipe();
         method Action _start(Bit#(1) lv_sign, Bit#(52) lv_mantissa1, Bit#(11) lv_exponent1, Bit#(52) lv_mantissa2, Bit#(11) lv_exponent2, Bit#(3) rounding_mode, Tuple2#(Bit#(5),Bit#(5)) flags);
             uut._start(lv_sign,lv_mantissa1,lv_exponent1,lv_mantissa2,lv_exponent2,rounding_mode,flags);
         endmethod
@@ -630,7 +682,7 @@ module mkfpu_divider64(Ifc_fpu_divider64);
 endmodule
 `endif
 
-//module mkTb_fpu_divider_2(Empty);
+//module mkTb_fpu_divider_pipe_2(Empty);
 //	
 //	RegFile #(Bit #(10), Bit #(68))  input_data <- mkRegFileFullLoad("./testcases/Div_denormal_testcases.hex");
 //	Reg #(Bit #(10)) index <- mkReg(0);
@@ -638,7 +690,7 @@ endmodule
 //	Reg #(Bit #(32)) state_clock <- mkReg(1);
 //    Reg #(Bit #(32)) rg_state <- mkReg(0);
 // 	/*****************Module Instantiation******************************/
-//	Ifc_fpu_divider#(32,23,8) divider <- mkfpu_divider();
+//	Ifc_fpu_divider_pipe#(32,23,8) divider <- mkfpu_divider_pipe();
 //
 //
 //	/******************File Creation************************************/
