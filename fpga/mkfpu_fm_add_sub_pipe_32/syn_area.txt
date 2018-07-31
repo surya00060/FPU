@@ -1,0 +1,32 @@
+Copyright 1986-2016 Xilinx, Inc. All Rights Reserved.
+------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2016.1 (lin64) Build 1538259 Fri Apr  8 15:45:23 MDT 2016
+| Date         : Wed Jul 18 21:14:54 2018
+| Host         : surya-HP-Pavilion-Power-Laptop-15-cb0xx running 64-bit Ubuntu 16.04.4 LTS
+| Command      : report_utilization -hierarchical -file .//fpga/mkfpu_fm_add_sub_pipe_32/syn_area.txt
+| Design       : mkfpu_fm_add_sub_pipe_32
+| Device       : 7a100tcsg324-1
+| Design State : Synthesized
+------------------------------------------------------------------------------------------------------
+
+Utilization Design Information
+
+Table of Contents
+-----------------
+1. Utilization by Hierarchy
+
+1. Utilization by Hierarchy
+---------------------------
+
++------------------------------+-----------------------+------------+------------+---------+------+-----+--------+--------+--------------+
+|           Instance           |         Module        | Total LUTs | Logic LUTs | LUTRAMs | SRLs | FFs | RAMB36 | RAMB18 | DSP48 Blocks |
++------------------------------+-----------------------+------------+------------+---------+------+-----+--------+--------+--------------+
+| mkfpu_fm_add_sub_pipe_32     |                 (top) |       2953 |       2953 |       0 |    0 | 994 |      0 |      0 |            2 |
+|   (mkfpu_fm_add_sub_pipe_32) |                 (top) |       2442 |       2442 |       0 |    0 |   0 |      0 |      0 |            2 |
+|   ff_input                   |                 FIFO2 |        113 |        113 |       0 |    0 | 216 |      0 |      0 |            0 |
+|   ff_stage2                  | FIFO2__parameterized0 |        114 |        114 |       0 |    0 | 220 |      0 |      0 |            0 |
+|   ff_stage4                  | FIFO2__parameterized1 |        176 |        176 |       0 |    0 | 344 |      0 |      0 |            0 |
+|   ff_stage5                  | FIFO2__parameterized2 |        108 |        108 |       0 |    0 | 214 |      0 |      0 |            0 |
++------------------------------+-----------------------+------------+------------+---------+------+-----+--------+--------+--------------+
+
+

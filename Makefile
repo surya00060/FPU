@@ -7,9 +7,17 @@ include soc_config.inc
 SHAKTI_C_HOME=$(PWD)
 export SHAKTI_C_HOME
 
-TOP_MODULE:=mkTbSoc
-TOP_FILE:=TbSoc.bsv
-TOP_DIR:=./src/testbench/
+TOP_MODULE:=mkfpu_divider_pipe32
+TOP_FILE:=fpu_divider_pipe.bsv
+HOMEDIR:=./
+TOP_DIR:=./src/core/fpu
+BSVBUILDDIR:=./build/
+VERILOGDIR:=./verilog/
+BSVINCDIR:= .:%/Prelude:%/Libraries:%/Libraries/BlueNoC:$(FILES)
+FPGA=xc7a100tcsg324-1
+export HOMEDIR=./
+export TOP=$(TOP_MODULE)
+
 WORKING_DIR := $(shell pwd)
 
 ifneq (,$(findstring RV64,$(ISA)))
@@ -189,9 +197,14 @@ generate_verilog: check-restore check-blue
 	@mkdir -p $(VERILOGDIR); 
 	@echo "old_define_macros = $(define_macros)" > old_vars
 	bsc -u -verilog -elab -vdir $(VERILOGDIR) -bdir $(BSVBUILDDIR) -info-dir $(BSVBUILDDIR) $(define_macros) -D verilog=True $(BSVCOMPILEOPTS) -verilog-filter ${BLUESPECDIR}/bin/basicinout -p $(BSVINCDIR) -g $(TOP_MODULE) $(TOP_DIR)/$(TOP_FILE) 2>&1 | tee bsv_compile.log
-	@sed -i "s/39'h0000001000/reset_vector/g" ./verilog/mkfetch.v
-	@sed -i "s/(rg_tdo)/(rg_tdo\$$D_IN)/g" ./verilog/mkTbSoc.v
+	@cp ${BLUESPECDIR}/Verilog/FIFO2.v ./verilog/
 	@echo Compilation finished
+
+.PHONY: vivado_build
+vivado_build: 
+	@vivado -mode tcl -source $(HOMEDIR)/src/tcl/create_project.tcl -tclargs $(TOP_MODULE) $(FPGA) || (echo "Could \
+not create core project"; exit 1)
+	@vivado -mode tcl -source $(HOMEDIR)/src/tcl/run.tcl || (echo "ERROR: While running synthesis")
 
 .PHONY: link_vcs
 link_vcs: 

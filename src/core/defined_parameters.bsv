@@ -5,7 +5,7 @@
 `ifdef dpfpu
 	`define FLEN 64
 `endif
-//`define fpu_hierarchical //Define this if you want hierarchical modules in verilog
+`define fpu_hierarchical //Define this if you want hierarchical modules in verilog
 
 //`define MMU
 `define PRFDEPTH 6

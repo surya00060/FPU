@@ -1,0 +1,39 @@
+#-----------------------------------------------------------
+# Vivado v2016.1 (64-bit)
+# SW Build 1538259 on Fri Apr  8 15:45:23 MDT 2016
+# IP Build 1537824 on Fri Apr  8 04:28:57 MDT 2016
+# Start of session at: Fri Jul 13 15:29:55 2018
+# Process ID: 16166
+# Current directory: /home/surya/Desktop/FPU/fpga/mkTbSoc/mkTbSoc.runs/core_synth_1
+# Command line: vivado -log mkTbSoc.vds -mode batch -messageDb vivado.pb -notrace -source mkTbSoc.tcl
+# Log file: /home/surya/Desktop/FPU/fpga/mkTbSoc/mkTbSoc.runs/core_synth_1/mkTbSoc.vds
+# Journal file: /home/surya/Desktop/FPU/fpga/mkTbSoc/mkTbSoc.runs/core_synth_1/vivado.jou
+#-----------------------------------------------------------
+source mkTbSoc.tcl -notrace
+WARNING: [Board 49-26] cannot add Board Part digilentinc.com:arty-s7-25:part0:1.0 available at /tools/Vivado/Vivado/2016.1/data/boards/board_files/arty-s7-25/E.0/board.xml as part xc7s25csga324-1 specified in board_part file is either invalid or not available
+WARNING: [Board 49-26] cannot add Board Part digilentinc.com:arty-s7-50:part0:1.0 available at /tools/Vivado/Vivado/2016.1/data/boards/board_files/arty-s7-50/B.0/board.xml as part xc7s50csga324-1 specified in board_part file is either invalid or not available
+Command: synth_design -top mkTbSoc -part xc7a100tcsg324-1 -flatten_hierarchy none
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xc7a100t'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7a100t'
+INFO: Launching helper process for spawning children vivado processes
+INFO: Helper process launched with PID 16258 
+---------------------------------------------------------------------------------
+Starting RTL Elaboration : Time (s): cpu = 00:00:05 ; elapsed = 00:00:06 . Memory (MB): peak = 1083.852 ; gain = 190.090 ; free physical = 1573 ; free virtual = 12277
+---------------------------------------------------------------------------------
+INFO: [Synth 8-638] synthesizing module 'mkTbSoc' [/home/surya/Desktop/FPU/verilog/mkTbSoc.v:29]
+ERROR: [Synth 8-439] module 'ClockDiv' not found [/home/surya/Desktop/FPU/verilog/mkTbSoc.v:370]
+	Parameter width bound to: 1 - type: integer 
+	Parameter lower bound to: 0 - type: integer 
+	Parameter upper bound to: 1 - type: integer 
+	Parameter offset bound to: 0 - type: integer 
+ERROR: [Synth 8-285] failed synthesizing module 'mkTbSoc' [/home/surya/Desktop/FPU/verilog/mkTbSoc.v:29]
+---------------------------------------------------------------------------------
+Finished RTL Elaboration : Time (s): cpu = 00:00:06 ; elapsed = 00:00:06 . Memory (MB): peak = 1125.289 ; gain = 231.527 ; free physical = 1531 ; free virtual = 12235
+---------------------------------------------------------------------------------
+RTL Elaboration failed
+INFO: [Common 17-83] Releasing license: Synthesis
+3 Infos, 2 Warnings, 0 Critical Warnings and 3 Errors encountered.
+synth_design failed
+ERROR: [Common 17-69] Command failed: Synthesis failed - please see the console or run log file for details
+INFO: [Common 17-206] Exiting Vivado at Fri Jul 13 15:30:05 2018...

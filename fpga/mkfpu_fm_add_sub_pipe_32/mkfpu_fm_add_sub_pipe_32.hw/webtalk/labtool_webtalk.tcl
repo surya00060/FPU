@@ -1,0 +1,28 @@
+webtalk_init -webtalk_dir /home/surya/Desktop/FPU/fpga/mkfpu_fm_add_sub_pipe_32/mkfpu_fm_add_sub_pipe_32.hw/webtalk/
+webtalk_register_client -client project
+webtalk_add_data -client project -key date_generated -value "Fri Jul 20 13:16:07 2018" -context "software_version_and_target_device"
+webtalk_add_data -client project -key product_version -value "Vivado v2016.1 (64-bit)" -context "software_version_and_target_device"
+webtalk_add_data -client project -key build_version -value "1538259" -context "software_version_and_target_device"
+webtalk_add_data -client project -key os_platform -value "LIN64" -context "software_version_and_target_device"
+webtalk_add_data -client project -key registration_id -value "177482348_174144829_210597666_007" -context "software_version_and_target_device"
+webtalk_add_data -client project -key tool_flow -value "xsim_vivado" -context "software_version_and_target_device"
+webtalk_add_data -client project -key beta -value "FALSE" -context "software_version_and_target_device"
+webtalk_add_data -client project -key route_design -value "FALSE" -context "software_version_and_target_device"
+webtalk_add_data -client project -key target_family -value "not_applicable" -context "software_version_and_target_device"
+webtalk_add_data -client project -key target_device -value "not_applicable" -context "software_version_and_target_device"
+webtalk_add_data -client project -key target_package -value "not_applicable" -context "software_version_and_target_device"
+webtalk_add_data -client project -key target_speed -value "not_applicable" -context "software_version_and_target_device"
+webtalk_add_data -client project -key random_id -value "791de5af-b93e-4182-902d-7dbe1e18aa26" -context "software_version_and_target_device"
+webtalk_add_data -client project -key project_id -value "3f210c78-96e0-4c9a-b25f-63d63858667b" -context "software_version_and_target_device"
+webtalk_add_data -client project -key project_iteration -value "3" -context "software_version_and_target_device"
+webtalk_add_data -client project -key os_name -value "Ubuntu" -context "user_environment"
+webtalk_add_data -client project -key os_release -value "Ubuntu 16.04.4 LTS" -context "user_environment"
+webtalk_add_data -client project -key cpu_name -value "Intel(R) Core(TM) i7-7700HQ CPU @ 2.80GHz" -context "user_environment"
+webtalk_add_data -client project -key cpu_speed -value "2700.001 MHz" -context "user_environment"
+webtalk_add_data -client project -key total_processors -value "1" -context "user_environment"
+webtalk_add_data -client project -key system_ram -value "8.000 GB" -context "user_environment"
+webtalk_register_client -client labtool
+webtalk_add_data -client labtool -key pgmcnt -value "00:00:00" -context "labtool\\usage"
+webtalk_add_data -client labtool -key cable -value "" -context "labtool\\usage"
+webtalk_transmit -clientid 364447804 -regid "177482348_174144829_210597666_007" -xml /home/surya/Desktop/FPU/fpga/mkfpu_fm_add_sub_pipe_32/mkfpu_fm_add_sub_pipe_32.hw/webtalk/usage_statistics_ext_labtool.xml -html /home/surya/Desktop/FPU/fpga/mkfpu_fm_add_sub_pipe_32/mkfpu_fm_add_sub_pipe_32.hw/webtalk/usage_statistics_ext_labtool.html -wdm /home/surya/Desktop/FPU/fpga/mkfpu_fm_add_sub_pipe_32/mkfpu_fm_add_sub_pipe_32.hw/webtalk/usage_statistics_ext_labtool.wdm -intro "<H3>LABTOOL Usage Report</H3><BR>"
+webtalk_terminate

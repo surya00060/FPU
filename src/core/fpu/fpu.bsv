@@ -566,7 +566,8 @@ module mkfpu(Ifc_fpu);
 	method ActionValue#(Floating_output#(`FLEN)) get_result;
 		ff_result.deq;
 		return ff_result.first;
-	endmethod
+    endmethod
+    
 	method Action flush;
 		  wr_flush<=True;
         inst_spfpu_divider.flush();
