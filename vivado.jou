@@ -9,3 +9,4 @@
 # Log file: /home/surya/Desktop/FPU/vivado.log
 # Journal file: /home/surya/Desktop/FPU/vivado.jou
 #-----------------------------------------------------------
+source .//src/tcl/run.tcl
