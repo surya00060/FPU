@@ -16,6 +16,7 @@ set_property target_language Verilog [current_project]
 set_property include_dirs /home/surya/Desktop/FPU/verilog [current_fileset]
 read_verilog -library xil_defaultlib {
   /home/surya/Desktop/FPU/verilog/FIFO2.v
+  /home/surya/Desktop/FPU/verilog/mkfpu_divider_pipe64.v
   /home/surya/Desktop/FPU/verilog/mkfpu_divider_pipe32.v
 }
 foreach dcp [get_files -quiet -all *.dcp] {
