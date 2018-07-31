@@ -1,7 +1,11 @@
 Copyright 1986-2016 Xilinx, Inc. All Rights Reserved.
 -----------------------------------------------------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2016.1 (lin64) Build 1538259 Fri Apr  8 15:45:23 MDT 2016
+<<<<<<< HEAD
 | Date         : Tue Jul 31 19:11:40 2018
+=======
+| Date         : Tue Jul 31 18:29:36 2018
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
 | Host         : surya-HP-Pavilion-Power-Laptop-15-cb0xx running 64-bit Ubuntu 16.04.4 LTS
 | Command      : report_utilization -file mkfpu_divider_pipe32_utilization_synth.rpt -pb mkfpu_divider_pipe32_utilization_synth.pb
 | Design       : mkfpu_divider_pipe32
@@ -30,13 +34,13 @@ Table of Contents
 +-------------------------+------+-------+-----------+-------+
 |        Site Type        | Used | Fixed | Available | Util% |
 +-------------------------+------+-------+-----------+-------+
-| Slice LUTs*             | 1234 |     0 |     63400 |  1.95 |
-|   LUT as Logic          | 1234 |     0 |     63400 |  1.95 |
+| Slice LUTs*             | 1243 |     0 |     63400 |  1.96 |
+|   LUT as Logic          | 1243 |     0 |     63400 |  1.96 |
 |   LUT as Memory         |    0 |     0 |     19000 |  0.00 |
-| Slice Registers         |  503 |     0 |    126800 |  0.40 |
-|   Register as Flip Flop |  503 |     0 |    126800 |  0.40 |
+| Slice Registers         |  513 |     0 |    126800 |  0.40 |
+|   Register as Flip Flop |  513 |     0 |    126800 |  0.40 |
 |   Register as Latch     |    0 |     0 |    126800 |  0.00 |
-| F7 Muxes                |    2 |     0 |     31700 | <0.01 |
+| F7 Muxes                |    3 |     0 |     31700 | <0.01 |
 | F8 Muxes                |    0 |     0 |     15850 |  0.00 |
 +-------------------------+------+-------+-----------+-------+
 * Warning! The Final LUT count, after physical optimizations and full implementation, is typically lower. Run opt_design after synthesis, if not already completed, for a more realistic count.
@@ -57,7 +61,7 @@ Table of Contents
 | 0     |          Yes |           - |          Set |
 | 0     |          Yes |           - |        Reset |
 | 0     |          Yes |         Set |            - |
-| 503   |          Yes |       Reset |            - |
+| 513   |          Yes |       Reset |            - |
 +-------+--------------+-------------+--------------+
 
 
@@ -147,16 +151,16 @@ Table of Contents
 +----------+------+---------------------+
 | Ref Name | Used | Functional Category |
 +----------+------+---------------------+
-| LUT6     |  782 |                 LUT |
-| FDRE     |  503 |        Flop & Latch |
-| LUT5     |  223 |                 LUT |
-| LUT4     |  197 |                 LUT |
-| LUT3     |  103 |                 LUT |
+| LUT6     |  800 |                 LUT |
+| FDRE     |  513 |        Flop & Latch |
+| LUT5     |  225 |                 LUT |
+| LUT4     |  161 |                 LUT |
+| LUT3     |   98 |                 LUT |
 | IBUF     |   79 |                  IO |
 | CARRY4   |   57 |          CarryLogic |
 | OBUF     |   40 |                  IO |
 | LUT2     |   40 |                 LUT |
-| MUXF7    |    2 |               MuxFx |
+| MUXF7    |    3 |               MuxFx |
 | LUT1     |    1 |                 LUT |
 | BUFG     |    1 |               Clock |
 +----------+------+---------------------+

@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<<<<<<< HEAD
 <GenRun Id="core_synth_1" LaunchPart="xc7a100tcsg324-1" LaunchTime="1533043792">
+=======
+<GenRun Id="core_synth_1" LaunchPart="xc7a100tcsg324-1" LaunchTime="1533033864">
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
   <File Type="VDS-TIMING-PB" Name="mkfpu_divider_pipe64_timing_summary_synth.pb"/>
   <File Type="VDS-TIMINGSUMMARY" Name="mkfpu_divider_pipe64_timing_summary_synth.rpt"/>
   <File Type="RDS-RDS" Name="mkfpu_divider_pipe64.vds"/>

@@ -6,7 +6,11 @@
 <Project Version="7" Minor="12" Path="/home/surya/Desktop/FPU/fpga/mkfpu_divider_pipe32/mkfpu_divider_pipe32.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
+<<<<<<< HEAD
     <Option Name="Id" Val="5d37aa7249754897be2a491970298fd6"/>
+=======
+    <Option Name="Id" Val="00042049aa334e17b6f5ae0ff47cedf7"/>
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
     <Option Name="Part" Val="xc7a100tcsg324-1"/>
     <Option Name="CompiledLibDir" Val="$PCACHEDIR/compile_simlib"/>
     <Option Name="CompiledLibDirXSim" Val=""/>

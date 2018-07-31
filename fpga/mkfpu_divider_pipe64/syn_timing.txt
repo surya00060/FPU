@@ -1,7 +1,11 @@
 Copyright 1986-2016 Xilinx, Inc. All Rights Reserved.
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2016.1 (lin64) Build 1538259 Fri Apr  8 15:45:23 MDT 2016
+<<<<<<< HEAD
 | Date         : Tue Jul 31 19:00:54 2018
+=======
+| Date         : Tue Jul 31 16:15:26 2018
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
 | Host         : surya-HP-Pavilion-Power-Laptop-15-cb0xx running 64-bit Ubuntu 16.04.4 LTS
 | Command      : report_timing_summary -delay_type min_max -report_unconstrained -check_timing_verbose -max_paths 10 -input_pins -file .//fpga/mkfpu_divider_pipe64/syn_timing.txt
 | Design       : mkfpu_divider_pipe64
@@ -341,7 +345,11 @@ final_result_[9]
 
     WNS(ns)      TNS(ns)  TNS Failing Endpoints  TNS Total Endpoints      WHS(ns)      THS(ns)  THS Failing Endpoints  THS Total Endpoints     WPWS(ns)     TPWS(ns)  TPWS Failing Endpoints  TPWS Total Endpoints  
     -------      -------  ---------------------  -------------------      -------      -------  ---------------------  -------------------     --------     --------  ----------------------  --------------------  
+<<<<<<< HEAD
      -6.304     -708.166                    249                 1327        0.160        0.000                      0                 1327        4.500        0.000                       0                   916  
+=======
+     -6.299     -710.956                    249                 1318        0.160        0.000                      0                 1318        4.500        0.000                       0                   910  
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
 
 
 Timing constraints are not met.
@@ -364,7 +372,11 @@ CLK    {0.000 5.000}      10.000          100.000
 
 Clock             WNS(ns)      TNS(ns)  TNS Failing Endpoints  TNS Total Endpoints      WHS(ns)      THS(ns)  THS Failing Endpoints  THS Total Endpoints     WPWS(ns)     TPWS(ns)  TPWS Failing Endpoints  TPWS Total Endpoints  
 -----             -------      -------  ---------------------  -------------------      -------      -------  ---------------------  -------------------     --------     --------  ----------------------  --------------------  
+<<<<<<< HEAD
 CLK                -6.304     -708.166                    249                 1327        0.160        0.000                      0                 1327        4.500        0.000                       0                   916  
+=======
+CLK                -6.299     -710.956                    249                 1318        0.160        0.000                      0                 1318        4.500        0.000                       0                   910  
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
 
 
 ------------------------------------------------------------------------------------------------
@@ -453,7 +465,11 @@ Slack (VIOLATED) :        -6.304ns  (required time - arrival time)
                          net (fo=1, unplaced)         0.803     1.774    CLK_IBUF
                                                                       r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.096     1.870 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.584     2.454    CLK_IBUF_BUFG
+=======
+                         net (fo=909, unplaced)       0.584     2.454    CLK_IBUF_BUFG
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          FDRE                                         r  uut_int_div_rg_state_reg[3]/C
   -------------------------------------------------------------------    -------------------
                          FDRE (Prop_fdre_C_Q)         0.478     2.932 f  uut_int_div_rg_state_reg[3]/Q
@@ -465,9 +481,15 @@ Slack (VIOLATED) :        -6.304ns  (required time - arrival time)
                          LUT4 (Prop_lut4_I0_O)        0.124     4.652 r  uut_ff_stage1_i_116/O
                          net (fo=512, unplaced)       0.589     5.241    WILL_FIRE_RL_uut_rl_stage2
                                                                       r  uut_int_div_rg_inter_stage[118]_i_1/I3
+<<<<<<< HEAD
                          LUT4 (Prop_lut4_I3_O)        0.124     5.365 r  uut_int_div_rg_inter_stage[118]_i_1/O
                          net (fo=2, unplaced)         0.481     5.846    p_0_in15_in[118]
                                                                       r  uut_ff_stage3_i_1171/DI[1]
+=======
+                         LUT4 (Prop_lut4_I3_O)        0.124     5.375 r  uut_int_div_rg_inter_stage[118]_i_1/O
+                         net (fo=2, unplaced)         0.481     5.856    p_0_in12_in[118]
+                                                                      r  uut_ff_stage3_i_1135/DI[1]
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          CARRY4 (Prop_carry4_DI[1]_CO[3])
                                                       0.520     6.366 r  uut_ff_stage3_i_1171/CO[3]
                          net (fo=1, unplaced)         0.000     6.366    uut_ff_stage3_i_1171_n_0
@@ -528,6 +550,7 @@ Slack (VIOLATED) :        -6.304ns  (required time - arrival time)
                          net (fo=1, unplaced)         0.000     9.821    uut_ff_stage3_i_261_n_0
                                                                       r  uut_ff_stage3_i_254/CI
                          CARRY4 (Prop_carry4_CI_O[1])
+<<<<<<< HEAD
                                                       0.337    10.158 f  uut_ff_stage3_i_254/O[1]
                          net (fo=5, unplaced)         0.639    10.797    p_2_in__0[112]
                                                                       f  uut_ff_stage3_i_249/I0
@@ -549,6 +572,29 @@ Slack (VIOLATED) :        -6.304ns  (required time - arrival time)
                          LUT4 (Prop_lut4_I3_O)        0.116    14.122 r  uut_ff_stage3_i_895/O
                          net (fo=1, unplaced)         0.000    14.122    uut_ff_stage3_i_895_n_0
                                                                       r  uut_ff_stage3_i_329/DI[0]
+=======
+                                                      0.337    10.168 f  uut_ff_stage3_i_251/O[1]
+                         net (fo=6, unplaced)         0.643    10.811    p_2_in[112]
+                                                                      f  uut_ff_stage3_i_1052/I0
+                         LUT6 (Prop_lut6_I0_O)        0.306    11.117 f  uut_ff_stage3_i_1052/O
+                         net (fo=18, unplaced)        0.506    11.623    uut_ff_stage3_i_1052_n_0
+                                                                      f  uut_ff_stage3_i_1600/I0
+                         LUT6 (Prop_lut6_I0_O)        0.124    11.747 f  uut_ff_stage3_i_1600/O
+                         net (fo=1, unplaced)         0.449    12.196    uut_ff_stage3_i_1600_n_0
+                                                                      f  uut_ff_stage3_i_1315/I1
+                         LUT6 (Prop_lut6_I1_O)        0.124    12.320 f  uut_ff_stage3_i_1315/O
+                         net (fo=1, unplaced)         0.449    12.769    uut_ff_stage3_i_1315_n_0
+                                                                      f  uut_ff_stage3_i_968/I2
+                         LUT6 (Prop_lut6_I2_O)        0.124    12.893 f  uut_ff_stage3_i_968/O
+                         net (fo=1, unplaced)         0.449    13.342    uut_ff_stage3_i_968_n_0
+                                                                      f  uut_ff_stage3_i_420/I3
+                         LUT6 (Prop_lut6_I3_O)        0.124    13.466 f  uut_ff_stage3_i_420/O
+                         net (fo=59, unplaced)        0.535    14.001    uut_ff_stage3_i_420_n_0
+                                                                      f  uut_ff_stage3_i_1146/I3
+                         LUT4 (Prop_lut4_I3_O)        0.116    14.117 r  uut_ff_stage3_i_1146/O
+                         net (fo=1, unplaced)         0.000    14.117    uut_ff_stage3_i_1146_n_0
+                                                                      r  uut_ff_stage3_i_832/DI[0]
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          CARRY4 (Prop_carry4_DI[0]_CO[3])
                                                       0.576    14.698 r  uut_ff_stage3_i_329/CO[3]
                          net (fo=1, unplaced)         0.000    14.698    uut_ff_stage3_i_329_n_0
@@ -591,7 +637,11 @@ Slack (VIOLATED) :        -6.304ns  (required time - arrival time)
                          net (fo=1, unplaced)         0.763    11.601    CLK_IBUF
                          BUFG                                         r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.091    11.692 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.439    12.131    uut_ff_stage3/CLK
+=======
+                         net (fo=909, unplaced)       0.439    12.131    uut_ff_stage3/CLK
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          FDRE                                         r  uut_ff_stage3/data0_reg_reg[23]/C
                          clock pessimism              0.179    12.309    
                          clock uncertainty           -0.035    12.274    
@@ -632,7 +682,11 @@ Slack (VIOLATED) :        -6.264ns  (required time - arrival time)
                          net (fo=1, unplaced)         0.803     1.774    CLK_IBUF
                                                                       r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.096     1.870 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.584     2.454    CLK_IBUF_BUFG
+=======
+                         net (fo=909, unplaced)       0.584     2.454    CLK_IBUF_BUFG
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          FDRE                                         r  uut_int_div_rg_state_reg[3]/C
   -------------------------------------------------------------------    -------------------
                          FDRE (Prop_fdre_C_Q)         0.478     2.932 f  uut_int_div_rg_state_reg[3]/Q
@@ -644,9 +698,15 @@ Slack (VIOLATED) :        -6.264ns  (required time - arrival time)
                          LUT4 (Prop_lut4_I0_O)        0.124     4.652 r  uut_ff_stage1_i_116/O
                          net (fo=512, unplaced)       0.589     5.241    WILL_FIRE_RL_uut_rl_stage2
                                                                       r  uut_int_div_rg_inter_stage[118]_i_1/I3
+<<<<<<< HEAD
                          LUT4 (Prop_lut4_I3_O)        0.124     5.365 r  uut_int_div_rg_inter_stage[118]_i_1/O
                          net (fo=2, unplaced)         0.481     5.846    p_0_in15_in[118]
                                                                       r  uut_ff_stage3_i_1171/DI[1]
+=======
+                         LUT4 (Prop_lut4_I3_O)        0.124     5.375 r  uut_int_div_rg_inter_stage[118]_i_1/O
+                         net (fo=2, unplaced)         0.481     5.856    p_0_in12_in[118]
+                                                                      r  uut_ff_stage3_i_1135/DI[1]
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          CARRY4 (Prop_carry4_DI[1]_CO[3])
                                                       0.520     6.366 r  uut_ff_stage3_i_1171/CO[3]
                          net (fo=1, unplaced)         0.000     6.366    uut_ff_stage3_i_1171_n_0
@@ -707,6 +767,7 @@ Slack (VIOLATED) :        -6.264ns  (required time - arrival time)
                          net (fo=1, unplaced)         0.000     9.821    uut_ff_stage3_i_261_n_0
                                                                       r  uut_ff_stage3_i_254/CI
                          CARRY4 (Prop_carry4_CI_O[1])
+<<<<<<< HEAD
                                                       0.337    10.158 f  uut_ff_stage3_i_254/O[1]
                          net (fo=5, unplaced)         0.639    10.797    p_2_in__0[112]
                                                                       f  uut_ff_stage3_i_249/I0
@@ -728,6 +789,29 @@ Slack (VIOLATED) :        -6.264ns  (required time - arrival time)
                          LUT4 (Prop_lut4_I3_O)        0.116    14.122 r  uut_ff_stage3_i_895/O
                          net (fo=1, unplaced)         0.000    14.122    uut_ff_stage3_i_895_n_0
                                                                       r  uut_ff_stage3_i_329/DI[0]
+=======
+                                                      0.337    10.168 f  uut_ff_stage3_i_251/O[1]
+                         net (fo=6, unplaced)         0.643    10.811    p_2_in[112]
+                                                                      f  uut_ff_stage3_i_1052/I0
+                         LUT6 (Prop_lut6_I0_O)        0.306    11.117 f  uut_ff_stage3_i_1052/O
+                         net (fo=18, unplaced)        0.506    11.623    uut_ff_stage3_i_1052_n_0
+                                                                      f  uut_ff_stage3_i_1600/I0
+                         LUT6 (Prop_lut6_I0_O)        0.124    11.747 f  uut_ff_stage3_i_1600/O
+                         net (fo=1, unplaced)         0.449    12.196    uut_ff_stage3_i_1600_n_0
+                                                                      f  uut_ff_stage3_i_1315/I1
+                         LUT6 (Prop_lut6_I1_O)        0.124    12.320 f  uut_ff_stage3_i_1315/O
+                         net (fo=1, unplaced)         0.449    12.769    uut_ff_stage3_i_1315_n_0
+                                                                      f  uut_ff_stage3_i_968/I2
+                         LUT6 (Prop_lut6_I2_O)        0.124    12.893 f  uut_ff_stage3_i_968/O
+                         net (fo=1, unplaced)         0.449    13.342    uut_ff_stage3_i_968_n_0
+                                                                      f  uut_ff_stage3_i_420/I3
+                         LUT6 (Prop_lut6_I3_O)        0.124    13.466 f  uut_ff_stage3_i_420/O
+                         net (fo=59, unplaced)        0.535    14.001    uut_ff_stage3_i_420_n_0
+                                                                      f  uut_ff_stage3_i_1146/I3
+                         LUT4 (Prop_lut4_I3_O)        0.116    14.117 r  uut_ff_stage3_i_1146/O
+                         net (fo=1, unplaced)         0.000    14.117    uut_ff_stage3_i_1146_n_0
+                                                                      r  uut_ff_stage3_i_832/DI[0]
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          CARRY4 (Prop_carry4_DI[0]_CO[3])
                                                       0.576    14.698 r  uut_ff_stage3_i_329/CO[3]
                          net (fo=1, unplaced)         0.000    14.698    uut_ff_stage3_i_329_n_0
@@ -766,7 +850,11 @@ Slack (VIOLATED) :        -6.264ns  (required time - arrival time)
                          net (fo=1, unplaced)         0.763    11.601    CLK_IBUF
                          BUFG                                         r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.091    11.692 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.439    12.131    uut_ff_stage3/CLK
+=======
+                         net (fo=909, unplaced)       0.439    12.131    uut_ff_stage3/CLK
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          FDRE                                         r  uut_ff_stage3/data0_reg_reg[20]/C
                          clock pessimism              0.179    12.309    
                          clock uncertainty           -0.035    12.274    
@@ -807,7 +895,11 @@ Slack (VIOLATED) :        -6.250ns  (required time - arrival time)
                          net (fo=1, unplaced)         0.803     1.774    CLK_IBUF
                                                                       r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.096     1.870 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.584     2.454    CLK_IBUF_BUFG
+=======
+                         net (fo=909, unplaced)       0.584     2.454    CLK_IBUF_BUFG
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          FDRE                                         r  uut_int_div_rg_state_reg[3]/C
   -------------------------------------------------------------------    -------------------
                          FDRE (Prop_fdre_C_Q)         0.478     2.932 f  uut_int_div_rg_state_reg[3]/Q
@@ -819,9 +911,15 @@ Slack (VIOLATED) :        -6.250ns  (required time - arrival time)
                          LUT4 (Prop_lut4_I0_O)        0.124     4.652 r  uut_ff_stage1_i_116/O
                          net (fo=512, unplaced)       0.589     5.241    WILL_FIRE_RL_uut_rl_stage2
                                                                       r  uut_int_div_rg_inter_stage[118]_i_1/I3
+<<<<<<< HEAD
                          LUT4 (Prop_lut4_I3_O)        0.124     5.365 r  uut_int_div_rg_inter_stage[118]_i_1/O
                          net (fo=2, unplaced)         0.481     5.846    p_0_in15_in[118]
                                                                       r  uut_ff_stage3_i_1171/DI[1]
+=======
+                         LUT4 (Prop_lut4_I3_O)        0.124     5.375 r  uut_int_div_rg_inter_stage[118]_i_1/O
+                         net (fo=2, unplaced)         0.481     5.856    p_0_in12_in[118]
+                                                                      r  uut_ff_stage3_i_1135/DI[1]
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          CARRY4 (Prop_carry4_DI[1]_CO[3])
                                                       0.520     6.366 r  uut_ff_stage3_i_1171/CO[3]
                          net (fo=1, unplaced)         0.000     6.366    uut_ff_stage3_i_1171_n_0
@@ -882,6 +980,7 @@ Slack (VIOLATED) :        -6.250ns  (required time - arrival time)
                          net (fo=1, unplaced)         0.000     9.821    uut_ff_stage3_i_261_n_0
                                                                       r  uut_ff_stage3_i_254/CI
                          CARRY4 (Prop_carry4_CI_O[1])
+<<<<<<< HEAD
                                                       0.337    10.158 f  uut_ff_stage3_i_254/O[1]
                          net (fo=5, unplaced)         0.639    10.797    p_2_in__0[112]
                                                                       f  uut_ff_stage3_i_249/I0
@@ -903,6 +1002,29 @@ Slack (VIOLATED) :        -6.250ns  (required time - arrival time)
                          LUT4 (Prop_lut4_I3_O)        0.116    14.122 r  uut_ff_stage3_i_895/O
                          net (fo=1, unplaced)         0.000    14.122    uut_ff_stage3_i_895_n_0
                                                                       r  uut_ff_stage3_i_329/DI[0]
+=======
+                                                      0.337    10.168 f  uut_ff_stage3_i_251/O[1]
+                         net (fo=6, unplaced)         0.643    10.811    p_2_in[112]
+                                                                      f  uut_ff_stage3_i_1052/I0
+                         LUT6 (Prop_lut6_I0_O)        0.306    11.117 f  uut_ff_stage3_i_1052/O
+                         net (fo=18, unplaced)        0.506    11.623    uut_ff_stage3_i_1052_n_0
+                                                                      f  uut_ff_stage3_i_1600/I0
+                         LUT6 (Prop_lut6_I0_O)        0.124    11.747 f  uut_ff_stage3_i_1600/O
+                         net (fo=1, unplaced)         0.449    12.196    uut_ff_stage3_i_1600_n_0
+                                                                      f  uut_ff_stage3_i_1315/I1
+                         LUT6 (Prop_lut6_I1_O)        0.124    12.320 f  uut_ff_stage3_i_1315/O
+                         net (fo=1, unplaced)         0.449    12.769    uut_ff_stage3_i_1315_n_0
+                                                                      f  uut_ff_stage3_i_968/I2
+                         LUT6 (Prop_lut6_I2_O)        0.124    12.893 f  uut_ff_stage3_i_968/O
+                         net (fo=1, unplaced)         0.449    13.342    uut_ff_stage3_i_968_n_0
+                                                                      f  uut_ff_stage3_i_420/I3
+                         LUT6 (Prop_lut6_I3_O)        0.124    13.466 f  uut_ff_stage3_i_420/O
+                         net (fo=59, unplaced)        0.535    14.001    uut_ff_stage3_i_420_n_0
+                                                                      f  uut_ff_stage3_i_1146/I3
+                         LUT4 (Prop_lut4_I3_O)        0.116    14.117 r  uut_ff_stage3_i_1146/O
+                         net (fo=1, unplaced)         0.000    14.117    uut_ff_stage3_i_1146_n_0
+                                                                      r  uut_ff_stage3_i_832/DI[0]
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          CARRY4 (Prop_carry4_DI[0]_CO[3])
                                                       0.576    14.698 r  uut_ff_stage3_i_329/CO[3]
                          net (fo=1, unplaced)         0.000    14.698    uut_ff_stage3_i_329_n_0
@@ -945,7 +1067,11 @@ Slack (VIOLATED) :        -6.250ns  (required time - arrival time)
                          net (fo=1, unplaced)         0.763    11.601    CLK_IBUF
                          BUFG                                         r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.091    11.692 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.439    12.131    uut_ff_stage3/CLK
+=======
+                         net (fo=909, unplaced)       0.439    12.131    uut_ff_stage3/CLK
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          FDRE                                         r  uut_ff_stage3/data0_reg_reg[22]/C
                          clock pessimism              0.179    12.309    
                          clock uncertainty           -0.035    12.274    
@@ -986,7 +1112,11 @@ Slack (VIOLATED) :        -6.187ns  (required time - arrival time)
                          net (fo=1, unplaced)         0.803     1.774    CLK_IBUF
                                                                       r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.096     1.870 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.584     2.454    CLK_IBUF_BUFG
+=======
+                         net (fo=909, unplaced)       0.584     2.454    CLK_IBUF_BUFG
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          FDRE                                         r  uut_int_div_rg_state_reg[3]/C
   -------------------------------------------------------------------    -------------------
                          FDRE (Prop_fdre_C_Q)         0.478     2.932 f  uut_int_div_rg_state_reg[3]/Q
@@ -998,9 +1128,15 @@ Slack (VIOLATED) :        -6.187ns  (required time - arrival time)
                          LUT4 (Prop_lut4_I0_O)        0.124     4.652 r  uut_ff_stage1_i_116/O
                          net (fo=512, unplaced)       0.589     5.241    WILL_FIRE_RL_uut_rl_stage2
                                                                       r  uut_int_div_rg_inter_stage[118]_i_1/I3
+<<<<<<< HEAD
                          LUT4 (Prop_lut4_I3_O)        0.124     5.365 r  uut_int_div_rg_inter_stage[118]_i_1/O
                          net (fo=2, unplaced)         0.481     5.846    p_0_in15_in[118]
                                                                       r  uut_ff_stage3_i_1171/DI[1]
+=======
+                         LUT4 (Prop_lut4_I3_O)        0.124     5.375 r  uut_int_div_rg_inter_stage[118]_i_1/O
+                         net (fo=2, unplaced)         0.481     5.856    p_0_in12_in[118]
+                                                                      r  uut_ff_stage3_i_1135/DI[1]
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          CARRY4 (Prop_carry4_DI[1]_CO[3])
                                                       0.520     6.366 r  uut_ff_stage3_i_1171/CO[3]
                          net (fo=1, unplaced)         0.000     6.366    uut_ff_stage3_i_1171_n_0
@@ -1061,6 +1197,7 @@ Slack (VIOLATED) :        -6.187ns  (required time - arrival time)
                          net (fo=1, unplaced)         0.000     9.821    uut_ff_stage3_i_261_n_0
                                                                       r  uut_ff_stage3_i_254/CI
                          CARRY4 (Prop_carry4_CI_O[1])
+<<<<<<< HEAD
                                                       0.337    10.158 f  uut_ff_stage3_i_254/O[1]
                          net (fo=5, unplaced)         0.639    10.797    p_2_in__0[112]
                                                                       f  uut_ff_stage3_i_249/I0
@@ -1082,6 +1219,29 @@ Slack (VIOLATED) :        -6.187ns  (required time - arrival time)
                          LUT4 (Prop_lut4_I3_O)        0.116    14.122 r  uut_ff_stage3_i_895/O
                          net (fo=1, unplaced)         0.000    14.122    uut_ff_stage3_i_895_n_0
                                                                       r  uut_ff_stage3_i_329/DI[0]
+=======
+                                                      0.337    10.168 f  uut_ff_stage3_i_251/O[1]
+                         net (fo=6, unplaced)         0.643    10.811    p_2_in[112]
+                                                                      f  uut_ff_stage3_i_1052/I0
+                         LUT6 (Prop_lut6_I0_O)        0.306    11.117 f  uut_ff_stage3_i_1052/O
+                         net (fo=18, unplaced)        0.506    11.623    uut_ff_stage3_i_1052_n_0
+                                                                      f  uut_ff_stage3_i_1600/I0
+                         LUT6 (Prop_lut6_I0_O)        0.124    11.747 f  uut_ff_stage3_i_1600/O
+                         net (fo=1, unplaced)         0.449    12.196    uut_ff_stage3_i_1600_n_0
+                                                                      f  uut_ff_stage3_i_1315/I1
+                         LUT6 (Prop_lut6_I1_O)        0.124    12.320 f  uut_ff_stage3_i_1315/O
+                         net (fo=1, unplaced)         0.449    12.769    uut_ff_stage3_i_1315_n_0
+                                                                      f  uut_ff_stage3_i_968/I2
+                         LUT6 (Prop_lut6_I2_O)        0.124    12.893 f  uut_ff_stage3_i_968/O
+                         net (fo=1, unplaced)         0.449    13.342    uut_ff_stage3_i_968_n_0
+                                                                      f  uut_ff_stage3_i_420/I3
+                         LUT6 (Prop_lut6_I3_O)        0.124    13.466 f  uut_ff_stage3_i_420/O
+                         net (fo=59, unplaced)        0.535    14.001    uut_ff_stage3_i_420_n_0
+                                                                      f  uut_ff_stage3_i_1146/I3
+                         LUT4 (Prop_lut4_I3_O)        0.116    14.117 r  uut_ff_stage3_i_1146/O
+                         net (fo=1, unplaced)         0.000    14.117    uut_ff_stage3_i_1146_n_0
+                                                                      r  uut_ff_stage3_i_832/DI[0]
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          CARRY4 (Prop_carry4_DI[0]_CO[3])
                                                       0.576    14.698 r  uut_ff_stage3_i_329/CO[3]
                          net (fo=1, unplaced)         0.000    14.698    uut_ff_stage3_i_329_n_0
@@ -1120,7 +1280,11 @@ Slack (VIOLATED) :        -6.187ns  (required time - arrival time)
                          net (fo=1, unplaced)         0.763    11.601    CLK_IBUF
                          BUFG                                         r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.091    11.692 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.439    12.131    uut_ff_stage3/CLK
+=======
+                         net (fo=909, unplaced)       0.439    12.131    uut_ff_stage3/CLK
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          FDRE                                         r  uut_ff_stage3/data0_reg_reg[19]/C
                          clock pessimism              0.179    12.309    
                          clock uncertainty           -0.035    12.274    
@@ -1161,7 +1325,11 @@ Slack (VIOLATED) :        -6.133ns  (required time - arrival time)
                          net (fo=1, unplaced)         0.803     1.774    CLK_IBUF
                                                                       r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.096     1.870 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.584     2.454    CLK_IBUF_BUFG
+=======
+                         net (fo=909, unplaced)       0.584     2.454    CLK_IBUF_BUFG
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          FDRE                                         r  uut_int_div_rg_state_reg[3]/C
   -------------------------------------------------------------------    -------------------
                          FDRE (Prop_fdre_C_Q)         0.478     2.932 f  uut_int_div_rg_state_reg[3]/Q
@@ -1173,9 +1341,15 @@ Slack (VIOLATED) :        -6.133ns  (required time - arrival time)
                          LUT4 (Prop_lut4_I0_O)        0.124     4.652 r  uut_ff_stage1_i_116/O
                          net (fo=512, unplaced)       0.589     5.241    WILL_FIRE_RL_uut_rl_stage2
                                                                       r  uut_int_div_rg_inter_stage[118]_i_1/I3
+<<<<<<< HEAD
                          LUT4 (Prop_lut4_I3_O)        0.124     5.365 r  uut_int_div_rg_inter_stage[118]_i_1/O
                          net (fo=2, unplaced)         0.481     5.846    p_0_in15_in[118]
                                                                       r  uut_ff_stage3_i_1171/DI[1]
+=======
+                         LUT4 (Prop_lut4_I3_O)        0.124     5.375 r  uut_int_div_rg_inter_stage[118]_i_1/O
+                         net (fo=2, unplaced)         0.481     5.856    p_0_in12_in[118]
+                                                                      r  uut_ff_stage3_i_1135/DI[1]
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          CARRY4 (Prop_carry4_DI[1]_CO[3])
                                                       0.520     6.366 r  uut_ff_stage3_i_1171/CO[3]
                          net (fo=1, unplaced)         0.000     6.366    uut_ff_stage3_i_1171_n_0
@@ -1236,6 +1410,7 @@ Slack (VIOLATED) :        -6.133ns  (required time - arrival time)
                          net (fo=1, unplaced)         0.000     9.821    uut_ff_stage3_i_261_n_0
                                                                       r  uut_ff_stage3_i_254/CI
                          CARRY4 (Prop_carry4_CI_O[1])
+<<<<<<< HEAD
                                                       0.337    10.158 f  uut_ff_stage3_i_254/O[1]
                          net (fo=5, unplaced)         0.639    10.797    p_2_in__0[112]
                                                                       f  uut_ff_stage3_i_249/I0
@@ -1257,6 +1432,29 @@ Slack (VIOLATED) :        -6.133ns  (required time - arrival time)
                          LUT4 (Prop_lut4_I3_O)        0.116    14.122 r  uut_ff_stage3_i_895/O
                          net (fo=1, unplaced)         0.000    14.122    uut_ff_stage3_i_895_n_0
                                                                       r  uut_ff_stage3_i_329/DI[0]
+=======
+                                                      0.337    10.168 f  uut_ff_stage3_i_251/O[1]
+                         net (fo=6, unplaced)         0.643    10.811    p_2_in[112]
+                                                                      f  uut_ff_stage3_i_1052/I0
+                         LUT6 (Prop_lut6_I0_O)        0.306    11.117 f  uut_ff_stage3_i_1052/O
+                         net (fo=18, unplaced)        0.506    11.623    uut_ff_stage3_i_1052_n_0
+                                                                      f  uut_ff_stage3_i_1600/I0
+                         LUT6 (Prop_lut6_I0_O)        0.124    11.747 f  uut_ff_stage3_i_1600/O
+                         net (fo=1, unplaced)         0.449    12.196    uut_ff_stage3_i_1600_n_0
+                                                                      f  uut_ff_stage3_i_1315/I1
+                         LUT6 (Prop_lut6_I1_O)        0.124    12.320 f  uut_ff_stage3_i_1315/O
+                         net (fo=1, unplaced)         0.449    12.769    uut_ff_stage3_i_1315_n_0
+                                                                      f  uut_ff_stage3_i_968/I2
+                         LUT6 (Prop_lut6_I2_O)        0.124    12.893 f  uut_ff_stage3_i_968/O
+                         net (fo=1, unplaced)         0.449    13.342    uut_ff_stage3_i_968_n_0
+                                                                      f  uut_ff_stage3_i_420/I3
+                         LUT6 (Prop_lut6_I3_O)        0.124    13.466 f  uut_ff_stage3_i_420/O
+                         net (fo=59, unplaced)        0.535    14.001    uut_ff_stage3_i_420_n_0
+                                                                      f  uut_ff_stage3_i_1146/I3
+                         LUT4 (Prop_lut4_I3_O)        0.116    14.117 r  uut_ff_stage3_i_1146/O
+                         net (fo=1, unplaced)         0.000    14.117    uut_ff_stage3_i_1146_n_0
+                                                                      r  uut_ff_stage3_i_832/DI[0]
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          CARRY4 (Prop_carry4_DI[0]_CO[3])
                                                       0.576    14.698 r  uut_ff_stage3_i_329/CO[3]
                          net (fo=1, unplaced)         0.000    14.698    uut_ff_stage3_i_329_n_0
@@ -1295,7 +1493,11 @@ Slack (VIOLATED) :        -6.133ns  (required time - arrival time)
                          net (fo=1, unplaced)         0.763    11.601    CLK_IBUF
                          BUFG                                         r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.091    11.692 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.439    12.131    uut_ff_stage3/CLK
+=======
+                         net (fo=909, unplaced)       0.439    12.131    uut_ff_stage3/CLK
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          FDRE                                         r  uut_ff_stage3/data0_reg_reg[18]/C
                          clock pessimism              0.179    12.309    
                          clock uncertainty           -0.035    12.274    
@@ -1336,7 +1538,11 @@ Slack (VIOLATED) :        -6.133ns  (required time - arrival time)
                          net (fo=1, unplaced)         0.803     1.774    CLK_IBUF
                                                                       r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.096     1.870 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.584     2.454    CLK_IBUF_BUFG
+=======
+                         net (fo=909, unplaced)       0.584     2.454    CLK_IBUF_BUFG
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          FDRE                                         r  uut_int_div_rg_state_reg[3]/C
   -------------------------------------------------------------------    -------------------
                          FDRE (Prop_fdre_C_Q)         0.478     2.932 f  uut_int_div_rg_state_reg[3]/Q
@@ -1348,9 +1554,15 @@ Slack (VIOLATED) :        -6.133ns  (required time - arrival time)
                          LUT4 (Prop_lut4_I0_O)        0.124     4.652 r  uut_ff_stage1_i_116/O
                          net (fo=512, unplaced)       0.589     5.241    WILL_FIRE_RL_uut_rl_stage2
                                                                       r  uut_int_div_rg_inter_stage[118]_i_1/I3
+<<<<<<< HEAD
                          LUT4 (Prop_lut4_I3_O)        0.124     5.365 r  uut_int_div_rg_inter_stage[118]_i_1/O
                          net (fo=2, unplaced)         0.481     5.846    p_0_in15_in[118]
                                                                       r  uut_ff_stage3_i_1171/DI[1]
+=======
+                         LUT4 (Prop_lut4_I3_O)        0.124     5.375 r  uut_int_div_rg_inter_stage[118]_i_1/O
+                         net (fo=2, unplaced)         0.481     5.856    p_0_in12_in[118]
+                                                                      r  uut_ff_stage3_i_1135/DI[1]
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          CARRY4 (Prop_carry4_DI[1]_CO[3])
                                                       0.520     6.366 r  uut_ff_stage3_i_1171/CO[3]
                          net (fo=1, unplaced)         0.000     6.366    uut_ff_stage3_i_1171_n_0
@@ -1411,6 +1623,7 @@ Slack (VIOLATED) :        -6.133ns  (required time - arrival time)
                          net (fo=1, unplaced)         0.000     9.821    uut_ff_stage3_i_261_n_0
                                                                       r  uut_ff_stage3_i_254/CI
                          CARRY4 (Prop_carry4_CI_O[1])
+<<<<<<< HEAD
                                                       0.337    10.158 f  uut_ff_stage3_i_254/O[1]
                          net (fo=5, unplaced)         0.639    10.797    p_2_in__0[112]
                                                                       f  uut_ff_stage3_i_249/I0
@@ -1432,6 +1645,29 @@ Slack (VIOLATED) :        -6.133ns  (required time - arrival time)
                          LUT4 (Prop_lut4_I3_O)        0.116    14.122 r  uut_ff_stage3_i_895/O
                          net (fo=1, unplaced)         0.000    14.122    uut_ff_stage3_i_895_n_0
                                                                       r  uut_ff_stage3_i_329/DI[0]
+=======
+                                                      0.337    10.168 f  uut_ff_stage3_i_251/O[1]
+                         net (fo=6, unplaced)         0.643    10.811    p_2_in[112]
+                                                                      f  uut_ff_stage3_i_1052/I0
+                         LUT6 (Prop_lut6_I0_O)        0.306    11.117 f  uut_ff_stage3_i_1052/O
+                         net (fo=18, unplaced)        0.506    11.623    uut_ff_stage3_i_1052_n_0
+                                                                      f  uut_ff_stage3_i_1600/I0
+                         LUT6 (Prop_lut6_I0_O)        0.124    11.747 f  uut_ff_stage3_i_1600/O
+                         net (fo=1, unplaced)         0.449    12.196    uut_ff_stage3_i_1600_n_0
+                                                                      f  uut_ff_stage3_i_1315/I1
+                         LUT6 (Prop_lut6_I1_O)        0.124    12.320 f  uut_ff_stage3_i_1315/O
+                         net (fo=1, unplaced)         0.449    12.769    uut_ff_stage3_i_1315_n_0
+                                                                      f  uut_ff_stage3_i_968/I2
+                         LUT6 (Prop_lut6_I2_O)        0.124    12.893 f  uut_ff_stage3_i_968/O
+                         net (fo=1, unplaced)         0.449    13.342    uut_ff_stage3_i_968_n_0
+                                                                      f  uut_ff_stage3_i_420/I3
+                         LUT6 (Prop_lut6_I3_O)        0.124    13.466 f  uut_ff_stage3_i_420/O
+                         net (fo=59, unplaced)        0.535    14.001    uut_ff_stage3_i_420_n_0
+                                                                      f  uut_ff_stage3_i_1146/I3
+                         LUT4 (Prop_lut4_I3_O)        0.116    14.117 r  uut_ff_stage3_i_1146/O
+                         net (fo=1, unplaced)         0.000    14.117    uut_ff_stage3_i_1146_n_0
+                                                                      r  uut_ff_stage3_i_832/DI[0]
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          CARRY4 (Prop_carry4_DI[0]_CO[3])
                                                       0.576    14.698 r  uut_ff_stage3_i_329/CO[3]
                          net (fo=1, unplaced)         0.000    14.698    uut_ff_stage3_i_329_n_0
@@ -1474,7 +1710,11 @@ Slack (VIOLATED) :        -6.133ns  (required time - arrival time)
                          net (fo=1, unplaced)         0.763    11.601    CLK_IBUF
                          BUFG                                         r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.091    11.692 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.439    12.131    uut_ff_stage3/CLK
+=======
+                         net (fo=909, unplaced)       0.439    12.131    uut_ff_stage3/CLK
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          FDRE                                         r  uut_ff_stage3/data0_reg_reg[21]/C
                          clock pessimism              0.179    12.309    
                          clock uncertainty           -0.035    12.274    
@@ -1515,7 +1755,11 @@ Slack (VIOLATED) :        -6.043ns  (required time - arrival time)
                          net (fo=1, unplaced)         0.803     1.774    CLK_IBUF
                                                                       r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.096     1.870 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.584     2.454    CLK_IBUF_BUFG
+=======
+                         net (fo=909, unplaced)       0.584     2.454    CLK_IBUF_BUFG
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          FDRE                                         r  uut_int_div_rg_state_reg[3]/C
   -------------------------------------------------------------------    -------------------
                          FDRE (Prop_fdre_C_Q)         0.478     2.932 f  uut_int_div_rg_state_reg[3]/Q
@@ -1527,9 +1771,15 @@ Slack (VIOLATED) :        -6.043ns  (required time - arrival time)
                          LUT4 (Prop_lut4_I0_O)        0.124     4.652 r  uut_ff_stage1_i_116/O
                          net (fo=512, unplaced)       0.589     5.241    WILL_FIRE_RL_uut_rl_stage2
                                                                       r  uut_int_div_rg_inter_stage[118]_i_1/I3
+<<<<<<< HEAD
                          LUT4 (Prop_lut4_I3_O)        0.124     5.365 r  uut_int_div_rg_inter_stage[118]_i_1/O
                          net (fo=2, unplaced)         0.481     5.846    p_0_in15_in[118]
                                                                       r  uut_ff_stage3_i_1171/DI[1]
+=======
+                         LUT4 (Prop_lut4_I3_O)        0.124     5.375 r  uut_int_div_rg_inter_stage[118]_i_1/O
+                         net (fo=2, unplaced)         0.481     5.856    p_0_in12_in[118]
+                                                                      r  uut_ff_stage3_i_1135/DI[1]
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          CARRY4 (Prop_carry4_DI[1]_CO[3])
                                                       0.520     6.366 r  uut_ff_stage3_i_1171/CO[3]
                          net (fo=1, unplaced)         0.000     6.366    uut_ff_stage3_i_1171_n_0
@@ -1590,6 +1840,7 @@ Slack (VIOLATED) :        -6.043ns  (required time - arrival time)
                          net (fo=1, unplaced)         0.000     9.821    uut_ff_stage3_i_261_n_0
                                                                       r  uut_ff_stage3_i_254/CI
                          CARRY4 (Prop_carry4_CI_O[1])
+<<<<<<< HEAD
                                                       0.337    10.158 f  uut_ff_stage3_i_254/O[1]
                          net (fo=5, unplaced)         0.639    10.797    p_2_in__0[112]
                                                                       f  uut_ff_stage3_i_249/I0
@@ -1611,6 +1862,29 @@ Slack (VIOLATED) :        -6.043ns  (required time - arrival time)
                          LUT4 (Prop_lut4_I3_O)        0.116    14.122 r  uut_ff_stage3_i_895/O
                          net (fo=1, unplaced)         0.000    14.122    uut_ff_stage3_i_895_n_0
                                                                       r  uut_ff_stage3_i_329/DI[0]
+=======
+                                                      0.337    10.168 f  uut_ff_stage3_i_251/O[1]
+                         net (fo=6, unplaced)         0.643    10.811    p_2_in[112]
+                                                                      f  uut_ff_stage3_i_1052/I0
+                         LUT6 (Prop_lut6_I0_O)        0.306    11.117 f  uut_ff_stage3_i_1052/O
+                         net (fo=18, unplaced)        0.506    11.623    uut_ff_stage3_i_1052_n_0
+                                                                      f  uut_ff_stage3_i_1600/I0
+                         LUT6 (Prop_lut6_I0_O)        0.124    11.747 f  uut_ff_stage3_i_1600/O
+                         net (fo=1, unplaced)         0.449    12.196    uut_ff_stage3_i_1600_n_0
+                                                                      f  uut_ff_stage3_i_1315/I1
+                         LUT6 (Prop_lut6_I1_O)        0.124    12.320 f  uut_ff_stage3_i_1315/O
+                         net (fo=1, unplaced)         0.449    12.769    uut_ff_stage3_i_1315_n_0
+                                                                      f  uut_ff_stage3_i_968/I2
+                         LUT6 (Prop_lut6_I2_O)        0.124    12.893 f  uut_ff_stage3_i_968/O
+                         net (fo=1, unplaced)         0.449    13.342    uut_ff_stage3_i_968_n_0
+                                                                      f  uut_ff_stage3_i_420/I3
+                         LUT6 (Prop_lut6_I3_O)        0.124    13.466 f  uut_ff_stage3_i_420/O
+                         net (fo=59, unplaced)        0.535    14.001    uut_ff_stage3_i_420_n_0
+                                                                      f  uut_ff_stage3_i_1146/I3
+                         LUT4 (Prop_lut4_I3_O)        0.116    14.117 r  uut_ff_stage3_i_1146/O
+                         net (fo=1, unplaced)         0.000    14.117    uut_ff_stage3_i_1146_n_0
+                                                                      r  uut_ff_stage3_i_832/DI[0]
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          CARRY4 (Prop_carry4_DI[0]_CO[3])
                                                       0.576    14.698 r  uut_ff_stage3_i_329/CO[3]
                          net (fo=1, unplaced)         0.000    14.698    uut_ff_stage3_i_329_n_0
@@ -1645,7 +1919,11 @@ Slack (VIOLATED) :        -6.043ns  (required time - arrival time)
                          net (fo=1, unplaced)         0.763    11.601    CLK_IBUF
                          BUFG                                         r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.091    11.692 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.439    12.131    uut_ff_stage3/CLK
+=======
+                         net (fo=909, unplaced)       0.439    12.131    uut_ff_stage3/CLK
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          FDRE                                         r  uut_ff_stage3/data0_reg_reg[16]/C
                          clock pessimism              0.179    12.309    
                          clock uncertainty           -0.035    12.274    
@@ -1686,7 +1964,11 @@ Slack (VIOLATED) :        -6.016ns  (required time - arrival time)
                          net (fo=1, unplaced)         0.803     1.774    CLK_IBUF
                                                                       r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.096     1.870 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.584     2.454    CLK_IBUF_BUFG
+=======
+                         net (fo=909, unplaced)       0.584     2.454    CLK_IBUF_BUFG
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          FDRE                                         r  uut_int_div_rg_state_reg[3]/C
   -------------------------------------------------------------------    -------------------
                          FDRE (Prop_fdre_C_Q)         0.478     2.932 f  uut_int_div_rg_state_reg[3]/Q
@@ -1698,9 +1980,15 @@ Slack (VIOLATED) :        -6.016ns  (required time - arrival time)
                          LUT4 (Prop_lut4_I0_O)        0.124     4.652 r  uut_ff_stage1_i_116/O
                          net (fo=512, unplaced)       0.589     5.241    WILL_FIRE_RL_uut_rl_stage2
                                                                       r  uut_int_div_rg_inter_stage[118]_i_1/I3
+<<<<<<< HEAD
                          LUT4 (Prop_lut4_I3_O)        0.124     5.365 r  uut_int_div_rg_inter_stage[118]_i_1/O
                          net (fo=2, unplaced)         0.481     5.846    p_0_in15_in[118]
                                                                       r  uut_ff_stage3_i_1171/DI[1]
+=======
+                         LUT4 (Prop_lut4_I3_O)        0.124     5.375 r  uut_int_div_rg_inter_stage[118]_i_1/O
+                         net (fo=2, unplaced)         0.481     5.856    p_0_in12_in[118]
+                                                                      r  uut_ff_stage3_i_1135/DI[1]
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          CARRY4 (Prop_carry4_DI[1]_CO[3])
                                                       0.520     6.366 r  uut_ff_stage3_i_1171/CO[3]
                          net (fo=1, unplaced)         0.000     6.366    uut_ff_stage3_i_1171_n_0
@@ -1761,6 +2049,7 @@ Slack (VIOLATED) :        -6.016ns  (required time - arrival time)
                          net (fo=1, unplaced)         0.000     9.821    uut_ff_stage3_i_261_n_0
                                                                       r  uut_ff_stage3_i_254/CI
                          CARRY4 (Prop_carry4_CI_O[1])
+<<<<<<< HEAD
                                                       0.337    10.158 f  uut_ff_stage3_i_254/O[1]
                          net (fo=5, unplaced)         0.639    10.797    p_2_in__0[112]
                                                                       f  uut_ff_stage3_i_249/I0
@@ -1782,6 +2071,29 @@ Slack (VIOLATED) :        -6.016ns  (required time - arrival time)
                          LUT4 (Prop_lut4_I3_O)        0.116    14.122 r  uut_ff_stage3_i_895/O
                          net (fo=1, unplaced)         0.000    14.122    uut_ff_stage3_i_895_n_0
                                                                       r  uut_ff_stage3_i_329/DI[0]
+=======
+                                                      0.337    10.168 f  uut_ff_stage3_i_251/O[1]
+                         net (fo=6, unplaced)         0.643    10.811    p_2_in[112]
+                                                                      f  uut_ff_stage3_i_1052/I0
+                         LUT6 (Prop_lut6_I0_O)        0.306    11.117 f  uut_ff_stage3_i_1052/O
+                         net (fo=18, unplaced)        0.506    11.623    uut_ff_stage3_i_1052_n_0
+                                                                      f  uut_ff_stage3_i_1600/I0
+                         LUT6 (Prop_lut6_I0_O)        0.124    11.747 f  uut_ff_stage3_i_1600/O
+                         net (fo=1, unplaced)         0.449    12.196    uut_ff_stage3_i_1600_n_0
+                                                                      f  uut_ff_stage3_i_1315/I1
+                         LUT6 (Prop_lut6_I1_O)        0.124    12.320 f  uut_ff_stage3_i_1315/O
+                         net (fo=1, unplaced)         0.449    12.769    uut_ff_stage3_i_1315_n_0
+                                                                      f  uut_ff_stage3_i_968/I2
+                         LUT6 (Prop_lut6_I2_O)        0.124    12.893 f  uut_ff_stage3_i_968/O
+                         net (fo=1, unplaced)         0.449    13.342    uut_ff_stage3_i_968_n_0
+                                                                      f  uut_ff_stage3_i_420/I3
+                         LUT6 (Prop_lut6_I3_O)        0.124    13.466 f  uut_ff_stage3_i_420/O
+                         net (fo=59, unplaced)        0.535    14.001    uut_ff_stage3_i_420_n_0
+                                                                      f  uut_ff_stage3_i_1146/I3
+                         LUT4 (Prop_lut4_I3_O)        0.116    14.117 r  uut_ff_stage3_i_1146/O
+                         net (fo=1, unplaced)         0.000    14.117    uut_ff_stage3_i_1146_n_0
+                                                                      r  uut_ff_stage3_i_832/DI[0]
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          CARRY4 (Prop_carry4_DI[0]_CO[3])
                                                       0.576    14.698 r  uut_ff_stage3_i_329/CO[3]
                          net (fo=1, unplaced)         0.000    14.698    uut_ff_stage3_i_329_n_0
@@ -1820,7 +2132,11 @@ Slack (VIOLATED) :        -6.016ns  (required time - arrival time)
                          net (fo=1, unplaced)         0.763    11.601    CLK_IBUF
                          BUFG                                         r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.091    11.692 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.439    12.131    uut_ff_stage3/CLK
+=======
+                         net (fo=909, unplaced)       0.439    12.131    uut_ff_stage3/CLK
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          FDRE                                         r  uut_ff_stage3/data0_reg_reg[17]/C
                          clock pessimism              0.179    12.309    
                          clock uncertainty           -0.035    12.274    
@@ -1861,7 +2177,11 @@ Slack (VIOLATED) :        -5.976ns  (required time - arrival time)
                          net (fo=1, unplaced)         0.803     1.774    CLK_IBUF
                                                                       r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.096     1.870 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.584     2.454    CLK_IBUF_BUFG
+=======
+                         net (fo=909, unplaced)       0.584     2.454    CLK_IBUF_BUFG
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          FDRE                                         r  uut_int_div_rg_state_reg[3]/C
   -------------------------------------------------------------------    -------------------
                          FDRE (Prop_fdre_C_Q)         0.478     2.932 f  uut_int_div_rg_state_reg[3]/Q
@@ -1873,9 +2193,15 @@ Slack (VIOLATED) :        -5.976ns  (required time - arrival time)
                          LUT4 (Prop_lut4_I0_O)        0.124     4.652 r  uut_ff_stage1_i_116/O
                          net (fo=512, unplaced)       0.589     5.241    WILL_FIRE_RL_uut_rl_stage2
                                                                       r  uut_int_div_rg_inter_stage[118]_i_1/I3
+<<<<<<< HEAD
                          LUT4 (Prop_lut4_I3_O)        0.124     5.365 r  uut_int_div_rg_inter_stage[118]_i_1/O
                          net (fo=2, unplaced)         0.481     5.846    p_0_in15_in[118]
                                                                       r  uut_ff_stage3_i_1171/DI[1]
+=======
+                         LUT4 (Prop_lut4_I3_O)        0.124     5.375 r  uut_int_div_rg_inter_stage[118]_i_1/O
+                         net (fo=2, unplaced)         0.481     5.856    p_0_in12_in[118]
+                                                                      r  uut_ff_stage3_i_1135/DI[1]
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          CARRY4 (Prop_carry4_DI[1]_CO[3])
                                                       0.520     6.366 r  uut_ff_stage3_i_1171/CO[3]
                          net (fo=1, unplaced)         0.000     6.366    uut_ff_stage3_i_1171_n_0
@@ -1936,6 +2262,7 @@ Slack (VIOLATED) :        -5.976ns  (required time - arrival time)
                          net (fo=1, unplaced)         0.000     9.821    uut_ff_stage3_i_261_n_0
                                                                       r  uut_ff_stage3_i_254/CI
                          CARRY4 (Prop_carry4_CI_O[1])
+<<<<<<< HEAD
                                                       0.337    10.158 f  uut_ff_stage3_i_254/O[1]
                          net (fo=5, unplaced)         0.639    10.797    p_2_in__0[112]
                                                                       f  uut_ff_stage3_i_249/I0
@@ -1957,6 +2284,29 @@ Slack (VIOLATED) :        -5.976ns  (required time - arrival time)
                          LUT4 (Prop_lut4_I3_O)        0.116    14.122 r  uut_ff_stage3_i_895/O
                          net (fo=1, unplaced)         0.000    14.122    uut_ff_stage3_i_895_n_0
                                                                       r  uut_ff_stage3_i_329/DI[0]
+=======
+                                                      0.337    10.168 f  uut_ff_stage3_i_251/O[1]
+                         net (fo=6, unplaced)         0.643    10.811    p_2_in[112]
+                                                                      f  uut_ff_stage3_i_1052/I0
+                         LUT6 (Prop_lut6_I0_O)        0.306    11.117 f  uut_ff_stage3_i_1052/O
+                         net (fo=18, unplaced)        0.506    11.623    uut_ff_stage3_i_1052_n_0
+                                                                      f  uut_ff_stage3_i_1600/I0
+                         LUT6 (Prop_lut6_I0_O)        0.124    11.747 f  uut_ff_stage3_i_1600/O
+                         net (fo=1, unplaced)         0.449    12.196    uut_ff_stage3_i_1600_n_0
+                                                                      f  uut_ff_stage3_i_1315/I1
+                         LUT6 (Prop_lut6_I1_O)        0.124    12.320 f  uut_ff_stage3_i_1315/O
+                         net (fo=1, unplaced)         0.449    12.769    uut_ff_stage3_i_1315_n_0
+                                                                      f  uut_ff_stage3_i_968/I2
+                         LUT6 (Prop_lut6_I2_O)        0.124    12.893 f  uut_ff_stage3_i_968/O
+                         net (fo=1, unplaced)         0.449    13.342    uut_ff_stage3_i_968_n_0
+                                                                      f  uut_ff_stage3_i_420/I3
+                         LUT6 (Prop_lut6_I3_O)        0.124    13.466 f  uut_ff_stage3_i_420/O
+                         net (fo=59, unplaced)        0.535    14.001    uut_ff_stage3_i_420_n_0
+                                                                      f  uut_ff_stage3_i_1146/I3
+                         LUT4 (Prop_lut4_I3_O)        0.116    14.117 r  uut_ff_stage3_i_1146/O
+                         net (fo=1, unplaced)         0.000    14.117    uut_ff_stage3_i_1146_n_0
+                                                                      r  uut_ff_stage3_i_832/DI[0]
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          CARRY4 (Prop_carry4_DI[0]_CO[3])
                                                       0.576    14.698 r  uut_ff_stage3_i_329/CO[3]
                          net (fo=1, unplaced)         0.000    14.698    uut_ff_stage3_i_329_n_0
@@ -1991,7 +2341,11 @@ Slack (VIOLATED) :        -5.976ns  (required time - arrival time)
                          net (fo=1, unplaced)         0.763    11.601    CLK_IBUF
                          BUFG                                         r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.091    11.692 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.439    12.131    uut_ff_stage3/CLK
+=======
+                         net (fo=909, unplaced)       0.439    12.131    uut_ff_stage3/CLK
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          FDRE                                         r  uut_ff_stage3/data0_reg_reg[15]/C
                          clock pessimism              0.179    12.309    
                          clock uncertainty           -0.035    12.274    
@@ -2032,7 +2386,11 @@ Slack (VIOLATED) :        -5.720ns  (required time - arrival time)
                          net (fo=1, unplaced)         0.803     1.774    CLK_IBUF
                                                                       r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.096     1.870 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.584     2.454    CLK_IBUF_BUFG
+=======
+                         net (fo=909, unplaced)       0.584     2.454    CLK_IBUF_BUFG
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          FDRE                                         r  uut_int_div_rg_state_reg[3]/C
   -------------------------------------------------------------------    -------------------
                          FDRE (Prop_fdre_C_Q)         0.478     2.932 f  uut_int_div_rg_state_reg[3]/Q
@@ -2044,9 +2402,15 @@ Slack (VIOLATED) :        -5.720ns  (required time - arrival time)
                          LUT4 (Prop_lut4_I0_O)        0.124     4.652 r  uut_ff_stage1_i_116/O
                          net (fo=512, unplaced)       0.589     5.241    WILL_FIRE_RL_uut_rl_stage2
                                                                       r  uut_int_div_rg_inter_stage[118]_i_1/I3
+<<<<<<< HEAD
                          LUT4 (Prop_lut4_I3_O)        0.124     5.365 r  uut_int_div_rg_inter_stage[118]_i_1/O
                          net (fo=2, unplaced)         0.481     5.846    p_0_in15_in[118]
                                                                       r  uut_ff_stage3_i_1171/DI[1]
+=======
+                         LUT4 (Prop_lut4_I3_O)        0.124     5.375 r  uut_int_div_rg_inter_stage[118]_i_1/O
+                         net (fo=2, unplaced)         0.481     5.856    p_0_in12_in[118]
+                                                                      r  uut_ff_stage3_i_1135/DI[1]
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          CARRY4 (Prop_carry4_DI[1]_CO[3])
                                                       0.520     6.366 r  uut_ff_stage3_i_1171/CO[3]
                          net (fo=1, unplaced)         0.000     6.366    uut_ff_stage3_i_1171_n_0
@@ -2107,6 +2471,7 @@ Slack (VIOLATED) :        -5.720ns  (required time - arrival time)
                          net (fo=1, unplaced)         0.000     9.821    uut_ff_stage3_i_261_n_0
                                                                       r  uut_ff_stage3_i_254/CI
                          CARRY4 (Prop_carry4_CI_O[1])
+<<<<<<< HEAD
                                                       0.337    10.158 f  uut_ff_stage3_i_254/O[1]
                          net (fo=5, unplaced)         0.639    10.797    p_2_in__0[112]
                                                                       f  uut_ff_stage3_i_249/I0
@@ -2128,6 +2493,29 @@ Slack (VIOLATED) :        -5.720ns  (required time - arrival time)
                          LUT4 (Prop_lut4_I3_O)        0.116    14.122 r  uut_ff_stage3_i_895/O
                          net (fo=1, unplaced)         0.000    14.122    uut_ff_stage3_i_895_n_0
                                                                       r  uut_ff_stage3_i_329/DI[0]
+=======
+                                                      0.337    10.168 f  uut_ff_stage3_i_251/O[1]
+                         net (fo=6, unplaced)         0.643    10.811    p_2_in[112]
+                                                                      f  uut_ff_stage3_i_1052/I0
+                         LUT6 (Prop_lut6_I0_O)        0.306    11.117 f  uut_ff_stage3_i_1052/O
+                         net (fo=18, unplaced)        0.506    11.623    uut_ff_stage3_i_1052_n_0
+                                                                      f  uut_ff_stage3_i_1600/I0
+                         LUT6 (Prop_lut6_I0_O)        0.124    11.747 f  uut_ff_stage3_i_1600/O
+                         net (fo=1, unplaced)         0.449    12.196    uut_ff_stage3_i_1600_n_0
+                                                                      f  uut_ff_stage3_i_1315/I1
+                         LUT6 (Prop_lut6_I1_O)        0.124    12.320 f  uut_ff_stage3_i_1315/O
+                         net (fo=1, unplaced)         0.449    12.769    uut_ff_stage3_i_1315_n_0
+                                                                      f  uut_ff_stage3_i_968/I2
+                         LUT6 (Prop_lut6_I2_O)        0.124    12.893 f  uut_ff_stage3_i_968/O
+                         net (fo=1, unplaced)         0.449    13.342    uut_ff_stage3_i_968_n_0
+                                                                      f  uut_ff_stage3_i_420/I3
+                         LUT6 (Prop_lut6_I3_O)        0.124    13.466 f  uut_ff_stage3_i_420/O
+                         net (fo=59, unplaced)        0.535    14.001    uut_ff_stage3_i_420_n_0
+                                                                      f  uut_ff_stage3_i_1146/I3
+                         LUT4 (Prop_lut4_I3_O)        0.116    14.117 r  uut_ff_stage3_i_1146/O
+                         net (fo=1, unplaced)         0.000    14.117    uut_ff_stage3_i_1146_n_0
+                                                                      r  uut_ff_stage3_i_832/DI[0]
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          CARRY4 (Prop_carry4_DI[0]_CO[3])
                                                       0.576    14.698 r  uut_ff_stage3_i_329/CO[3]
                          net (fo=1, unplaced)         0.000    14.698    uut_ff_stage3_i_329_n_0
@@ -2167,7 +2555,11 @@ Slack (VIOLATED) :        -5.720ns  (required time - arrival time)
                          net (fo=1, unplaced)         0.763    11.601    CLK_IBUF
                          BUFG                                         r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.091    11.692 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.439    12.131    uut_ff_stage3/CLK
+=======
+                         net (fo=909, unplaced)       0.439    12.131    uut_ff_stage3/CLK
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          FDRE                                         r  uut_ff_stage3/data1_reg_reg[23]/C
                          clock pessimism              0.179    12.309    
                          clock uncertainty           -0.035    12.274    
@@ -2209,7 +2601,11 @@ Slack (MET) :             0.160ns  (arrival time - required time)
                          net (fo=1, unplaced)         0.338     0.539    CLK_IBUF
                                                                       r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.026     0.565 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.114     0.679    uut_ff_stage1/CLK
+=======
+                         net (fo=909, unplaced)       0.114     0.679    uut_ff_stage1/CLK
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          FDRE                                         r  uut_ff_stage1/data0_reg_reg[0]/C
   -------------------------------------------------------------------    -------------------
                          FDRE (Prop_fdre_C_Q)         0.147     0.826 r  uut_ff_stage1/data0_reg_reg[0]/Q
@@ -2225,7 +2621,11 @@ Slack (MET) :             0.160ns  (arrival time - required time)
                          net (fo=1, unplaced)         0.356     0.745    CLK_IBUF
                          BUFG                                         r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.029     0.774 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.259     1.033    uut_ff_stage2/CLK
+=======
+                         net (fo=909, unplaced)       0.259     1.033    uut_ff_stage2/CLK
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          FDRE                                         r  uut_ff_stage2/data1_reg_reg[0]/C
                          clock pessimism             -0.210     0.824    
                          FDRE (Hold_fdre_C_D)        -0.009     0.815    uut_ff_stage2/data1_reg_reg[0]
@@ -2260,7 +2660,11 @@ Slack (MET) :             0.160ns  (arrival time - required time)
                          net (fo=1, unplaced)         0.338     0.539    CLK_IBUF
                                                                       r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.026     0.565 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.114     0.679    uut_ff_stage1/CLK
+=======
+                         net (fo=909, unplaced)       0.114     0.679    uut_ff_stage1/CLK
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          FDRE                                         r  uut_ff_stage1/data0_reg_reg[116]/C
   -------------------------------------------------------------------    -------------------
                          FDRE (Prop_fdre_C_Q)         0.147     0.826 r  uut_ff_stage1/data0_reg_reg[116]/Q
@@ -2276,7 +2680,11 @@ Slack (MET) :             0.160ns  (arrival time - required time)
                          net (fo=1, unplaced)         0.356     0.745    CLK_IBUF
                          BUFG                                         r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.029     0.774 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.259     1.033    uut_ff_stage2/CLK
+=======
+                         net (fo=909, unplaced)       0.259     1.033    uut_ff_stage2/CLK
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          FDRE                                         r  uut_ff_stage2/data1_reg_reg[10]/C
                          clock pessimism             -0.210     0.824    
                          FDRE (Hold_fdre_C_D)        -0.009     0.815    uut_ff_stage2/data1_reg_reg[10]
@@ -2311,7 +2719,11 @@ Slack (MET) :             0.160ns  (arrival time - required time)
                          net (fo=1, unplaced)         0.338     0.539    CLK_IBUF
                                                                       r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.026     0.565 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.114     0.679    uut_ff_stage1/CLK
+=======
+                         net (fo=909, unplaced)       0.114     0.679    uut_ff_stage1/CLK
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          FDRE                                         r  uut_ff_stage1/data0_reg_reg[117]/C
   -------------------------------------------------------------------    -------------------
                          FDRE (Prop_fdre_C_Q)         0.147     0.826 r  uut_ff_stage1/data0_reg_reg[117]/Q
@@ -2327,7 +2739,11 @@ Slack (MET) :             0.160ns  (arrival time - required time)
                          net (fo=1, unplaced)         0.356     0.745    CLK_IBUF
                          BUFG                                         r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.029     0.774 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.259     1.033    uut_ff_stage2/CLK
+=======
+                         net (fo=909, unplaced)       0.259     1.033    uut_ff_stage2/CLK
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          FDRE                                         r  uut_ff_stage2/data1_reg_reg[11]/C
                          clock pessimism             -0.210     0.824    
                          FDRE (Hold_fdre_C_D)        -0.009     0.815    uut_ff_stage2/data1_reg_reg[11]
@@ -2362,7 +2778,11 @@ Slack (MET) :             0.160ns  (arrival time - required time)
                          net (fo=1, unplaced)         0.338     0.539    CLK_IBUF
                                                                       r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.026     0.565 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.114     0.679    uut_ff_stage1/CLK
+=======
+                         net (fo=909, unplaced)       0.114     0.679    uut_ff_stage1/CLK
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          FDRE                                         r  uut_ff_stage1/data0_reg_reg[118]/C
   -------------------------------------------------------------------    -------------------
                          FDRE (Prop_fdre_C_Q)         0.147     0.826 r  uut_ff_stage1/data0_reg_reg[118]/Q
@@ -2378,7 +2798,11 @@ Slack (MET) :             0.160ns  (arrival time - required time)
                          net (fo=1, unplaced)         0.356     0.745    CLK_IBUF
                          BUFG                                         r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.029     0.774 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.259     1.033    uut_ff_stage2/CLK
+=======
+                         net (fo=909, unplaced)       0.259     1.033    uut_ff_stage2/CLK
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          FDRE                                         r  uut_ff_stage2/data1_reg_reg[12]/C
                          clock pessimism             -0.210     0.824    
                          FDRE (Hold_fdre_C_D)        -0.009     0.815    uut_ff_stage2/data1_reg_reg[12]
@@ -2413,7 +2837,11 @@ Slack (MET) :             0.160ns  (arrival time - required time)
                          net (fo=1, unplaced)         0.338     0.539    CLK_IBUF
                                                                       r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.026     0.565 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.114     0.679    uut_ff_stage1/CLK
+=======
+                         net (fo=909, unplaced)       0.114     0.679    uut_ff_stage1/CLK
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          FDRE                                         r  uut_ff_stage1/data0_reg_reg[119]/C
   -------------------------------------------------------------------    -------------------
                          FDRE (Prop_fdre_C_Q)         0.147     0.826 r  uut_ff_stage1/data0_reg_reg[119]/Q
@@ -2429,7 +2857,11 @@ Slack (MET) :             0.160ns  (arrival time - required time)
                          net (fo=1, unplaced)         0.356     0.745    CLK_IBUF
                          BUFG                                         r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.029     0.774 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.259     1.033    uut_ff_stage2/CLK
+=======
+                         net (fo=909, unplaced)       0.259     1.033    uut_ff_stage2/CLK
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          FDRE                                         r  uut_ff_stage2/data1_reg_reg[13]/C
                          clock pessimism             -0.210     0.824    
                          FDRE (Hold_fdre_C_D)        -0.009     0.815    uut_ff_stage2/data1_reg_reg[13]
@@ -2464,7 +2896,11 @@ Slack (MET) :             0.160ns  (arrival time - required time)
                          net (fo=1, unplaced)         0.338     0.539    CLK_IBUF
                                                                       r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.026     0.565 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.114     0.679    uut_ff_stage1/CLK
+=======
+                         net (fo=909, unplaced)       0.114     0.679    uut_ff_stage1/CLK
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          FDRE                                         r  uut_ff_stage1/data0_reg_reg[120]/C
   -------------------------------------------------------------------    -------------------
                          FDRE (Prop_fdre_C_Q)         0.147     0.826 r  uut_ff_stage1/data0_reg_reg[120]/Q
@@ -2480,7 +2916,11 @@ Slack (MET) :             0.160ns  (arrival time - required time)
                          net (fo=1, unplaced)         0.356     0.745    CLK_IBUF
                          BUFG                                         r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.029     0.774 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.259     1.033    uut_ff_stage2/CLK
+=======
+                         net (fo=909, unplaced)       0.259     1.033    uut_ff_stage2/CLK
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          FDRE                                         r  uut_ff_stage2/data1_reg_reg[14]/C
                          clock pessimism             -0.210     0.824    
                          FDRE (Hold_fdre_C_D)        -0.009     0.815    uut_ff_stage2/data1_reg_reg[14]
@@ -2515,7 +2955,11 @@ Slack (MET) :             0.160ns  (arrival time - required time)
                          net (fo=1, unplaced)         0.338     0.539    CLK_IBUF
                                                                       r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.026     0.565 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.114     0.679    uut_ff_stage1/CLK
+=======
+                         net (fo=909, unplaced)       0.114     0.679    uut_ff_stage1/CLK
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          FDRE                                         r  uut_ff_stage1/data0_reg_reg[121]/C
   -------------------------------------------------------------------    -------------------
                          FDRE (Prop_fdre_C_Q)         0.147     0.826 r  uut_ff_stage1/data0_reg_reg[121]/Q
@@ -2531,7 +2975,11 @@ Slack (MET) :             0.160ns  (arrival time - required time)
                          net (fo=1, unplaced)         0.356     0.745    CLK_IBUF
                          BUFG                                         r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.029     0.774 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.259     1.033    uut_ff_stage2/CLK
+=======
+                         net (fo=909, unplaced)       0.259     1.033    uut_ff_stage2/CLK
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          FDRE                                         r  uut_ff_stage2/data1_reg_reg[15]/C
                          clock pessimism             -0.210     0.824    
                          FDRE (Hold_fdre_C_D)        -0.009     0.815    uut_ff_stage2/data1_reg_reg[15]
@@ -2566,7 +3014,11 @@ Slack (MET) :             0.160ns  (arrival time - required time)
                          net (fo=1, unplaced)         0.338     0.539    CLK_IBUF
                                                                       r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.026     0.565 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.114     0.679    uut_ff_stage1/CLK
+=======
+                         net (fo=909, unplaced)       0.114     0.679    uut_ff_stage1/CLK
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          FDRE                                         r  uut_ff_stage1/data0_reg_reg[122]/C
   -------------------------------------------------------------------    -------------------
                          FDRE (Prop_fdre_C_Q)         0.147     0.826 r  uut_ff_stage1/data0_reg_reg[122]/Q
@@ -2582,7 +3034,11 @@ Slack (MET) :             0.160ns  (arrival time - required time)
                          net (fo=1, unplaced)         0.356     0.745    CLK_IBUF
                          BUFG                                         r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.029     0.774 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.259     1.033    uut_ff_stage2/CLK
+=======
+                         net (fo=909, unplaced)       0.259     1.033    uut_ff_stage2/CLK
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          FDRE                                         r  uut_ff_stage2/data1_reg_reg[16]/C
                          clock pessimism             -0.210     0.824    
                          FDRE (Hold_fdre_C_D)        -0.009     0.815    uut_ff_stage2/data1_reg_reg[16]
@@ -2617,7 +3073,11 @@ Slack (MET) :             0.160ns  (arrival time - required time)
                          net (fo=1, unplaced)         0.338     0.539    CLK_IBUF
                                                                       r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.026     0.565 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.114     0.679    uut_ff_stage1/CLK
+=======
+                         net (fo=909, unplaced)       0.114     0.679    uut_ff_stage1/CLK
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          FDRE                                         r  uut_ff_stage1/data0_reg_reg[123]/C
   -------------------------------------------------------------------    -------------------
                          FDRE (Prop_fdre_C_Q)         0.147     0.826 r  uut_ff_stage1/data0_reg_reg[123]/Q
@@ -2633,7 +3093,11 @@ Slack (MET) :             0.160ns  (arrival time - required time)
                          net (fo=1, unplaced)         0.356     0.745    CLK_IBUF
                          BUFG                                         r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.029     0.774 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.259     1.033    uut_ff_stage2/CLK
+=======
+                         net (fo=909, unplaced)       0.259     1.033    uut_ff_stage2/CLK
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          FDRE                                         r  uut_ff_stage2/data1_reg_reg[17]/C
                          clock pessimism             -0.210     0.824    
                          FDRE (Hold_fdre_C_D)        -0.009     0.815    uut_ff_stage2/data1_reg_reg[17]
@@ -2668,7 +3132,11 @@ Slack (MET) :             0.160ns  (arrival time - required time)
                          net (fo=1, unplaced)         0.338     0.539    CLK_IBUF
                                                                       r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.026     0.565 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.114     0.679    uut_ff_stage1/CLK
+=======
+                         net (fo=909, unplaced)       0.114     0.679    uut_ff_stage1/CLK
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          FDRE                                         r  uut_ff_stage1/data0_reg_reg[124]/C
   -------------------------------------------------------------------    -------------------
                          FDRE (Prop_fdre_C_Q)         0.147     0.826 r  uut_ff_stage1/data0_reg_reg[124]/Q
@@ -2684,7 +3152,11 @@ Slack (MET) :             0.160ns  (arrival time - required time)
                          net (fo=1, unplaced)         0.356     0.745    CLK_IBUF
                          BUFG                                         r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.029     0.774 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.259     1.033    uut_ff_stage2/CLK
+=======
+                         net (fo=909, unplaced)       0.259     1.033    uut_ff_stage2/CLK
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          FDRE                                         r  uut_ff_stage2/data1_reg_reg[18]/C
                          clock pessimism             -0.210     0.824    
                          FDRE (Hold_fdre_C_D)        -0.009     0.815    uut_ff_stage2/data1_reg_reg[18]
@@ -2707,8 +3179,11 @@ Sources:            { CLK }
 
 Check Type        Corner  Lib Pin  Reference Pin  Required(ns)  Actual(ns)  Slack(ns)  Location  Pin
 Min Period        n/a     BUFG/I   n/a            2.155         10.000      7.845                CLK_IBUF_BUFG_inst/I
+<<<<<<< HEAD
 Min Period        n/a     FDRE/C   n/a            1.000         10.000      9.000                uut_ff_stage1/data1_reg_reg[11]/C
 Min Period        n/a     FDRE/C   n/a            1.000         10.000      9.000                uut_ff_stage1/data1_reg_reg[120]/C
+=======
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
 Min Period        n/a     FDRE/C   n/a            1.000         10.000      9.000                uut_ff_stage1/data1_reg_reg[121]/C
 Min Period        n/a     FDRE/C   n/a            1.000         10.000      9.000                uut_ff_stage1/data1_reg_reg[122]/C
 Min Period        n/a     FDRE/C   n/a            1.000         10.000      9.000                uut_ff_stage1/data1_reg_reg[123]/C
@@ -2716,8 +3191,13 @@ Min Period        n/a     FDRE/C   n/a            1.000         10.000      9.00
 Min Period        n/a     FDRE/C   n/a            1.000         10.000      9.000                uut_ff_stage1/data1_reg_reg[125]/C
 Min Period        n/a     FDRE/C   n/a            1.000         10.000      9.000                uut_ff_stage1/data1_reg_reg[126]/C
 Min Period        n/a     FDRE/C   n/a            1.000         10.000      9.000                uut_ff_stage1/data1_reg_reg[127]/C
+<<<<<<< HEAD
 Low Pulse Width   Slow    FDRE/C   n/a            0.500         5.000       4.500                uut_ff_stage1/data1_reg_reg[11]/C
 Low Pulse Width   Slow    FDRE/C   n/a            0.500         5.000       4.500                uut_ff_stage1/data1_reg_reg[120]/C
+=======
+Min Period        n/a     FDRE/C   n/a            1.000         10.000      9.000                uut_ff_stage1/data1_reg_reg[12]/C
+Min Period        n/a     FDRE/C   n/a            1.000         10.000      9.000                uut_ff_stage1/data1_reg_reg[13]/C
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
 Low Pulse Width   Slow    FDRE/C   n/a            0.500         5.000       4.500                uut_ff_stage1/data1_reg_reg[121]/C
 Low Pulse Width   Slow    FDRE/C   n/a            0.500         5.000       4.500                uut_ff_stage1/data1_reg_reg[122]/C
 Low Pulse Width   Slow    FDRE/C   n/a            0.500         5.000       4.500                uut_ff_stage1/data1_reg_reg[123]/C
@@ -2726,8 +3206,13 @@ Low Pulse Width   Slow    FDRE/C   n/a            0.500         5.000       4.50
 Low Pulse Width   Slow    FDRE/C   n/a            0.500         5.000       4.500                uut_ff_stage1/data1_reg_reg[126]/C
 Low Pulse Width   Slow    FDRE/C   n/a            0.500         5.000       4.500                uut_ff_stage1/data1_reg_reg[127]/C
 Low Pulse Width   Slow    FDRE/C   n/a            0.500         5.000       4.500                uut_ff_stage1/data1_reg_reg[12]/C
+<<<<<<< HEAD
 High Pulse Width  Fast    FDRE/C   n/a            0.500         5.000       4.500                uut_ff_stage1/data1_reg_reg[11]/C
 High Pulse Width  Fast    FDRE/C   n/a            0.500         5.000       4.500                uut_ff_stage1/data1_reg_reg[120]/C
+=======
+Low Pulse Width   Slow    FDRE/C   n/a            0.500         5.000       4.500                uut_ff_stage1/data1_reg_reg[13]/C
+Low Pulse Width   Slow    FDRE/C   n/a            0.500         5.000       4.500                uut_ff_stage1/data1_reg_reg[14]/C
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
 High Pulse Width  Fast    FDRE/C   n/a            0.500         5.000       4.500                uut_ff_stage1/data1_reg_reg[121]/C
 High Pulse Width  Fast    FDRE/C   n/a            0.500         5.000       4.500                uut_ff_stage1/data1_reg_reg[122]/C
 High Pulse Width  Fast    FDRE/C   n/a            0.500         5.000       4.500                uut_ff_stage1/data1_reg_reg[123]/C
@@ -2736,6 +3221,11 @@ High Pulse Width  Fast    FDRE/C   n/a            0.500         5.000       4.50
 High Pulse Width  Fast    FDRE/C   n/a            0.500         5.000       4.500                uut_ff_stage1/data1_reg_reg[126]/C
 High Pulse Width  Fast    FDRE/C   n/a            0.500         5.000       4.500                uut_ff_stage1/data1_reg_reg[127]/C
 High Pulse Width  Fast    FDRE/C   n/a            0.500         5.000       4.500                uut_ff_stage1/data1_reg_reg[12]/C
+<<<<<<< HEAD
+=======
+High Pulse Width  Fast    FDRE/C   n/a            0.500         5.000       4.500                uut_ff_stage1/data1_reg_reg[13]/C
+High Pulse Width  Fast    FDRE/C   n/a            0.500         5.000       4.500                uut_ff_stage1/data1_reg_reg[14]/C
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
 
 
 
@@ -2752,14 +3242,22 @@ Min Delay            71 Endpoints
 Max Delay Paths
 --------------------------------------------------------------------------------------
 Slack:                    inf
+<<<<<<< HEAD
   Source:                 uut_ff_stage4/data0_reg_reg[33]/C
+=======
+  Source:                 uut_ff_stage4/data0_reg_reg[30]/C
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                             (rising edge-triggered cell FDRE clocked by CLK  {rise@0.000ns fall@5.000ns period=10.000ns})
   Destination:            final_result_[56]
                             (output port)
   Path Group:             (none)
   Path Type:              Max at Slow Process Corner
   Data Path Delay:        12.492ns  (logic 7.222ns (57.813%)  route 5.270ns (42.187%))
+<<<<<<< HEAD
   Logic Levels:           22  (CARRY4=15 LUT4=1 LUT5=2 LUT6=3 OBUF=1)
+=======
+  Logic Levels:           22  (CARRY4=15 LUT2=1 LUT4=1 LUT5=2 LUT6=2 OBUF=1)
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
   Clock Uncertainty:      0.025ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
     Total System Jitter     (TSJ):    0.050ns
     Total Input Jitter      (TIJ):    0.000ns
@@ -2776,11 +3274,19 @@ Slack:                    inf
                          net (fo=1, unplaced)         0.803     1.774    CLK_IBUF
                                                                       r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.096     1.870 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.584     2.454    uut_ff_stage4/CLK
                          FDRE                                         r  uut_ff_stage4/data0_reg_reg[33]/C
   -------------------------------------------------------------------    -------------------
                          FDRE (Prop_fdre_C_Q)         0.478     2.932 r  uut_ff_stage4/data0_reg_reg[33]/Q
                          net (fo=2, unplaced)         0.675     3.607    uut_ff_stage4$D_OUT[33]
+=======
+                         net (fo=909, unplaced)       0.584     2.454    uut_ff_stage4/CLK
+                         FDRE                                         r  uut_ff_stage4/data0_reg_reg[30]/C
+  -------------------------------------------------------------------    -------------------
+                         FDRE (Prop_fdre_C_Q)         0.478     2.932 r  uut_ff_stage4/data0_reg_reg[30]/Q
+                         net (fo=2, unplaced)         0.675     3.607    uut_ff_stage4$D_OUT[30]
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                                                                       r  final_result__OBUF[8]_inst_i_2/S[1]
                          CARRY4 (Prop_carry4_S[1]_CO[3])
                                                       0.828     4.435 r  final_result__OBUF[8]_inst_i_2/CO[3]
@@ -2843,7 +3349,11 @@ Slack:                    inf
                                                                       r  final_result__OBUF[60]_inst_i_2/S[1]
                          CARRY4 (Prop_carry4_S[1]_O[2])
                                                       0.578     7.623 r  final_result__OBUF[60]_inst_i_2/O[2]
+<<<<<<< HEAD
                          net (fo=2, unplaced)         0.679     8.302    IF_NOT_uut_ff_stage4_first__90_BIT_84_24_25_AN_ETC___d432[2]
+=======
+                         net (fo=2, unplaced)         0.679     8.302    IF_NOT_uut_ff_stage4_first__95_BIT_81_21_22_AN_ETC___d429[2]
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                                                                       r  final_result__OBUF[65]_inst_i_4/I0
                          LUT4 (Prop_lut4_I0_O)        0.301     8.603 r  final_result__OBUF[65]_inst_i_4/O
                          net (fo=1, unplaced)         0.941     9.544    final_result__OBUF[65]_inst_i_4_n_0
@@ -2851,7 +3361,11 @@ Slack:                    inf
                          LUT6 (Prop_lut6_I5_O)        0.124     9.668 r  final_result__OBUF[65]_inst_i_2/O
                          net (fo=11, unplaced)        0.495    10.163    final_result__OBUF[65]_inst_i_2_n_0
                                                                       r  final_result__OBUF[55]_inst_i_4/I0
+<<<<<<< HEAD
                          LUT6 (Prop_lut6_I0_O)        0.124    10.287 r  final_result__OBUF[55]_inst_i_4/O
+=======
+                         LUT2 (Prop_lut2_I0_O)        0.124    10.287 r  final_result__OBUF[55]_inst_i_4/O
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          net (fo=53, unplaced)        0.533    10.820    final_result__OBUF[55]_inst_i_4_n_0
                                                                       r  final_result__OBUF[56]_inst_i_2/I4
                          LUT6 (Prop_lut6_I4_O)        0.124    10.944 f  final_result__OBUF[56]_inst_i_2/O
@@ -2866,14 +3380,22 @@ Slack:                    inf
   -------------------------------------------------------------------    -------------------
 
 Slack:                    inf
+<<<<<<< HEAD
   Source:                 uut_ff_stage4/data0_reg_reg[33]/C
+=======
+  Source:                 uut_ff_stage4/data0_reg_reg[30]/C
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                             (rising edge-triggered cell FDRE clocked by CLK  {rise@0.000ns fall@5.000ns period=10.000ns})
   Destination:            final_result_[10]
                             (output port)
   Path Group:             (none)
   Path Type:              Max at Slow Process Corner
   Data Path Delay:        11.927ns  (logic 7.106ns (59.580%)  route 4.821ns (40.420%))
+<<<<<<< HEAD
   Logic Levels:           21  (CARRY4=15 LUT4=1 LUT5=1 LUT6=3 OBUF=1)
+=======
+  Logic Levels:           21  (CARRY4=15 LUT2=1 LUT4=1 LUT5=1 LUT6=2 OBUF=1)
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
   Clock Uncertainty:      0.025ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
     Total System Jitter     (TSJ):    0.050ns
     Total Input Jitter      (TIJ):    0.000ns
@@ -2890,11 +3412,19 @@ Slack:                    inf
                          net (fo=1, unplaced)         0.803     1.774    CLK_IBUF
                                                                       r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.096     1.870 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.584     2.454    uut_ff_stage4/CLK
                          FDRE                                         r  uut_ff_stage4/data0_reg_reg[33]/C
   -------------------------------------------------------------------    -------------------
                          FDRE (Prop_fdre_C_Q)         0.478     2.932 r  uut_ff_stage4/data0_reg_reg[33]/Q
                          net (fo=2, unplaced)         0.675     3.607    uut_ff_stage4$D_OUT[33]
+=======
+                         net (fo=909, unplaced)       0.584     2.454    uut_ff_stage4/CLK
+                         FDRE                                         r  uut_ff_stage4/data0_reg_reg[30]/C
+  -------------------------------------------------------------------    -------------------
+                         FDRE (Prop_fdre_C_Q)         0.478     2.932 r  uut_ff_stage4/data0_reg_reg[30]/Q
+                         net (fo=2, unplaced)         0.675     3.607    uut_ff_stage4$D_OUT[30]
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                                                                       r  final_result__OBUF[8]_inst_i_2/S[1]
                          CARRY4 (Prop_carry4_S[1]_CO[3])
                                                       0.828     4.435 r  final_result__OBUF[8]_inst_i_2/CO[3]
@@ -2957,7 +3487,11 @@ Slack:                    inf
                                                                       r  final_result__OBUF[60]_inst_i_2/S[1]
                          CARRY4 (Prop_carry4_S[1]_O[2])
                                                       0.578     7.623 r  final_result__OBUF[60]_inst_i_2/O[2]
+<<<<<<< HEAD
                          net (fo=2, unplaced)         0.679     8.302    IF_NOT_uut_ff_stage4_first__90_BIT_84_24_25_AN_ETC___d432[2]
+=======
+                         net (fo=2, unplaced)         0.679     8.302    IF_NOT_uut_ff_stage4_first__95_BIT_81_21_22_AN_ETC___d429[2]
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                                                                       r  final_result__OBUF[65]_inst_i_4/I0
                          LUT4 (Prop_lut4_I0_O)        0.301     8.603 r  final_result__OBUF[65]_inst_i_4/O
                          net (fo=1, unplaced)         0.941     9.544    final_result__OBUF[65]_inst_i_4_n_0
@@ -2965,7 +3499,11 @@ Slack:                    inf
                          LUT6 (Prop_lut6_I5_O)        0.124     9.668 r  final_result__OBUF[65]_inst_i_2/O
                          net (fo=11, unplaced)        0.495    10.163    final_result__OBUF[65]_inst_i_2_n_0
                                                                       r  final_result__OBUF[55]_inst_i_4/I0
+<<<<<<< HEAD
                          LUT6 (Prop_lut6_I0_O)        0.124    10.287 r  final_result__OBUF[55]_inst_i_4/O
+=======
+                         LUT2 (Prop_lut2_I0_O)        0.124    10.287 r  final_result__OBUF[55]_inst_i_4/O
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          net (fo=53, unplaced)        0.533    10.820    final_result__OBUF[55]_inst_i_4_n_0
                                                                       r  final_result__OBUF[10]_inst_i_1/I3
                          LUT6 (Prop_lut6_I3_O)        0.124    10.944 r  final_result__OBUF[10]_inst_i_1/O
@@ -2977,14 +3515,22 @@ Slack:                    inf
   -------------------------------------------------------------------    -------------------
 
 Slack:                    inf
+<<<<<<< HEAD
   Source:                 uut_ff_stage4/data0_reg_reg[33]/C
+=======
+  Source:                 uut_ff_stage4/data0_reg_reg[30]/C
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                             (rising edge-triggered cell FDRE clocked by CLK  {rise@0.000ns fall@5.000ns period=10.000ns})
   Destination:            final_result_[11]
                             (output port)
   Path Group:             (none)
   Path Type:              Max at Slow Process Corner
   Data Path Delay:        11.927ns  (logic 7.106ns (59.580%)  route 4.821ns (40.420%))
+<<<<<<< HEAD
   Logic Levels:           21  (CARRY4=15 LUT4=1 LUT5=1 LUT6=3 OBUF=1)
+=======
+  Logic Levels:           21  (CARRY4=15 LUT2=1 LUT4=1 LUT5=1 LUT6=2 OBUF=1)
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
   Clock Uncertainty:      0.025ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
     Total System Jitter     (TSJ):    0.050ns
     Total Input Jitter      (TIJ):    0.000ns
@@ -3001,11 +3547,19 @@ Slack:                    inf
                          net (fo=1, unplaced)         0.803     1.774    CLK_IBUF
                                                                       r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.096     1.870 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.584     2.454    uut_ff_stage4/CLK
                          FDRE                                         r  uut_ff_stage4/data0_reg_reg[33]/C
   -------------------------------------------------------------------    -------------------
                          FDRE (Prop_fdre_C_Q)         0.478     2.932 r  uut_ff_stage4/data0_reg_reg[33]/Q
                          net (fo=2, unplaced)         0.675     3.607    uut_ff_stage4$D_OUT[33]
+=======
+                         net (fo=909, unplaced)       0.584     2.454    uut_ff_stage4/CLK
+                         FDRE                                         r  uut_ff_stage4/data0_reg_reg[30]/C
+  -------------------------------------------------------------------    -------------------
+                         FDRE (Prop_fdre_C_Q)         0.478     2.932 r  uut_ff_stage4/data0_reg_reg[30]/Q
+                         net (fo=2, unplaced)         0.675     3.607    uut_ff_stage4$D_OUT[30]
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                                                                       r  final_result__OBUF[8]_inst_i_2/S[1]
                          CARRY4 (Prop_carry4_S[1]_CO[3])
                                                       0.828     4.435 r  final_result__OBUF[8]_inst_i_2/CO[3]
@@ -3068,7 +3622,11 @@ Slack:                    inf
                                                                       r  final_result__OBUF[60]_inst_i_2/S[1]
                          CARRY4 (Prop_carry4_S[1]_O[2])
                                                       0.578     7.623 r  final_result__OBUF[60]_inst_i_2/O[2]
+<<<<<<< HEAD
                          net (fo=2, unplaced)         0.679     8.302    IF_NOT_uut_ff_stage4_first__90_BIT_84_24_25_AN_ETC___d432[2]
+=======
+                         net (fo=2, unplaced)         0.679     8.302    IF_NOT_uut_ff_stage4_first__95_BIT_81_21_22_AN_ETC___d429[2]
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                                                                       r  final_result__OBUF[65]_inst_i_4/I0
                          LUT4 (Prop_lut4_I0_O)        0.301     8.603 r  final_result__OBUF[65]_inst_i_4/O
                          net (fo=1, unplaced)         0.941     9.544    final_result__OBUF[65]_inst_i_4_n_0
@@ -3076,7 +3634,11 @@ Slack:                    inf
                          LUT6 (Prop_lut6_I5_O)        0.124     9.668 r  final_result__OBUF[65]_inst_i_2/O
                          net (fo=11, unplaced)        0.495    10.163    final_result__OBUF[65]_inst_i_2_n_0
                                                                       r  final_result__OBUF[55]_inst_i_4/I0
+<<<<<<< HEAD
                          LUT6 (Prop_lut6_I0_O)        0.124    10.287 r  final_result__OBUF[55]_inst_i_4/O
+=======
+                         LUT2 (Prop_lut2_I0_O)        0.124    10.287 r  final_result__OBUF[55]_inst_i_4/O
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          net (fo=53, unplaced)        0.533    10.820    final_result__OBUF[55]_inst_i_4_n_0
                                                                       r  final_result__OBUF[11]_inst_i_1/I3
                          LUT6 (Prop_lut6_I3_O)        0.124    10.944 r  final_result__OBUF[11]_inst_i_1/O
@@ -3088,14 +3650,22 @@ Slack:                    inf
   -------------------------------------------------------------------    -------------------
 
 Slack:                    inf
+<<<<<<< HEAD
   Source:                 uut_ff_stage4/data0_reg_reg[33]/C
+=======
+  Source:                 uut_ff_stage4/data0_reg_reg[30]/C
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                             (rising edge-triggered cell FDRE clocked by CLK  {rise@0.000ns fall@5.000ns period=10.000ns})
   Destination:            final_result_[12]
                             (output port)
   Path Group:             (none)
   Path Type:              Max at Slow Process Corner
   Data Path Delay:        11.927ns  (logic 7.106ns (59.580%)  route 4.821ns (40.420%))
+<<<<<<< HEAD
   Logic Levels:           21  (CARRY4=15 LUT4=1 LUT5=1 LUT6=3 OBUF=1)
+=======
+  Logic Levels:           21  (CARRY4=15 LUT2=1 LUT4=1 LUT5=1 LUT6=2 OBUF=1)
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
   Clock Uncertainty:      0.025ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
     Total System Jitter     (TSJ):    0.050ns
     Total Input Jitter      (TIJ):    0.000ns
@@ -3112,11 +3682,19 @@ Slack:                    inf
                          net (fo=1, unplaced)         0.803     1.774    CLK_IBUF
                                                                       r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.096     1.870 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.584     2.454    uut_ff_stage4/CLK
                          FDRE                                         r  uut_ff_stage4/data0_reg_reg[33]/C
   -------------------------------------------------------------------    -------------------
                          FDRE (Prop_fdre_C_Q)         0.478     2.932 r  uut_ff_stage4/data0_reg_reg[33]/Q
                          net (fo=2, unplaced)         0.675     3.607    uut_ff_stage4$D_OUT[33]
+=======
+                         net (fo=909, unplaced)       0.584     2.454    uut_ff_stage4/CLK
+                         FDRE                                         r  uut_ff_stage4/data0_reg_reg[30]/C
+  -------------------------------------------------------------------    -------------------
+                         FDRE (Prop_fdre_C_Q)         0.478     2.932 r  uut_ff_stage4/data0_reg_reg[30]/Q
+                         net (fo=2, unplaced)         0.675     3.607    uut_ff_stage4$D_OUT[30]
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                                                                       r  final_result__OBUF[8]_inst_i_2/S[1]
                          CARRY4 (Prop_carry4_S[1]_CO[3])
                                                       0.828     4.435 r  final_result__OBUF[8]_inst_i_2/CO[3]
@@ -3179,7 +3757,11 @@ Slack:                    inf
                                                                       r  final_result__OBUF[60]_inst_i_2/S[1]
                          CARRY4 (Prop_carry4_S[1]_O[2])
                                                       0.578     7.623 r  final_result__OBUF[60]_inst_i_2/O[2]
+<<<<<<< HEAD
                          net (fo=2, unplaced)         0.679     8.302    IF_NOT_uut_ff_stage4_first__90_BIT_84_24_25_AN_ETC___d432[2]
+=======
+                         net (fo=2, unplaced)         0.679     8.302    IF_NOT_uut_ff_stage4_first__95_BIT_81_21_22_AN_ETC___d429[2]
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                                                                       r  final_result__OBUF[65]_inst_i_4/I0
                          LUT4 (Prop_lut4_I0_O)        0.301     8.603 r  final_result__OBUF[65]_inst_i_4/O
                          net (fo=1, unplaced)         0.941     9.544    final_result__OBUF[65]_inst_i_4_n_0
@@ -3187,7 +3769,11 @@ Slack:                    inf
                          LUT6 (Prop_lut6_I5_O)        0.124     9.668 r  final_result__OBUF[65]_inst_i_2/O
                          net (fo=11, unplaced)        0.495    10.163    final_result__OBUF[65]_inst_i_2_n_0
                                                                       r  final_result__OBUF[55]_inst_i_4/I0
+<<<<<<< HEAD
                          LUT6 (Prop_lut6_I0_O)        0.124    10.287 r  final_result__OBUF[55]_inst_i_4/O
+=======
+                         LUT2 (Prop_lut2_I0_O)        0.124    10.287 r  final_result__OBUF[55]_inst_i_4/O
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          net (fo=53, unplaced)        0.533    10.820    final_result__OBUF[55]_inst_i_4_n_0
                                                                       r  final_result__OBUF[12]_inst_i_1/I3
                          LUT6 (Prop_lut6_I3_O)        0.124    10.944 r  final_result__OBUF[12]_inst_i_1/O
@@ -3199,14 +3785,22 @@ Slack:                    inf
   -------------------------------------------------------------------    -------------------
 
 Slack:                    inf
+<<<<<<< HEAD
   Source:                 uut_ff_stage4/data0_reg_reg[33]/C
+=======
+  Source:                 uut_ff_stage4/data0_reg_reg[30]/C
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                             (rising edge-triggered cell FDRE clocked by CLK  {rise@0.000ns fall@5.000ns period=10.000ns})
   Destination:            final_result_[13]
                             (output port)
   Path Group:             (none)
   Path Type:              Max at Slow Process Corner
   Data Path Delay:        11.927ns  (logic 7.106ns (59.580%)  route 4.821ns (40.420%))
+<<<<<<< HEAD
   Logic Levels:           21  (CARRY4=15 LUT4=1 LUT5=1 LUT6=3 OBUF=1)
+=======
+  Logic Levels:           21  (CARRY4=15 LUT2=1 LUT4=1 LUT5=1 LUT6=2 OBUF=1)
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
   Clock Uncertainty:      0.025ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
     Total System Jitter     (TSJ):    0.050ns
     Total Input Jitter      (TIJ):    0.000ns
@@ -3223,11 +3817,19 @@ Slack:                    inf
                          net (fo=1, unplaced)         0.803     1.774    CLK_IBUF
                                                                       r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.096     1.870 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.584     2.454    uut_ff_stage4/CLK
                          FDRE                                         r  uut_ff_stage4/data0_reg_reg[33]/C
   -------------------------------------------------------------------    -------------------
                          FDRE (Prop_fdre_C_Q)         0.478     2.932 r  uut_ff_stage4/data0_reg_reg[33]/Q
                          net (fo=2, unplaced)         0.675     3.607    uut_ff_stage4$D_OUT[33]
+=======
+                         net (fo=909, unplaced)       0.584     2.454    uut_ff_stage4/CLK
+                         FDRE                                         r  uut_ff_stage4/data0_reg_reg[30]/C
+  -------------------------------------------------------------------    -------------------
+                         FDRE (Prop_fdre_C_Q)         0.478     2.932 r  uut_ff_stage4/data0_reg_reg[30]/Q
+                         net (fo=2, unplaced)         0.675     3.607    uut_ff_stage4$D_OUT[30]
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                                                                       r  final_result__OBUF[8]_inst_i_2/S[1]
                          CARRY4 (Prop_carry4_S[1]_CO[3])
                                                       0.828     4.435 r  final_result__OBUF[8]_inst_i_2/CO[3]
@@ -3290,7 +3892,11 @@ Slack:                    inf
                                                                       r  final_result__OBUF[60]_inst_i_2/S[1]
                          CARRY4 (Prop_carry4_S[1]_O[2])
                                                       0.578     7.623 r  final_result__OBUF[60]_inst_i_2/O[2]
+<<<<<<< HEAD
                          net (fo=2, unplaced)         0.679     8.302    IF_NOT_uut_ff_stage4_first__90_BIT_84_24_25_AN_ETC___d432[2]
+=======
+                         net (fo=2, unplaced)         0.679     8.302    IF_NOT_uut_ff_stage4_first__95_BIT_81_21_22_AN_ETC___d429[2]
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                                                                       r  final_result__OBUF[65]_inst_i_4/I0
                          LUT4 (Prop_lut4_I0_O)        0.301     8.603 r  final_result__OBUF[65]_inst_i_4/O
                          net (fo=1, unplaced)         0.941     9.544    final_result__OBUF[65]_inst_i_4_n_0
@@ -3298,7 +3904,11 @@ Slack:                    inf
                          LUT6 (Prop_lut6_I5_O)        0.124     9.668 r  final_result__OBUF[65]_inst_i_2/O
                          net (fo=11, unplaced)        0.495    10.163    final_result__OBUF[65]_inst_i_2_n_0
                                                                       r  final_result__OBUF[55]_inst_i_4/I0
+<<<<<<< HEAD
                          LUT6 (Prop_lut6_I0_O)        0.124    10.287 r  final_result__OBUF[55]_inst_i_4/O
+=======
+                         LUT2 (Prop_lut2_I0_O)        0.124    10.287 r  final_result__OBUF[55]_inst_i_4/O
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          net (fo=53, unplaced)        0.533    10.820    final_result__OBUF[55]_inst_i_4_n_0
                                                                       r  final_result__OBUF[13]_inst_i_1/I3
                          LUT6 (Prop_lut6_I3_O)        0.124    10.944 r  final_result__OBUF[13]_inst_i_1/O
@@ -3310,14 +3920,22 @@ Slack:                    inf
   -------------------------------------------------------------------    -------------------
 
 Slack:                    inf
+<<<<<<< HEAD
   Source:                 uut_ff_stage4/data0_reg_reg[33]/C
+=======
+  Source:                 uut_ff_stage4/data0_reg_reg[30]/C
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                             (rising edge-triggered cell FDRE clocked by CLK  {rise@0.000ns fall@5.000ns period=10.000ns})
   Destination:            final_result_[14]
                             (output port)
   Path Group:             (none)
   Path Type:              Max at Slow Process Corner
   Data Path Delay:        11.927ns  (logic 7.106ns (59.580%)  route 4.821ns (40.420%))
+<<<<<<< HEAD
   Logic Levels:           21  (CARRY4=15 LUT4=1 LUT5=1 LUT6=3 OBUF=1)
+=======
+  Logic Levels:           21  (CARRY4=15 LUT2=1 LUT4=1 LUT5=1 LUT6=2 OBUF=1)
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
   Clock Uncertainty:      0.025ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
     Total System Jitter     (TSJ):    0.050ns
     Total Input Jitter      (TIJ):    0.000ns
@@ -3334,11 +3952,19 @@ Slack:                    inf
                          net (fo=1, unplaced)         0.803     1.774    CLK_IBUF
                                                                       r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.096     1.870 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.584     2.454    uut_ff_stage4/CLK
                          FDRE                                         r  uut_ff_stage4/data0_reg_reg[33]/C
   -------------------------------------------------------------------    -------------------
                          FDRE (Prop_fdre_C_Q)         0.478     2.932 r  uut_ff_stage4/data0_reg_reg[33]/Q
                          net (fo=2, unplaced)         0.675     3.607    uut_ff_stage4$D_OUT[33]
+=======
+                         net (fo=909, unplaced)       0.584     2.454    uut_ff_stage4/CLK
+                         FDRE                                         r  uut_ff_stage4/data0_reg_reg[30]/C
+  -------------------------------------------------------------------    -------------------
+                         FDRE (Prop_fdre_C_Q)         0.478     2.932 r  uut_ff_stage4/data0_reg_reg[30]/Q
+                         net (fo=2, unplaced)         0.675     3.607    uut_ff_stage4$D_OUT[30]
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                                                                       r  final_result__OBUF[8]_inst_i_2/S[1]
                          CARRY4 (Prop_carry4_S[1]_CO[3])
                                                       0.828     4.435 r  final_result__OBUF[8]_inst_i_2/CO[3]
@@ -3401,7 +4027,11 @@ Slack:                    inf
                                                                       r  final_result__OBUF[60]_inst_i_2/S[1]
                          CARRY4 (Prop_carry4_S[1]_O[2])
                                                       0.578     7.623 r  final_result__OBUF[60]_inst_i_2/O[2]
+<<<<<<< HEAD
                          net (fo=2, unplaced)         0.679     8.302    IF_NOT_uut_ff_stage4_first__90_BIT_84_24_25_AN_ETC___d432[2]
+=======
+                         net (fo=2, unplaced)         0.679     8.302    IF_NOT_uut_ff_stage4_first__95_BIT_81_21_22_AN_ETC___d429[2]
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                                                                       r  final_result__OBUF[65]_inst_i_4/I0
                          LUT4 (Prop_lut4_I0_O)        0.301     8.603 r  final_result__OBUF[65]_inst_i_4/O
                          net (fo=1, unplaced)         0.941     9.544    final_result__OBUF[65]_inst_i_4_n_0
@@ -3409,7 +4039,11 @@ Slack:                    inf
                          LUT6 (Prop_lut6_I5_O)        0.124     9.668 r  final_result__OBUF[65]_inst_i_2/O
                          net (fo=11, unplaced)        0.495    10.163    final_result__OBUF[65]_inst_i_2_n_0
                                                                       r  final_result__OBUF[55]_inst_i_4/I0
+<<<<<<< HEAD
                          LUT6 (Prop_lut6_I0_O)        0.124    10.287 r  final_result__OBUF[55]_inst_i_4/O
+=======
+                         LUT2 (Prop_lut2_I0_O)        0.124    10.287 r  final_result__OBUF[55]_inst_i_4/O
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          net (fo=53, unplaced)        0.533    10.820    final_result__OBUF[55]_inst_i_4_n_0
                                                                       r  final_result__OBUF[14]_inst_i_1/I3
                          LUT6 (Prop_lut6_I3_O)        0.124    10.944 r  final_result__OBUF[14]_inst_i_1/O
@@ -3421,14 +4055,22 @@ Slack:                    inf
   -------------------------------------------------------------------    -------------------
 
 Slack:                    inf
+<<<<<<< HEAD
   Source:                 uut_ff_stage4/data0_reg_reg[33]/C
+=======
+  Source:                 uut_ff_stage4/data0_reg_reg[30]/C
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                             (rising edge-triggered cell FDRE clocked by CLK  {rise@0.000ns fall@5.000ns period=10.000ns})
   Destination:            final_result_[15]
                             (output port)
   Path Group:             (none)
   Path Type:              Max at Slow Process Corner
   Data Path Delay:        11.927ns  (logic 7.106ns (59.580%)  route 4.821ns (40.420%))
+<<<<<<< HEAD
   Logic Levels:           21  (CARRY4=15 LUT4=1 LUT5=1 LUT6=3 OBUF=1)
+=======
+  Logic Levels:           21  (CARRY4=15 LUT2=1 LUT4=1 LUT5=1 LUT6=2 OBUF=1)
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
   Clock Uncertainty:      0.025ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
     Total System Jitter     (TSJ):    0.050ns
     Total Input Jitter      (TIJ):    0.000ns
@@ -3445,11 +4087,19 @@ Slack:                    inf
                          net (fo=1, unplaced)         0.803     1.774    CLK_IBUF
                                                                       r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.096     1.870 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.584     2.454    uut_ff_stage4/CLK
                          FDRE                                         r  uut_ff_stage4/data0_reg_reg[33]/C
   -------------------------------------------------------------------    -------------------
                          FDRE (Prop_fdre_C_Q)         0.478     2.932 r  uut_ff_stage4/data0_reg_reg[33]/Q
                          net (fo=2, unplaced)         0.675     3.607    uut_ff_stage4$D_OUT[33]
+=======
+                         net (fo=909, unplaced)       0.584     2.454    uut_ff_stage4/CLK
+                         FDRE                                         r  uut_ff_stage4/data0_reg_reg[30]/C
+  -------------------------------------------------------------------    -------------------
+                         FDRE (Prop_fdre_C_Q)         0.478     2.932 r  uut_ff_stage4/data0_reg_reg[30]/Q
+                         net (fo=2, unplaced)         0.675     3.607    uut_ff_stage4$D_OUT[30]
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                                                                       r  final_result__OBUF[8]_inst_i_2/S[1]
                          CARRY4 (Prop_carry4_S[1]_CO[3])
                                                       0.828     4.435 r  final_result__OBUF[8]_inst_i_2/CO[3]
@@ -3512,7 +4162,11 @@ Slack:                    inf
                                                                       r  final_result__OBUF[60]_inst_i_2/S[1]
                          CARRY4 (Prop_carry4_S[1]_O[2])
                                                       0.578     7.623 r  final_result__OBUF[60]_inst_i_2/O[2]
+<<<<<<< HEAD
                          net (fo=2, unplaced)         0.679     8.302    IF_NOT_uut_ff_stage4_first__90_BIT_84_24_25_AN_ETC___d432[2]
+=======
+                         net (fo=2, unplaced)         0.679     8.302    IF_NOT_uut_ff_stage4_first__95_BIT_81_21_22_AN_ETC___d429[2]
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                                                                       r  final_result__OBUF[65]_inst_i_4/I0
                          LUT4 (Prop_lut4_I0_O)        0.301     8.603 r  final_result__OBUF[65]_inst_i_4/O
                          net (fo=1, unplaced)         0.941     9.544    final_result__OBUF[65]_inst_i_4_n_0
@@ -3520,7 +4174,11 @@ Slack:                    inf
                          LUT6 (Prop_lut6_I5_O)        0.124     9.668 r  final_result__OBUF[65]_inst_i_2/O
                          net (fo=11, unplaced)        0.495    10.163    final_result__OBUF[65]_inst_i_2_n_0
                                                                       r  final_result__OBUF[55]_inst_i_4/I0
+<<<<<<< HEAD
                          LUT6 (Prop_lut6_I0_O)        0.124    10.287 r  final_result__OBUF[55]_inst_i_4/O
+=======
+                         LUT2 (Prop_lut2_I0_O)        0.124    10.287 r  final_result__OBUF[55]_inst_i_4/O
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          net (fo=53, unplaced)        0.533    10.820    final_result__OBUF[55]_inst_i_4_n_0
                                                                       r  final_result__OBUF[15]_inst_i_1/I3
                          LUT6 (Prop_lut6_I3_O)        0.124    10.944 r  final_result__OBUF[15]_inst_i_1/O
@@ -3532,14 +4190,22 @@ Slack:                    inf
   -------------------------------------------------------------------    -------------------
 
 Slack:                    inf
+<<<<<<< HEAD
   Source:                 uut_ff_stage4/data0_reg_reg[33]/C
+=======
+  Source:                 uut_ff_stage4/data0_reg_reg[30]/C
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                             (rising edge-triggered cell FDRE clocked by CLK  {rise@0.000ns fall@5.000ns period=10.000ns})
   Destination:            final_result_[16]
                             (output port)
   Path Group:             (none)
   Path Type:              Max at Slow Process Corner
   Data Path Delay:        11.927ns  (logic 7.106ns (59.580%)  route 4.821ns (40.420%))
+<<<<<<< HEAD
   Logic Levels:           21  (CARRY4=15 LUT4=1 LUT5=1 LUT6=3 OBUF=1)
+=======
+  Logic Levels:           21  (CARRY4=15 LUT2=1 LUT4=1 LUT5=1 LUT6=2 OBUF=1)
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
   Clock Uncertainty:      0.025ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
     Total System Jitter     (TSJ):    0.050ns
     Total Input Jitter      (TIJ):    0.000ns
@@ -3556,11 +4222,19 @@ Slack:                    inf
                          net (fo=1, unplaced)         0.803     1.774    CLK_IBUF
                                                                       r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.096     1.870 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.584     2.454    uut_ff_stage4/CLK
                          FDRE                                         r  uut_ff_stage4/data0_reg_reg[33]/C
   -------------------------------------------------------------------    -------------------
                          FDRE (Prop_fdre_C_Q)         0.478     2.932 r  uut_ff_stage4/data0_reg_reg[33]/Q
                          net (fo=2, unplaced)         0.675     3.607    uut_ff_stage4$D_OUT[33]
+=======
+                         net (fo=909, unplaced)       0.584     2.454    uut_ff_stage4/CLK
+                         FDRE                                         r  uut_ff_stage4/data0_reg_reg[30]/C
+  -------------------------------------------------------------------    -------------------
+                         FDRE (Prop_fdre_C_Q)         0.478     2.932 r  uut_ff_stage4/data0_reg_reg[30]/Q
+                         net (fo=2, unplaced)         0.675     3.607    uut_ff_stage4$D_OUT[30]
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                                                                       r  final_result__OBUF[8]_inst_i_2/S[1]
                          CARRY4 (Prop_carry4_S[1]_CO[3])
                                                       0.828     4.435 r  final_result__OBUF[8]_inst_i_2/CO[3]
@@ -3623,7 +4297,11 @@ Slack:                    inf
                                                                       r  final_result__OBUF[60]_inst_i_2/S[1]
                          CARRY4 (Prop_carry4_S[1]_O[2])
                                                       0.578     7.623 r  final_result__OBUF[60]_inst_i_2/O[2]
+<<<<<<< HEAD
                          net (fo=2, unplaced)         0.679     8.302    IF_NOT_uut_ff_stage4_first__90_BIT_84_24_25_AN_ETC___d432[2]
+=======
+                         net (fo=2, unplaced)         0.679     8.302    IF_NOT_uut_ff_stage4_first__95_BIT_81_21_22_AN_ETC___d429[2]
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                                                                       r  final_result__OBUF[65]_inst_i_4/I0
                          LUT4 (Prop_lut4_I0_O)        0.301     8.603 r  final_result__OBUF[65]_inst_i_4/O
                          net (fo=1, unplaced)         0.941     9.544    final_result__OBUF[65]_inst_i_4_n_0
@@ -3631,7 +4309,11 @@ Slack:                    inf
                          LUT6 (Prop_lut6_I5_O)        0.124     9.668 r  final_result__OBUF[65]_inst_i_2/O
                          net (fo=11, unplaced)        0.495    10.163    final_result__OBUF[65]_inst_i_2_n_0
                                                                       r  final_result__OBUF[55]_inst_i_4/I0
+<<<<<<< HEAD
                          LUT6 (Prop_lut6_I0_O)        0.124    10.287 r  final_result__OBUF[55]_inst_i_4/O
+=======
+                         LUT2 (Prop_lut2_I0_O)        0.124    10.287 r  final_result__OBUF[55]_inst_i_4/O
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          net (fo=53, unplaced)        0.533    10.820    final_result__OBUF[55]_inst_i_4_n_0
                                                                       r  final_result__OBUF[16]_inst_i_1/I3
                          LUT6 (Prop_lut6_I3_O)        0.124    10.944 r  final_result__OBUF[16]_inst_i_1/O
@@ -3643,14 +4325,22 @@ Slack:                    inf
   -------------------------------------------------------------------    -------------------
 
 Slack:                    inf
+<<<<<<< HEAD
   Source:                 uut_ff_stage4/data0_reg_reg[33]/C
+=======
+  Source:                 uut_ff_stage4/data0_reg_reg[30]/C
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                             (rising edge-triggered cell FDRE clocked by CLK  {rise@0.000ns fall@5.000ns period=10.000ns})
   Destination:            final_result_[17]
                             (output port)
   Path Group:             (none)
   Path Type:              Max at Slow Process Corner
   Data Path Delay:        11.927ns  (logic 7.106ns (59.580%)  route 4.821ns (40.420%))
+<<<<<<< HEAD
   Logic Levels:           21  (CARRY4=15 LUT4=1 LUT5=1 LUT6=3 OBUF=1)
+=======
+  Logic Levels:           21  (CARRY4=15 LUT2=1 LUT4=1 LUT5=1 LUT6=2 OBUF=1)
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
   Clock Uncertainty:      0.025ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
     Total System Jitter     (TSJ):    0.050ns
     Total Input Jitter      (TIJ):    0.000ns
@@ -3667,11 +4357,19 @@ Slack:                    inf
                          net (fo=1, unplaced)         0.803     1.774    CLK_IBUF
                                                                       r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.096     1.870 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.584     2.454    uut_ff_stage4/CLK
                          FDRE                                         r  uut_ff_stage4/data0_reg_reg[33]/C
   -------------------------------------------------------------------    -------------------
                          FDRE (Prop_fdre_C_Q)         0.478     2.932 r  uut_ff_stage4/data0_reg_reg[33]/Q
                          net (fo=2, unplaced)         0.675     3.607    uut_ff_stage4$D_OUT[33]
+=======
+                         net (fo=909, unplaced)       0.584     2.454    uut_ff_stage4/CLK
+                         FDRE                                         r  uut_ff_stage4/data0_reg_reg[30]/C
+  -------------------------------------------------------------------    -------------------
+                         FDRE (Prop_fdre_C_Q)         0.478     2.932 r  uut_ff_stage4/data0_reg_reg[30]/Q
+                         net (fo=2, unplaced)         0.675     3.607    uut_ff_stage4$D_OUT[30]
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                                                                       r  final_result__OBUF[8]_inst_i_2/S[1]
                          CARRY4 (Prop_carry4_S[1]_CO[3])
                                                       0.828     4.435 r  final_result__OBUF[8]_inst_i_2/CO[3]
@@ -3734,7 +4432,11 @@ Slack:                    inf
                                                                       r  final_result__OBUF[60]_inst_i_2/S[1]
                          CARRY4 (Prop_carry4_S[1]_O[2])
                                                       0.578     7.623 r  final_result__OBUF[60]_inst_i_2/O[2]
+<<<<<<< HEAD
                          net (fo=2, unplaced)         0.679     8.302    IF_NOT_uut_ff_stage4_first__90_BIT_84_24_25_AN_ETC___d432[2]
+=======
+                         net (fo=2, unplaced)         0.679     8.302    IF_NOT_uut_ff_stage4_first__95_BIT_81_21_22_AN_ETC___d429[2]
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                                                                       r  final_result__OBUF[65]_inst_i_4/I0
                          LUT4 (Prop_lut4_I0_O)        0.301     8.603 r  final_result__OBUF[65]_inst_i_4/O
                          net (fo=1, unplaced)         0.941     9.544    final_result__OBUF[65]_inst_i_4_n_0
@@ -3742,7 +4444,11 @@ Slack:                    inf
                          LUT6 (Prop_lut6_I5_O)        0.124     9.668 r  final_result__OBUF[65]_inst_i_2/O
                          net (fo=11, unplaced)        0.495    10.163    final_result__OBUF[65]_inst_i_2_n_0
                                                                       r  final_result__OBUF[55]_inst_i_4/I0
+<<<<<<< HEAD
                          LUT6 (Prop_lut6_I0_O)        0.124    10.287 r  final_result__OBUF[55]_inst_i_4/O
+=======
+                         LUT2 (Prop_lut2_I0_O)        0.124    10.287 r  final_result__OBUF[55]_inst_i_4/O
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          net (fo=53, unplaced)        0.533    10.820    final_result__OBUF[55]_inst_i_4_n_0
                                                                       r  final_result__OBUF[17]_inst_i_1/I3
                          LUT6 (Prop_lut6_I3_O)        0.124    10.944 r  final_result__OBUF[17]_inst_i_1/O
@@ -3754,14 +4460,22 @@ Slack:                    inf
   -------------------------------------------------------------------    -------------------
 
 Slack:                    inf
+<<<<<<< HEAD
   Source:                 uut_ff_stage4/data0_reg_reg[33]/C
+=======
+  Source:                 uut_ff_stage4/data0_reg_reg[30]/C
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                             (rising edge-triggered cell FDRE clocked by CLK  {rise@0.000ns fall@5.000ns period=10.000ns})
   Destination:            final_result_[18]
                             (output port)
   Path Group:             (none)
   Path Type:              Max at Slow Process Corner
   Data Path Delay:        11.927ns  (logic 7.106ns (59.580%)  route 4.821ns (40.420%))
+<<<<<<< HEAD
   Logic Levels:           21  (CARRY4=15 LUT4=1 LUT5=1 LUT6=3 OBUF=1)
+=======
+  Logic Levels:           21  (CARRY4=15 LUT2=1 LUT4=1 LUT5=1 LUT6=2 OBUF=1)
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
   Clock Uncertainty:      0.025ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
     Total System Jitter     (TSJ):    0.050ns
     Total Input Jitter      (TIJ):    0.000ns
@@ -3778,11 +4492,19 @@ Slack:                    inf
                          net (fo=1, unplaced)         0.803     1.774    CLK_IBUF
                                                                       r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.096     1.870 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.584     2.454    uut_ff_stage4/CLK
                          FDRE                                         r  uut_ff_stage4/data0_reg_reg[33]/C
   -------------------------------------------------------------------    -------------------
                          FDRE (Prop_fdre_C_Q)         0.478     2.932 r  uut_ff_stage4/data0_reg_reg[33]/Q
                          net (fo=2, unplaced)         0.675     3.607    uut_ff_stage4$D_OUT[33]
+=======
+                         net (fo=909, unplaced)       0.584     2.454    uut_ff_stage4/CLK
+                         FDRE                                         r  uut_ff_stage4/data0_reg_reg[30]/C
+  -------------------------------------------------------------------    -------------------
+                         FDRE (Prop_fdre_C_Q)         0.478     2.932 r  uut_ff_stage4/data0_reg_reg[30]/Q
+                         net (fo=2, unplaced)         0.675     3.607    uut_ff_stage4$D_OUT[30]
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                                                                       r  final_result__OBUF[8]_inst_i_2/S[1]
                          CARRY4 (Prop_carry4_S[1]_CO[3])
                                                       0.828     4.435 r  final_result__OBUF[8]_inst_i_2/CO[3]
@@ -3845,7 +4567,11 @@ Slack:                    inf
                                                                       r  final_result__OBUF[60]_inst_i_2/S[1]
                          CARRY4 (Prop_carry4_S[1]_O[2])
                                                       0.578     7.623 r  final_result__OBUF[60]_inst_i_2/O[2]
+<<<<<<< HEAD
                          net (fo=2, unplaced)         0.679     8.302    IF_NOT_uut_ff_stage4_first__90_BIT_84_24_25_AN_ETC___d432[2]
+=======
+                         net (fo=2, unplaced)         0.679     8.302    IF_NOT_uut_ff_stage4_first__95_BIT_81_21_22_AN_ETC___d429[2]
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                                                                       r  final_result__OBUF[65]_inst_i_4/I0
                          LUT4 (Prop_lut4_I0_O)        0.301     8.603 r  final_result__OBUF[65]_inst_i_4/O
                          net (fo=1, unplaced)         0.941     9.544    final_result__OBUF[65]_inst_i_4_n_0
@@ -3853,7 +4579,11 @@ Slack:                    inf
                          LUT6 (Prop_lut6_I5_O)        0.124     9.668 r  final_result__OBUF[65]_inst_i_2/O
                          net (fo=11, unplaced)        0.495    10.163    final_result__OBUF[65]_inst_i_2_n_0
                                                                       r  final_result__OBUF[55]_inst_i_4/I0
+<<<<<<< HEAD
                          LUT6 (Prop_lut6_I0_O)        0.124    10.287 r  final_result__OBUF[55]_inst_i_4/O
+=======
+                         LUT2 (Prop_lut2_I0_O)        0.124    10.287 r  final_result__OBUF[55]_inst_i_4/O
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          net (fo=53, unplaced)        0.533    10.820    final_result__OBUF[55]_inst_i_4_n_0
                                                                       r  final_result__OBUF[18]_inst_i_1/I3
                          LUT6 (Prop_lut6_I3_O)        0.124    10.944 r  final_result__OBUF[18]_inst_i_1/O
@@ -3895,7 +4625,11 @@ Slack:                    inf
                          net (fo=1, unplaced)         0.338     0.539    CLK_IBUF
                                                                       r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.026     0.565 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.114     0.679    uut_ff_stage1/CLK
+=======
+                         net (fo=909, unplaced)       0.114     0.679    uut_ff_stage1/CLK
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          FDRE                                         r  uut_ff_stage1/full_reg_reg/C
   -------------------------------------------------------------------    -------------------
                          FDRE (Prop_fdre_C_Q)         0.147     0.826 r  uut_ff_stage1/full_reg_reg/Q
@@ -3931,11 +4665,19 @@ Slack:                    inf
                          net (fo=1, unplaced)         0.338     0.539    CLK_IBUF
                                                                       r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.026     0.565 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.114     0.679    uut_ff_stage4/CLK
                          FDRE                                         r  uut_ff_stage4/empty_reg_reg/C
   -------------------------------------------------------------------    -------------------
                          FDRE (Prop_fdre_C_Q)         0.147     0.826 r  uut_ff_stage4/empty_reg_reg/Q
                          net (fo=84, unplaced)        0.338     1.164    RDY_final_result__OBUF
+=======
+                         net (fo=909, unplaced)       0.114     0.679    uut_ff_stage4/CLK
+                         FDRE                                         r  uut_ff_stage4/empty_reg_reg/C
+  -------------------------------------------------------------------    -------------------
+                         FDRE (Prop_fdre_C_Q)         0.147     0.826 r  uut_ff_stage4/empty_reg_reg/Q
+                         net (fo=81, unplaced)        0.338     1.164    RDY_final_result__OBUF
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                                                                       r  RDY_final_result__OBUF_inst/I
                          OBUF (Prop_obuf_I_O)         1.205     2.369 r  RDY_final_result__OBUF_inst/O
                          net (fo=0)                   0.000     2.369    RDY_final_result_
@@ -3943,7 +4685,11 @@ Slack:                    inf
   -------------------------------------------------------------------    -------------------
 
 Slack:                    inf
+<<<<<<< HEAD
   Source:                 uut_ff_stage4/data0_reg_reg[5]/C
+=======
+  Source:                 uut_ff_stage4/data0_reg_reg[2]/C
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                             (rising edge-triggered cell FDRE clocked by CLK  {rise@0.000ns fall@5.000ns period=10.000ns})
   Destination:            final_result_[4]
                             (output port)
@@ -3967,11 +4713,19 @@ Slack:                    inf
                          net (fo=1, unplaced)         0.338     0.539    CLK_IBUF
                                                                       r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.026     0.565 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.114     0.679    uut_ff_stage4/CLK
                          FDRE                                         r  uut_ff_stage4/data0_reg_reg[5]/C
   -------------------------------------------------------------------    -------------------
                          FDRE (Prop_fdre_C_Q)         0.147     0.826 f  uut_ff_stage4/data0_reg_reg[5]/Q
                          net (fo=2, unplaced)         0.136     0.961    uut_ff_stage4$D_OUT[5]
+=======
+                         net (fo=909, unplaced)       0.114     0.679    uut_ff_stage4/CLK
+                         FDRE                                         r  uut_ff_stage4/data0_reg_reg[2]/C
+  -------------------------------------------------------------------    -------------------
+                         FDRE (Prop_fdre_C_Q)         0.147     0.826 f  uut_ff_stage4/data0_reg_reg[2]/Q
+                         net (fo=2, unplaced)         0.136     0.961    uut_ff_stage4$D_OUT[2]
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                                                                       f  final_result__OBUF[4]_inst_i_1/I2
                          LUT3 (Prop_lut3_I2_O)        0.098     1.059 r  final_result__OBUF[4]_inst_i_1/O
                          net (fo=1, unplaced)         0.338     1.398    final_result__OBUF[4]
@@ -4006,6 +4760,7 @@ Slack:                    inf
                          net (fo=1, unplaced)         0.338     0.539    CLK_IBUF
                                                                       r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.026     0.565 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.114     0.679    uut_ff_stage4/CLK
                          FDRE                                         r  uut_ff_stage4/data0_reg_reg[13]/C
   -------------------------------------------------------------------    -------------------
@@ -4022,12 +4777,34 @@ Slack:                    inf
 
 Slack:                    inf
   Source:                 uut_ff_stage4/data0_reg_reg[13]/C
+=======
+                         net (fo=909, unplaced)       0.114     0.679    uut_ff_stage4/CLK
+                         FDRE                                         r  uut_ff_stage4/data0_reg_reg[10]/C
+  -------------------------------------------------------------------    -------------------
+                         FDRE (Prop_fdre_C_Q)         0.147     0.826 f  uut_ff_stage4/data0_reg_reg[10]/Q
+                         net (fo=10, unplaced)        0.149     0.975    uut_ff_stage4$D_OUT[10]
+                                                                      f  final_result__OBUF[1]_inst_i_1/I4
+                         LUT5 (Prop_lut5_I4_O)        0.098     1.073 r  final_result__OBUF[1]_inst_i_1/O
+                         net (fo=1, unplaced)         0.338     1.411    final_result__OBUF[1]
+                                                                      r  final_result__OBUF[1]_inst/I
+                         OBUF (Prop_obuf_I_O)         1.151     2.562 r  final_result__OBUF[1]_inst/O
+                         net (fo=0)                   0.000     2.562    final_result_[1]
+                                                                      r  final_result_[1] (OUT)
+  -------------------------------------------------------------------    -------------------
+
+Slack:                    inf
+  Source:                 uut_ff_stage4/data0_reg_reg[10]/C
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                             (rising edge-triggered cell FDRE clocked by CLK  {rise@0.000ns fall@5.000ns period=10.000ns})
   Destination:            final_result_[68]
                             (output port)
   Path Group:             (none)
   Path Type:              Min at Fast Process Corner
+<<<<<<< HEAD
   Data Path Delay:        1.893ns  (logic 1.399ns (73.885%)  route 0.494ns (26.115%))
+=======
+  Data Path Delay:        1.884ns  (logic 1.396ns (74.108%)  route 0.488ns (25.892%))
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
   Logic Levels:           2  (LUT3=1 OBUF=1)
   Clock Uncertainty:      0.025ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
     Total System Jitter     (TSJ):    0.050ns
@@ -4045,6 +4822,7 @@ Slack:                    inf
                          net (fo=1, unplaced)         0.338     0.539    CLK_IBUF
                                                                       r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.026     0.565 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.114     0.679    uut_ff_stage4/CLK
                          FDRE                                         r  uut_ff_stage4/data0_reg_reg[13]/C
   -------------------------------------------------------------------    -------------------
@@ -4061,13 +4839,36 @@ Slack:                    inf
 
 Slack:                    inf
   Source:                 uut_ff_stage4/data0_reg_reg[2]/C
+=======
+                         net (fo=909, unplaced)       0.114     0.679    uut_ff_stage4/CLK
+                         FDRE                                         r  uut_ff_stage4/data0_reg_reg[10]/C
+  -------------------------------------------------------------------    -------------------
+                         FDRE (Prop_fdre_C_Q)         0.147     0.826 f  uut_ff_stage4/data0_reg_reg[10]/Q
+                         net (fo=10, unplaced)        0.149     0.975    uut_ff_stage4$D_OUT[10]
+                                                                      f  final_result__OBUF[3]_inst_i_1/I2
+                         LUT3 (Prop_lut3_I2_O)        0.098     1.073 r  final_result__OBUF[3]_inst_i_1/O
+                         net (fo=1, unplaced)         0.338     1.411    final_result__OBUF[3]
+                                                                      r  final_result__OBUF[3]_inst/I
+                         OBUF (Prop_obuf_I_O)         1.151     2.562 r  final_result__OBUF[3]_inst/O
+                         net (fo=0)                   0.000     2.562    final_result_[3]
+                                                                      r  final_result_[3] (OUT)
+  -------------------------------------------------------------------    -------------------
+
+Slack:                    inf
+  Source:                 uut_ff_stage4/data0_reg_reg[10]/C
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                             (rising edge-triggered cell FDRE clocked by CLK  {rise@0.000ns fall@5.000ns period=10.000ns})
   Destination:            final_result_[1]
                             (output port)
   Path Group:             (none)
   Path Type:              Min at Fast Process Corner
+<<<<<<< HEAD
   Data Path Delay:        1.944ns  (logic 1.396ns (71.795%)  route 0.548ns (28.205%))
   Logic Levels:           2  (LUT6=1 OBUF=1)
+=======
+  Data Path Delay:        1.887ns  (logic 1.399ns (74.150%)  route 0.488ns (25.850%))
+  Logic Levels:           2  (LUT3=1 OBUF=1)
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
   Clock Uncertainty:      0.025ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
     Total System Jitter     (TSJ):    0.050ns
     Total Input Jitter      (TIJ):    0.000ns
@@ -4084,6 +4885,7 @@ Slack:                    inf
                          net (fo=1, unplaced)         0.338     0.539    CLK_IBUF
                                                                       r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.026     0.565 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.114     0.679    uut_ff_stage4/CLK
                          FDRE                                         r  uut_ff_stage4/data0_reg_reg[2]/C
   -------------------------------------------------------------------    -------------------
@@ -4096,6 +4898,20 @@ Slack:                    inf
                          OBUF (Prop_obuf_I_O)         1.151     2.623 r  final_result__OBUF[1]_inst/O
                          net (fo=0)                   0.000     2.623    final_result_[1]
                                                                       r  final_result_[1] (OUT)
+=======
+                         net (fo=909, unplaced)       0.114     0.679    uut_ff_stage4/CLK
+                         FDRE                                         r  uut_ff_stage4/data0_reg_reg[10]/C
+  -------------------------------------------------------------------    -------------------
+                         FDRE (Prop_fdre_C_Q)         0.147     0.826 f  uut_ff_stage4/data0_reg_reg[10]/Q
+                         net (fo=10, unplaced)        0.149     0.975    uut_ff_stage4$D_OUT[10]
+                                                                      f  final_result__OBUF[68]_inst_i_1/I2
+                         LUT3 (Prop_lut3_I2_O)        0.101     1.076 r  final_result__OBUF[68]_inst_i_1/O
+                         net (fo=1, unplaced)         0.338     1.414    final_result__OBUF[68]
+                                                                      r  final_result__OBUF[68]_inst/I
+                         OBUF (Prop_obuf_I_O)         1.151     2.565 r  final_result__OBUF[68]_inst/O
+                         net (fo=0)                   0.000     2.565    final_result_[68]
+                                                                      r  final_result_[68] (OUT)
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
   -------------------------------------------------------------------    -------------------
 
 Slack:                    inf
@@ -4123,6 +4939,7 @@ Slack:                    inf
                          net (fo=1, unplaced)         0.338     0.539    CLK_IBUF
                                                                       r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.026     0.565 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.114     0.679    uut_ff_stage4/CLK
                          FDRE                                         r  uut_ff_stage4/data0_reg_reg[13]/C
   -------------------------------------------------------------------    -------------------
@@ -4134,17 +4951,38 @@ Slack:                    inf
                                                                       r  final_result__OBUF[2]_inst/I
                          OBUF (Prop_obuf_I_O)         1.151     2.636 r  final_result__OBUF[2]_inst/O
                          net (fo=0)                   0.000     2.636    final_result_[2]
+=======
+                         net (fo=909, unplaced)       0.114     0.679    uut_ff_stage4/CLK
+                         FDRE                                         r  uut_ff_stage4/data0_reg_reg[10]/C
+  -------------------------------------------------------------------    -------------------
+                         FDRE (Prop_fdre_C_Q)         0.147     0.826 f  uut_ff_stage4/data0_reg_reg[10]/Q
+                         net (fo=10, unplaced)        0.216     1.042    uut_ff_stage4$D_OUT[10]
+                                                                      f  final_result__OBUF[2]_inst_i_1/I4
+                         LUT5 (Prop_lut5_I4_O)        0.098     1.140 r  final_result__OBUF[2]_inst_i_1/O
+                         net (fo=1, unplaced)         0.338     1.478    final_result__OBUF[2]
+                                                                      r  final_result__OBUF[2]_inst/I
+                         OBUF (Prop_obuf_I_O)         1.151     2.629 r  final_result__OBUF[2]_inst/O
+                         net (fo=0)                   0.000     2.629    final_result_[2]
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                                                                       r  final_result_[2] (OUT)
   -------------------------------------------------------------------    -------------------
 
 Slack:                    inf
+<<<<<<< HEAD
   Source:                 uut_ff_stage4/data0_reg_reg[13]/C
+=======
+  Source:                 uut_ff_stage4/data0_reg_reg[10]/C
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                             (rising edge-triggered cell FDRE clocked by CLK  {rise@0.000ns fall@5.000ns period=10.000ns})
   Destination:            final_result_[56]
                             (output port)
   Path Group:             (none)
   Path Type:              Min at Fast Process Corner
+<<<<<<< HEAD
   Data Path Delay:        1.958ns  (logic 1.397ns (71.330%)  route 0.561ns (28.670%))
+=======
+  Data Path Delay:        1.952ns  (logic 1.397ns (71.577%)  route 0.555ns (28.423%))
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
   Logic Levels:           2  (LUT5=1 OBUF=1)
   Clock Uncertainty:      0.025ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
     Total System Jitter     (TSJ):    0.050ns
@@ -4162,6 +5000,7 @@ Slack:                    inf
                          net (fo=1, unplaced)         0.338     0.539    CLK_IBUF
                                                                       r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.026     0.565 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.114     0.679    uut_ff_stage4/CLK
                          FDRE                                         r  uut_ff_stage4/data0_reg_reg[13]/C
   -------------------------------------------------------------------    -------------------
@@ -4173,18 +5012,40 @@ Slack:                    inf
                                                                       r  final_result__OBUF[56]_inst/I
                          OBUF (Prop_obuf_I_O)         1.151     2.637 r  final_result__OBUF[56]_inst/O
                          net (fo=0)                   0.000     2.637    final_result_[56]
+=======
+                         net (fo=909, unplaced)       0.114     0.679    uut_ff_stage4/CLK
+                         FDRE                                         r  uut_ff_stage4/data0_reg_reg[10]/C
+  -------------------------------------------------------------------    -------------------
+                         FDRE (Prop_fdre_C_Q)         0.147     0.826 r  uut_ff_stage4/data0_reg_reg[10]/Q
+                         net (fo=10, unplaced)        0.216     1.042    uut_ff_stage4$D_OUT[10]
+                                                                      r  final_result__OBUF[56]_inst_i_1/I3
+                         LUT5 (Prop_lut5_I3_O)        0.099     1.141 r  final_result__OBUF[56]_inst_i_1/O
+                         net (fo=1, unplaced)         0.338     1.479    final_result__OBUF[56]
+                                                                      r  final_result__OBUF[56]_inst/I
+                         OBUF (Prop_obuf_I_O)         1.151     2.630 r  final_result__OBUF[56]_inst/O
+                         net (fo=0)                   0.000     2.630    final_result_[56]
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                                                                       r  final_result_[56] (OUT)
   -------------------------------------------------------------------    -------------------
 
 Slack:                    inf
+<<<<<<< HEAD
   Source:                 uut_ff_stage4/data0_reg_reg[1]/C
+=======
+  Source:                 uut_ff_stage4/data0_reg_reg[8]/C
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                             (rising edge-triggered cell FDRE clocked by CLK  {rise@0.000ns fall@5.000ns period=10.000ns})
   Destination:            final_result_[0]
                             (output port)
   Path Group:             (none)
   Path Type:              Min at Fast Process Corner
+<<<<<<< HEAD
   Data Path Delay:        2.027ns  (logic 1.396ns (68.868%)  route 0.631ns (31.132%))
   Logic Levels:           2  (LUT6=1 OBUF=1)
+=======
+  Data Path Delay:        2.037ns  (logic 1.396ns (68.512%)  route 0.642ns (31.488%))
+  Logic Levels:           2  (LUT4=1 OBUF=1)
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
   Clock Uncertainty:      0.025ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
     Total System Jitter     (TSJ):    0.050ns
     Total Input Jitter      (TIJ):    0.000ns
@@ -4201,6 +5062,7 @@ Slack:                    inf
                          net (fo=1, unplaced)         0.338     0.539    CLK_IBUF
                                                                       r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.026     0.565 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.114     0.679    uut_ff_stage4/CLK
                          FDRE                                         r  uut_ff_stage4/data0_reg_reg[1]/C
   -------------------------------------------------------------------    -------------------
@@ -4212,10 +5074,24 @@ Slack:                    inf
                                                                       r  final_result__OBUF[0]_inst/I
                          OBUF (Prop_obuf_I_O)         1.151     2.706 r  final_result__OBUF[0]_inst/O
                          net (fo=0)                   0.000     2.706    final_result_[0]
+=======
+                         net (fo=909, unplaced)       0.114     0.679    uut_ff_stage4/CLK
+                         FDRE                                         r  uut_ff_stage4/data0_reg_reg[8]/C
+  -------------------------------------------------------------------    -------------------
+                         FDRE (Prop_fdre_C_Q)         0.147     0.826 r  uut_ff_stage4/data0_reg_reg[8]/Q
+                         net (fo=15, unplaced)        0.303     1.129    uut_ff_stage4$D_OUT[8]
+                                                                      r  final_result__OBUF[0]_inst_i_1/I1
+                         LUT4 (Prop_lut4_I1_O)        0.098     1.227 r  final_result__OBUF[0]_inst_i_1/O
+                         net (fo=1, unplaced)         0.338     1.565    final_result__OBUF[0]
+                                                                      r  final_result__OBUF[0]_inst/I
+                         OBUF (Prop_obuf_I_O)         1.151     2.716 r  final_result__OBUF[0]_inst/O
+                         net (fo=0)                   0.000     2.716    final_result_[0]
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                                                                       r  final_result_[0] (OUT)
   -------------------------------------------------------------------    -------------------
 
 Slack:                    inf
+<<<<<<< HEAD
   Source:                 uut_ff_stage4/data0_reg_reg[12]/C
                             (rising edge-triggered cell FDRE clocked by CLK  {rise@0.000ns fall@5.000ns period=10.000ns})
   Destination:            final_result_[67]
@@ -4224,6 +5100,16 @@ Slack:                    inf
   Path Type:              Min at Fast Process Corner
   Data Path Delay:        2.038ns  (logic 1.396ns (68.498%)  route 0.642ns (31.502%))
   Logic Levels:           2  (LUT6=1 OBUF=1)
+=======
+  Source:                 uut_ff_stage4/data0_reg_reg[8]/C
+                            (rising edge-triggered cell FDRE clocked by CLK  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            final_result_[66]
+                            (output port)
+  Path Group:             (none)
+  Path Type:              Min at Fast Process Corner
+  Data Path Delay:        2.037ns  (logic 1.396ns (68.512%)  route 0.642ns (31.488%))
+  Logic Levels:           2  (LUT5=1 OBUF=1)
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
   Clock Uncertainty:      0.025ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
     Total System Jitter     (TSJ):    0.050ns
     Total Input Jitter      (TIJ):    0.000ns
@@ -4240,6 +5126,7 @@ Slack:                    inf
                          net (fo=1, unplaced)         0.338     0.539    CLK_IBUF
                                                                       r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.026     0.565 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.114     0.679    uut_ff_stage4/CLK
                          FDRE                                         r  uut_ff_stage4/data0_reg_reg[12]/C
   -------------------------------------------------------------------    -------------------
@@ -4252,6 +5139,20 @@ Slack:                    inf
                          OBUF (Prop_obuf_I_O)         1.151     2.716 r  final_result__OBUF[67]_inst/O
                          net (fo=0)                   0.000     2.716    final_result_[67]
                                                                       r  final_result_[67] (OUT)
+=======
+                         net (fo=909, unplaced)       0.114     0.679    uut_ff_stage4/CLK
+                         FDRE                                         r  uut_ff_stage4/data0_reg_reg[8]/C
+  -------------------------------------------------------------------    -------------------
+                         FDRE (Prop_fdre_C_Q)         0.147     0.826 f  uut_ff_stage4/data0_reg_reg[8]/Q
+                         net (fo=15, unplaced)        0.303     1.129    uut_ff_stage4$D_OUT[8]
+                                                                      f  final_result__OBUF[66]_inst_i_1/I3
+                         LUT5 (Prop_lut5_I3_O)        0.098     1.227 r  final_result__OBUF[66]_inst_i_1/O
+                         net (fo=1, unplaced)         0.338     1.565    final_result__OBUF[66]
+                                                                      r  final_result__OBUF[66]_inst/I
+                         OBUF (Prop_obuf_I_O)         1.151     2.716 r  final_result__OBUF[66]_inst/O
+                         net (fo=0)                   0.000     2.716    final_result_[66]
+                                                                      r  final_result_[66] (OUT)
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
   -------------------------------------------------------------------    -------------------
 
 
@@ -4341,7 +5242,11 @@ Slack:                    inf
                          net (fo=1, unplaced)         0.763     1.601    CLK_IBUF
                          BUFG                                         r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.091     1.692 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.439     2.131    uut_ff_stage1/CLK
+=======
+                         net (fo=909, unplaced)       0.439     2.131    uut_ff_stage1/CLK
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          FDRE                                         r  uut_ff_stage1/data0_reg_reg[126]/C
 
 Slack:                    inf
@@ -4415,7 +5320,11 @@ Slack:                    inf
                          net (fo=1, unplaced)         0.763     1.601    CLK_IBUF
                          BUFG                                         r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.091     1.692 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.439     2.131    uut_ff_stage1/CLK
+=======
+                         net (fo=909, unplaced)       0.439     2.131    uut_ff_stage1/CLK
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          FDRE                                         r  uut_ff_stage1/data0_reg_reg[125]/C
 
 Slack:                    inf
@@ -4485,7 +5394,11 @@ Slack:                    inf
                          net (fo=1, unplaced)         0.763     1.601    CLK_IBUF
                          BUFG                                         r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.091     1.692 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.439     2.131    uut_ff_stage1/CLK
+=======
+                         net (fo=909, unplaced)       0.439     2.131    uut_ff_stage1/CLK
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          FDRE                                         r  uut_ff_stage1/data0_reg_reg[122]/C
 
 Slack:                    inf
@@ -4563,7 +5476,11 @@ Slack:                    inf
                          net (fo=1, unplaced)         0.763     1.601    CLK_IBUF
                          BUFG                                         r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.091     1.692 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.439     2.131    uut_ff_stage1/CLK
+=======
+                         net (fo=909, unplaced)       0.439     2.131    uut_ff_stage1/CLK
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          FDRE                                         r  uut_ff_stage1/data0_reg_reg[127]/C
 
 Slack:                    inf
@@ -4637,7 +5554,11 @@ Slack:                    inf
                          net (fo=1, unplaced)         0.763     1.601    CLK_IBUF
                          BUFG                                         r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.091     1.692 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.439     2.131    uut_ff_stage1/CLK
+=======
+                         net (fo=909, unplaced)       0.439     2.131    uut_ff_stage1/CLK
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          FDRE                                         r  uut_ff_stage1/data0_reg_reg[124]/C
 
 Slack:                    inf
@@ -4707,7 +5628,11 @@ Slack:                    inf
                          net (fo=1, unplaced)         0.763     1.601    CLK_IBUF
                          BUFG                                         r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.091     1.692 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.439     2.131    uut_ff_stage1/CLK
+=======
+                         net (fo=909, unplaced)       0.439     2.131    uut_ff_stage1/CLK
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          FDRE                                         r  uut_ff_stage1/data0_reg_reg[121]/C
 
 Slack:                    inf
@@ -4781,7 +5706,11 @@ Slack:                    inf
                          net (fo=1, unplaced)         0.763     1.601    CLK_IBUF
                          BUFG                                         r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.091     1.692 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.439     2.131    uut_ff_stage1/CLK
+=======
+                         net (fo=909, unplaced)       0.439     2.131    uut_ff_stage1/CLK
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          FDRE                                         r  uut_ff_stage1/data0_reg_reg[123]/C
 
 Slack:                    inf
@@ -4851,7 +5780,11 @@ Slack:                    inf
                          net (fo=1, unplaced)         0.763     1.601    CLK_IBUF
                          BUFG                                         r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.091     1.692 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.439     2.131    uut_ff_stage1/CLK
+=======
+                         net (fo=909, unplaced)       0.439     2.131    uut_ff_stage1/CLK
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          FDRE                                         r  uut_ff_stage1/data0_reg_reg[120]/C
 
 Slack:                    inf
@@ -4917,7 +5850,11 @@ Slack:                    inf
                          net (fo=1, unplaced)         0.763     1.601    CLK_IBUF
                          BUFG                                         r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.091     1.692 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.439     2.131    uut_ff_stage1/CLK
+=======
+                         net (fo=909, unplaced)       0.439     2.131    uut_ff_stage1/CLK
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          FDRE                                         r  uut_ff_stage1/data0_reg_reg[118]/C
 
 Slack:                    inf
@@ -4987,7 +5924,11 @@ Slack:                    inf
                          net (fo=1, unplaced)         0.763     1.601    CLK_IBUF
                          BUFG                                         r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.091     1.692 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.439     2.131    uut_ff_stage1/CLK
+=======
+                         net (fo=909, unplaced)       0.439     2.131    uut_ff_stage1/CLK
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          FDRE                                         r  uut_ff_stage1/data0_reg_reg[119]/C
 
 
@@ -5028,7 +5969,11 @@ Slack:                    inf
                          net (fo=1, unplaced)         0.356     0.745    CLK_IBUF
                          BUFG                                         r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.029     0.774 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.259     1.033    uut_ff_stage1/CLK
+=======
+                         net (fo=909, unplaced)       0.259     1.033    uut_ff_stage1/CLK
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          FDRE                                         r  uut_ff_stage1/data1_reg_reg[1]/C
 
 Slack:                    inf
@@ -5063,7 +6008,11 @@ Slack:                    inf
                          net (fo=1, unplaced)         0.356     0.745    CLK_IBUF
                          BUFG                                         r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.029     0.774 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.259     1.033    uut_ff_stage1/CLK
+=======
+                         net (fo=909, unplaced)       0.259     1.033    uut_ff_stage1/CLK
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          FDRE                                         r  uut_ff_stage1/data1_reg_reg[2]/C
 
 Slack:                    inf
@@ -5098,7 +6047,11 @@ Slack:                    inf
                          net (fo=1, unplaced)         0.356     0.745    CLK_IBUF
                          BUFG                                         r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.029     0.774 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.259     1.033    uut_ff_stage1/CLK
+=======
+                         net (fo=909, unplaced)       0.259     1.033    uut_ff_stage1/CLK
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          FDRE                                         r  uut_ff_stage1/data1_reg_reg[3]/C
 
 Slack:                    inf
@@ -5133,7 +6086,11 @@ Slack:                    inf
                          net (fo=1, unplaced)         0.356     0.745    CLK_IBUF
                          BUFG                                         r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.029     0.774 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.259     1.033    uut_ff_stage1/CLK
+=======
+                         net (fo=909, unplaced)       0.259     1.033    uut_ff_stage1/CLK
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          FDRE                                         r  uut_ff_stage1/data1_reg_reg[8]/C
 
 Slack:                    inf
@@ -5171,7 +6128,11 @@ Slack:                    inf
                          net (fo=1, unplaced)         0.356     0.745    CLK_IBUF
                          BUFG                                         r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.029     0.774 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.259     1.033    uut_ff_stage1/CLK
+=======
+                         net (fo=909, unplaced)       0.259     1.033    uut_ff_stage1/CLK
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          FDRE                                         r  uut_ff_stage1/data1_reg_reg[0]/C
 
 Slack:                    inf
@@ -5209,7 +6170,11 @@ Slack:                    inf
                          net (fo=1, unplaced)         0.356     0.745    CLK_IBUF
                          BUFG                                         r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.029     0.774 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.259     1.033    uut_ff_stage1/CLK
+=======
+                         net (fo=909, unplaced)       0.259     1.033    uut_ff_stage1/CLK
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          FDRE                                         r  uut_ff_stage1/data1_reg_reg[4]/C
 
 Slack:                    inf
@@ -5247,7 +6212,11 @@ Slack:                    inf
                          net (fo=1, unplaced)         0.356     0.745    CLK_IBUF
                          BUFG                                         r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.029     0.774 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.259     1.033    uut_ff_stage1/CLK
+=======
+                         net (fo=909, unplaced)       0.259     1.033    uut_ff_stage1/CLK
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          FDRE                                         r  uut_ff_stage1/data1_reg_reg[6]/C
 
 Slack:                    inf
@@ -5285,7 +6254,11 @@ Slack:                    inf
                          net (fo=1, unplaced)         0.356     0.745    CLK_IBUF
                          BUFG                                         r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.029     0.774 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.259     1.033    uut_ff_stage3/CLK
+=======
+                         net (fo=909, unplaced)       0.259     1.033    uut_ff_stage3/CLK
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          FDRE                                         r  uut_ff_stage3/full_reg_reg/C
 
 Slack:                    inf
@@ -5323,7 +6296,11 @@ Slack:                    inf
                          net (fo=1, unplaced)         0.356     0.745    CLK_IBUF
                          BUFG                                         r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.029     0.774 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.259     1.033    uut_ff_stage4/CLK
+=======
+                         net (fo=909, unplaced)       0.259     1.033    uut_ff_stage4/CLK
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          FDRE                                         r  uut_ff_stage4/full_reg_reg/C
 
 Slack:                    inf
@@ -5361,7 +6338,11 @@ Slack:                    inf
                          net (fo=1, unplaced)         0.356     0.745    CLK_IBUF
                          BUFG                                         r  CLK_IBUF_BUFG_inst/I
                          BUFG (Prop_bufg_I_O)         0.029     0.774 r  CLK_IBUF_BUFG_inst/O
+<<<<<<< HEAD
                          net (fo=915, unplaced)       0.259     1.033    uut_ff_stage2/CLK
+=======
+                         net (fo=909, unplaced)       0.259     1.033    uut_ff_stage2/CLK
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
                          FDRE                                         r  uut_ff_stage2/empty_reg_reg/C
 
 

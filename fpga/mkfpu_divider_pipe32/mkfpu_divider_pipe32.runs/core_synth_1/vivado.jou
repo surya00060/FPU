@@ -2,8 +2,13 @@
 # Vivado v2016.1 (64-bit)
 # SW Build 1538259 on Fri Apr  8 15:45:23 MDT 2016
 # IP Build 1537824 on Fri Apr  8 04:28:57 MDT 2016
+<<<<<<< HEAD
 # Start of session at: Tue Jul 31 19:11:08 2018
 # Process ID: 29258
+=======
+# Start of session at: Tue Jul 31 18:29:05 2018
+# Process ID: 26291
+>>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
 # Current directory: /home/surya/Desktop/FPU/fpga/mkfpu_divider_pipe32/mkfpu_divider_pipe32.runs/core_synth_1
 # Command line: vivado -log mkfpu_divider_pipe32.vds -mode batch -messageDb vivado.pb -notrace -source mkfpu_divider_pipe32.tcl
 # Log file: /home/surya/Desktop/FPU/fpga/mkfpu_divider_pipe32/mkfpu_divider_pipe32.runs/core_synth_1/mkfpu_divider_pipe32.vds
