@@ -63,7 +63,23 @@ typedef struct{
 }Stage2_data_type  deriving (Bits,Eq);
 
 typedef struct{
-
+    Bit#(1) sign2;
+    Bit#(1) sign3;
+    Bit#(13) exponent2;
+    Bit#(13) exponent3;
+    Bit#(TAdd#(TMul#(52,3),4)) mantissa2;
+    Bit#(TAdd#(TMul#(52,3),4)) mantissa3;
+    bit operation;
+    Bit#(5) add_flags;
+    Bit#(3) lv_rounding_mode;
+    bit lv_result_is_invalid;
+    Bit#(2) lv_result_is_infinity;
+    Bit#(2) lv_result_is_zero;
+    bit lv_product_overflow;
+    bit lv_product_underflow;
+    bit quiet_nan_two;
+    bit quiet_nan_three;
+    bit lv_product_is_zero;
 }Stage3_data_type deriving (Bits , Eq) ;
 
 typedef struct{
@@ -140,6 +156,7 @@ module mkfpu_fm_add_sub_pipe_64(Ifc_fpu_fm_add_sub_pipe_64)
 
     Wire#(Floating_output#(64))           ff_final_out        <-   mkWire();   
     FIFOF#(Input_data_type)               ff_input            <-   mkFIFOF();
+    FIFOF#(Stage3_data_type)              ff_stage3           <-   mkFIFOF();
     FIFOF#(Stage2_data_type)              ff_stage2           <-   mkFIFOF();
     FIFOF#(Stage4_data_type)              ff_stage4           <-   mkFIFOF();
     FIFOF#(Stage5_data_type)              ff_stage5           <-   mkFIFOF();

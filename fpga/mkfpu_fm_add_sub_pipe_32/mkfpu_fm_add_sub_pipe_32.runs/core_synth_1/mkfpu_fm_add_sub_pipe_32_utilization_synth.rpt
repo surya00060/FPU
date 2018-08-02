@@ -1,7 +1,7 @@
 Copyright 1986-2016 Xilinx, Inc. All Rights Reserved.
 -------------------------------------------------------------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2016.1 (lin64) Build 1538259 Fri Apr  8 15:45:23 MDT 2016
-| Date         : Wed Aug  1 21:06:18 2018
+| Date         : Thu Aug  2 15:05:22 2018
 | Host         : surya-HP-Pavilion-Power-Laptop-15-cb0xx running 64-bit Ubuntu 16.04.4 LTS
 | Command      : report_utilization -file mkfpu_fm_add_sub_pipe_32_utilization_synth.rpt -pb mkfpu_fm_add_sub_pipe_32_utilization_synth.pb
 | Design       : mkfpu_fm_add_sub_pipe_32
@@ -30,11 +30,11 @@ Table of Contents
 +-------------------------+------+-------+-----------+-------+
 |        Site Type        | Used | Fixed | Available | Util% |
 +-------------------------+------+-------+-----------+-------+
-| Slice LUTs*             | 3124 |     0 |     63400 |  4.93 |
-|   LUT as Logic          | 3124 |     0 |     63400 |  4.93 |
+| Slice LUTs*             | 3548 |     0 |     63400 |  5.60 |
+|   LUT as Logic          | 3548 |     0 |     63400 |  5.60 |
 |   LUT as Memory         |    0 |     0 |     19000 |  0.00 |
-| Slice Registers         | 1332 |     0 |    126800 |  1.05 |
-|   Register as Flip Flop | 1332 |     0 |    126800 |  1.05 |
+| Slice Registers         | 1984 |     0 |    126800 |  1.56 |
+|   Register as Flip Flop | 1984 |     0 |    126800 |  1.56 |
 |   Register as Latch     |    0 |     0 |    126800 |  0.00 |
 | F7 Muxes                |    0 |     0 |     31700 |  0.00 |
 | F8 Muxes                |    0 |     0 |     15850 |  0.00 |
@@ -57,7 +57,7 @@ Table of Contents
 | 0     |          Yes |           - |          Set |
 | 0     |          Yes |           - |        Reset |
 | 0     |          Yes |         Set |            - |
-| 1332  |          Yes |       Reset |            - |
+| 1984  |          Yes |       Reset |            - |
 +-------+--------------+-------------+--------------+
 
 
@@ -148,16 +148,16 @@ Table of Contents
 +----------+------+---------------------+
 | Ref Name | Used | Functional Category |
 +----------+------+---------------------+
-| LUT6     | 2070 |                 LUT |
-| FDRE     | 1332 |        Flop & Latch |
-| LUT5     |  491 |                 LUT |
-| LUT4     |  435 |                 LUT |
-| LUT3     |  400 |                 LUT |
-| LUT2     |  254 |                 LUT |
+| LUT6     | 2321 |                 LUT |
+| FDRE     | 1984 |        Flop & Latch |
+| LUT5     |  576 |                 LUT |
+| LUT4     |  501 |                 LUT |
+| LUT3     |  429 |                 LUT |
+| LUT2     |  302 |                 LUT |
 | IBUF     |  122 |                  IO |
-| CARRY4   |   73 |          CarryLogic |
+| CARRY4   |   76 |          CarryLogic |
 | OBUF     |   40 |                  IO |
-| LUT1     |    4 |                 LUT |
+| LUT1     |    5 |                 LUT |
 | DSP48E1  |    2 |    Block Arithmetic |
 | BUFG     |    1 |               Clock |
 +----------+------+---------------------+
