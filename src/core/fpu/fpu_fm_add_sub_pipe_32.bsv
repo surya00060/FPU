@@ -45,27 +45,6 @@ typedef struct{
     bit inp_denormal;
 }Input_data_type  deriving (Bits,Eq);
 
-
-typedef struct{
-    Bit#(1) lv_product_sign;                 //The result of the integer multiplier stage
-    Bit#(1) lv_negate;
-    Bit#(10) lv_product_exponent;
-    Bit#(49) lv_product_mantissa;
-    Bit#(32) lv_operand3;
-    Bit#(5) add_flags;
-    bit operation;
-    bit mul;
-    bit muladd;
-    Bit#(3) rounding_mode;
-    bit lv_product_is_invalid;
-    bit lv_product_is_zero;
-    bit lv_product_is_infinity;
-    bit lv_product_overflow;
-    bit lv_product_underflow;
-    bit quiet_nan_two;
-    bit inp_denormal;
-}Stage1_data_type  deriving (Bits,Eq);
-
 typedef struct{
     Bit#(1) lv_product_sign;                 //The result of the integer multiplier stage
     Bit#(1) lv_negate;
@@ -104,9 +83,9 @@ typedef struct{
     bit quiet_nan_two;
     bit quiet_nan_three;
     bit lv_product_is_zero;
-    //Bit#(10) lv_minuend;
-    //Bit#(10) lv_subtrahend;
-    Bit#(10) exponent_difference;
+    Bit#(10) lv_minuend;
+    Bit#(10) lv_subtrahend;
+    //Bit#(10) exponent_difference;
     Bit#(73) mantissa_to_shift;
     bit op2_gt_op3;
     Bit#(10) resultant_exponent;
@@ -175,7 +154,6 @@ module mkfpu_fm_add_sub_pipe_32(Ifc_fpu_fm_add_sub_pipe_32)
              );
 
     Wire#(Floating_output#(32))           ff_final_out        <-   mkWire();
-    FIFOF#(Stage1_data_type)              ff_stage1           <-   mkFIFOF();   
     FIFOF#(Stage2_data_type)              ff_stage2           <-   mkFIFOF();
     FIFOF#(Stage4_data_type)              ff_stage4           <-   mkFIFOF();
     FIFOF#(Stage5_data_type)              ff_stage5           <-   mkFIFOF();
@@ -503,8 +481,7 @@ module mkfpu_fm_add_sub_pipe_32(Ifc_fpu_fm_add_sub_pipe_32)
          end
          
          resultant_exponent           = lv_minuend;
-         Bit#(10) exponent_difference = '0;
-         exponent_difference          = lv_minuend - lv_subtrahend;
+         
 
          Bit#(10) lv_zeros_on_right;
          lv_zeros_on_right            = zeroExtend(pack(countZerosLSB(mantissa_to_shift)));
@@ -527,9 +504,9 @@ module mkfpu_fm_add_sub_pipe_32(Ifc_fpu_fm_add_sub_pipe_32)
                                                     quiet_nan_two              :   quiet_nan_two,
                                                     quiet_nan_three            :   quiet_nan_three,
                                                     lv_product_is_zero         :   lv_product_is_zero,
-                                                    exponent_difference        :   exponent_difference,
-                                                    //lv_minuend                 :   lv_minuend,
-                                                    //lv_subtrahend              :   lv_subtrahend,
+                                                    //exponent_difference        :   exponent_difference,
+                                                    lv_minuend                 :   lv_minuend,
+                                                    lv_subtrahend              :   lv_subtrahend,
                                                     mantissa_to_shift          :   mantissa_to_shift,
                                                     op2_gt_op3                 :   op2_gt_op3,
                                                     resultant_exponent         :   resultant_exponent,
@@ -559,18 +536,21 @@ module mkfpu_fm_add_sub_pipe_32(Ifc_fpu_fm_add_sub_pipe_32)
         let quiet_nan_two              = ff_stage3_pipe.quiet_nan_two;
         let quiet_nan_three            = ff_stage3_pipe.quiet_nan_three;
         let lv_product_is_zero         = ff_stage3_pipe.lv_product_is_zero;
-        //let lv_minuend                 = ff_stage3_pipe.lv_minuend;
-        //let lv_subtrahend              = ff_stage3_pipe.lv_subtrahend;
-        let exponent_difference        = ff_stage3_pipe.exponent_difference;
+        let lv_minuend                 = ff_stage3_pipe.lv_minuend;
+        let lv_subtrahend              = ff_stage3_pipe.lv_subtrahend;
+        //let exponent_difference        = ff_stage3_pipe.exponent_difference;
         let mantissa_to_shift          = ff_stage3_pipe.mantissa_to_shift;
         let op2_gt_op3                 = ff_stage3_pipe.op2_gt_op3;
         let resultant_exponent         = ff_stage3_pipe.resultant_exponent;
         let lv_zeros_on_right          = ff_stage3_pipe.lv_zeros_on_right;
 
         bit lv_sticky = 0;
-         
-         Bit#(1) shifted_operand_zero = (mantissa_to_shift == '0) ? 1:0;
-         mantissa_to_shift            = mantissa_to_shift >> exponent_difference;
+        
+        Bit#(10) exponent_difference = '0;
+        exponent_difference          = lv_minuend - lv_subtrahend;
+        
+        Bit#(1) shifted_operand_zero = (mantissa_to_shift == '0) ? 1:0;
+        mantissa_to_shift            = mantissa_to_shift >> exponent_difference;
         
          //Handling sticky
          if(((lv_zeros_on_right < exponent_difference) || (mantissa_to_shift[0] == 1)) && shifted_operand_zero != 1)
