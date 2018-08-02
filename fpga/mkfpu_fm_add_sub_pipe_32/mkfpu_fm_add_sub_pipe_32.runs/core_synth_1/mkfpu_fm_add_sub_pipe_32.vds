@@ -2,8 +2,8 @@
 # Vivado v2016.1 (64-bit)
 # SW Build 1538259 on Fri Apr  8 15:45:23 MDT 2016
 # IP Build 1537824 on Fri Apr  8 04:28:57 MDT 2016
-# Start of session at: Thu Aug  2 15:04:31 2018
-# Process ID: 11853
+# Start of session at: Thu Aug  2 15:34:49 2018
+# Process ID: 15768
 # Current directory: /home/surya/Desktop/FPU/fpga/mkfpu_fm_add_sub_pipe_32/mkfpu_fm_add_sub_pipe_32.runs/core_synth_1
 # Command line: vivado -log mkfpu_fm_add_sub_pipe_32.vds -mode batch -messageDb vivado.pb -notrace -source mkfpu_fm_add_sub_pipe_32.tcl
 # Log file: /home/surya/Desktop/FPU/fpga/mkfpu_fm_add_sub_pipe_32/mkfpu_fm_add_sub_pipe_32.runs/core_synth_1/mkfpu_fm_add_sub_pipe_32.vds
@@ -17,9 +17,9 @@ Starting synth_design
 Attempting to get a license for feature 'Synthesis' and/or device 'xc7a100t'
 INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7a100t'
 INFO: Launching helper process for spawning children vivado processes
-INFO: Helper process launched with PID 11859 
+INFO: Helper process launched with PID 15771 
 ---------------------------------------------------------------------------------
-Starting RTL Elaboration : Time (s): cpu = 00:00:05 ; elapsed = 00:00:06 . Memory (MB): peak = 1064.859 ; gain = 171.090 ; free physical = 3356 ; free virtual = 13363
+Starting RTL Elaboration : Time (s): cpu = 00:00:05 ; elapsed = 00:00:05 . Memory (MB): peak = 1064.855 ; gain = 171.090 ; free physical = 2962 ; free virtual = 13024
 ---------------------------------------------------------------------------------
 INFO: [Synth 8-638] synthesizing module 'mkfpu_fm_add_sub_pipe_32' [/home/surya/Desktop/FPU/verilog/mkfpu_fm_add_sub_pipe_32.v:44]
 INFO: [Synth 8-638] synthesizing module 'FIFO2' [/home/surya/Desktop/FPU/verilog/FIFO2.v:51]
@@ -27,7 +27,7 @@ INFO: [Synth 8-638] synthesizing module 'FIFO2' [/home/surya/Desktop/FPU/verilog
 	Parameter guarded bound to: 1 - type: integer 
 INFO: [Synth 8-256] done synthesizing module 'FIFO2' (1#1) [/home/surya/Desktop/FPU/verilog/FIFO2.v:51]
 INFO: [Synth 8-638] synthesizing module 'FIFO2__parameterized0' [/home/surya/Desktop/FPU/verilog/FIFO2.v:51]
-	Parameter width bound to: 330 - type: integer 
+	Parameter width bound to: 202 - type: integer 
 	Parameter guarded bound to: 1 - type: integer 
 INFO: [Synth 8-256] done synthesizing module 'FIFO2__parameterized0' (1#1) [/home/surya/Desktop/FPU/verilog/FIFO2.v:51]
 INFO: [Synth 8-638] synthesizing module 'FIFO2__parameterized1' [/home/surya/Desktop/FPU/verilog/FIFO2.v:51]
@@ -50,7 +50,7 @@ INFO: [Synth 8-256] done synthesizing module 'mkfpu_fm_add_sub_pipe_32' (2#1) [/
 WARNING: [Synth 8-3917] design mkfpu_fm_add_sub_pipe_32 has port get_result[3] driven by constant 0
 WARNING: [Synth 8-3917] design mkfpu_fm_add_sub_pipe_32 has port RDY_flush driven by constant 1
 ---------------------------------------------------------------------------------
-Finished RTL Elaboration : Time (s): cpu = 00:00:06 ; elapsed = 00:00:07 . Memory (MB): peak = 1112.297 ; gain = 218.527 ; free physical = 3306 ; free virtual = 13315
+Finished RTL Elaboration : Time (s): cpu = 00:00:06 ; elapsed = 00:00:06 . Memory (MB): peak = 1112.293 ; gain = 218.527 ; free physical = 2914 ; free virtual = 12977
 ---------------------------------------------------------------------------------
 
 Report Check Netlist: 
@@ -60,7 +60,7 @@ Report Check Netlist:
 |1     |multi_driven_nets |      0|        0|Passed |Multi driven nets |
 +------+------------------+-------+---------+-------+------------------+
 ---------------------------------------------------------------------------------
-Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:06 ; elapsed = 00:00:07 . Memory (MB): peak = 1112.297 ; gain = 218.527 ; free physical = 3305 ; free virtual = 13315
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:06 ; elapsed = 00:00:06 . Memory (MB): peak = 1112.293 ; gain = 218.527 ; free physical = 2914 ; free virtual = 12977
 ---------------------------------------------------------------------------------
 INFO: [Device 21-403] Loading part xc7a100tcsg324-1
 INFO: [Project 1-570] Preparing netlist for logic optimization
@@ -78,29 +78,30 @@ Completed Processing XDC Constraints
 INFO: [Project 1-111] Unisim Transformation Summary:
 No Unisim elements were transformed.
 
-Constraint Validation Runtime : Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 1496.039 ; gain = 0.000 ; free physical = 3087 ; free virtual = 13124
+Constraint Validation Runtime : Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 1494.785 ; gain = 0.000 ; free physical = 2725 ; free virtual = 12788
 ---------------------------------------------------------------------------------
-Finished Constraint Validation : Time (s): cpu = 00:00:13 ; elapsed = 00:00:16 . Memory (MB): peak = 1496.039 ; gain = 602.270 ; free physical = 3086 ; free virtual = 13123
+Finished Constraint Validation : Time (s): cpu = 00:00:12 ; elapsed = 00:00:13 . Memory (MB): peak = 1494.785 ; gain = 601.020 ; free physical = 2723 ; free virtual = 12787
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Loading Part and Timing Information
 ---------------------------------------------------------------------------------
 Loading part: xc7a100tcsg324-1
 ---------------------------------------------------------------------------------
-Finished Loading Part and Timing Information : Time (s): cpu = 00:00:13 ; elapsed = 00:00:16 . Memory (MB): peak = 1496.039 ; gain = 602.270 ; free physical = 3086 ; free virtual = 13123
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:12 ; elapsed = 00:00:13 . Memory (MB): peak = 1494.785 ; gain = 601.020 ; free physical = 2723 ; free virtual = 12787
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Applying 'set_property' XDC Constraints
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:13 ; elapsed = 00:00:16 . Memory (MB): peak = 1496.039 ; gain = 602.270 ; free physical = 3086 ; free virtual = 13123
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:12 ; elapsed = 00:00:13 . Memory (MB): peak = 1494.785 ; gain = 601.020 ; free physical = 2723 ; free virtual = 12787
 ---------------------------------------------------------------------------------
-INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [/home/surya/Desktop/FPU/verilog/mkfpu_fm_add_sub_pipe_32.v:727]
-INFO: [Synth 8-5544] ROM "x__h338670" won't be mapped to Block RAM because address size (3) smaller than threshold (5)
-INFO: [Synth 8-5544] ROM "x__h338670" won't be mapped to Block RAM because address size (3) smaller than threshold (5)
-INFO: [Synth 8-5544] ROM "IF_NOT_IF_ff_stage5_first__96_BIT_95_08_THEN_f_ETC___d8870" won't be mapped to Block RAM because address size (1) smaller than threshold (5)
+INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [/home/surya/Desktop/FPU/verilog/mkfpu_fm_add_sub_pipe_32.v:735]
+INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [/home/surya/Desktop/FPU/verilog/mkfpu_fm_add_sub_pipe_32.v:723]
+INFO: [Synth 8-5544] ROM "x__h338020" won't be mapped to Block RAM because address size (3) smaller than threshold (5)
+INFO: [Synth 8-5544] ROM "x__h338020" won't be mapped to Block RAM because address size (3) smaller than threshold (5)
+INFO: [Synth 8-5544] ROM "IF_NOT_IF_ff_stage5_first__88_BIT_95_00_THEN_f_ETC___d8790" won't be mapped to Block RAM because address size (1) smaller than threshold (5)
 ---------------------------------------------------------------------------------
-Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:14 ; elapsed = 00:00:17 . Memory (MB): peak = 1496.039 ; gain = 602.270 ; free physical = 3070 ; free virtual = 13107
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:13 ; elapsed = 00:00:14 . Memory (MB): peak = 1494.785 ; gain = 601.020 ; free physical = 2715 ; free virtual = 12779
 ---------------------------------------------------------------------------------
 
 Report RTL Partitions: 
@@ -115,29 +116,29 @@ Detailed RTL Component Info :
 +---Adders : 
 	   3 Input     73 Bit       Adders := 1     
 	   2 Input     25 Bit       Adders := 1     
-	   2 Input     10 Bit       Adders := 8     
-	   3 Input     10 Bit       Adders := 2     
+	   2 Input     10 Bit       Adders := 9     
+	   3 Input     10 Bit       Adders := 3     
 	   5 Input     10 Bit       Adders := 1     
-	   4 Input     10 Bit       Adders := 3     
+	   4 Input     10 Bit       Adders := 1     
 	   2 Input      9 Bit       Adders := 1     
 	   2 Input      8 Bit       Adders := 1     
 	   2 Input      7 Bit       Adders := 1     
-	   2 Input      6 Bit       Adders := 3     
+	   2 Input      6 Bit       Adders := 2     
 +---XORs : 
 	   2 Input     10 Bit         XORs := 5     
 	   2 Input      1 Bit         XORs := 7     
 	   3 Input      1 Bit         XORs := 1     
 +---Registers : 
-	              330 Bit    Registers := 2     
 	              271 Bit    Registers := 2     
+	              202 Bit    Registers := 2     
 	              172 Bit    Registers := 2     
 	              111 Bit    Registers := 2     
 	              108 Bit    Registers := 2     
 	              106 Bit    Registers := 2     
 	                1 Bit    Registers := 12    
 +---Muxes : 
-	   2 Input    187 Bit        Muxes := 1     
 	   2 Input     73 Bit        Muxes := 11    
+	   2 Input     59 Bit        Muxes := 1     
 	   2 Input     49 Bit        Muxes := 6     
 	   3 Input     31 Bit        Muxes := 1     
 	   2 Input     24 Bit        Muxes := 1     
@@ -149,7 +150,7 @@ Detailed RTL Component Info :
 	   3 Input      2 Bit        Muxes := 1     
 	   2 Input      2 Bit        Muxes := 5     
 	   4 Input      2 Bit        Muxes := 1     
-	   2 Input      1 Bit        Muxes := 23    
+	   2 Input      1 Bit        Muxes := 24    
 ---------------------------------------------------------------------------------
 Finished RTL Component Statistics 
 ---------------------------------------------------------------------------------
@@ -162,21 +163,21 @@ Detailed RTL Component Info :
 +---Adders : 
 	   3 Input     73 Bit       Adders := 1     
 	   2 Input     25 Bit       Adders := 1     
-	   2 Input     10 Bit       Adders := 8     
-	   3 Input     10 Bit       Adders := 2     
+	   2 Input     10 Bit       Adders := 9     
+	   3 Input     10 Bit       Adders := 3     
 	   5 Input     10 Bit       Adders := 1     
-	   4 Input     10 Bit       Adders := 3     
+	   4 Input     10 Bit       Adders := 1     
 	   2 Input      9 Bit       Adders := 1     
 	   2 Input      8 Bit       Adders := 1     
 	   2 Input      7 Bit       Adders := 1     
-	   2 Input      6 Bit       Adders := 3     
+	   2 Input      6 Bit       Adders := 2     
 +---XORs : 
 	   2 Input     10 Bit         XORs := 5     
 	   2 Input      1 Bit         XORs := 7     
 	   3 Input      1 Bit         XORs := 1     
 +---Muxes : 
-	   2 Input    187 Bit        Muxes := 1     
 	   2 Input     73 Bit        Muxes := 11    
+	   2 Input     59 Bit        Muxes := 1     
 	   2 Input     49 Bit        Muxes := 6     
 	   3 Input     31 Bit        Muxes := 1     
 	   2 Input     24 Bit        Muxes := 1     
@@ -188,7 +189,7 @@ Detailed RTL Component Info :
 	   3 Input      2 Bit        Muxes := 1     
 	   2 Input      2 Bit        Muxes := 5     
 	   4 Input      2 Bit        Muxes := 1     
-	   2 Input      1 Bit        Muxes := 5     
+	   2 Input      1 Bit        Muxes := 6     
 Module FIFO2 
 Detailed RTL Component Info : 
 +---Registers : 
@@ -199,7 +200,7 @@ Detailed RTL Component Info :
 Module FIFO2__parameterized0 
 Detailed RTL Component Info : 
 +---Registers : 
-	              330 Bit    Registers := 2     
+	              202 Bit    Registers := 2     
 	                1 Bit    Registers := 2     
 +---Muxes : 
 	   2 Input      1 Bit        Muxes := 3     
@@ -243,22 +244,22 @@ BRAMs: 270 (col length: RAMB18 80 RAMB36 40)
 ---------------------------------------------------------------------------------
 Finished Part Resource Summary
 ---------------------------------------------------------------------------------
-Start Parallel Synthesis Optimization  : Time (s): cpu = 00:00:14 ; elapsed = 00:00:17 . Memory (MB): peak = 1496.039 ; gain = 602.270 ; free physical = 3070 ; free virtual = 13107
+Start Parallel Synthesis Optimization  : Time (s): cpu = 00:00:13 ; elapsed = 00:00:14 . Memory (MB): peak = 1494.785 ; gain = 601.020 ; free physical = 2715 ; free virtual = 12779
 ---------------------------------------------------------------------------------
 Start Cross Boundary Optimization
 ---------------------------------------------------------------------------------
-DSP Report: Generating DSP _0_CONCAT_INV_start_flags_BIT_14_45_OR_start_fl_ETC___d959, operation Mode is: A*B.
-DSP Report: operator _0_CONCAT_INV_start_flags_BIT_14_45_OR_start_fl_ETC___d959 is absorbed into DSP _0_CONCAT_INV_start_flags_BIT_14_45_OR_start_fl_ETC___d959.
-DSP Report: operator _0_CONCAT_INV_start_flags_BIT_14_45_OR_start_fl_ETC___d959 is absorbed into DSP _0_CONCAT_INV_start_flags_BIT_14_45_OR_start_fl_ETC___d959.
-DSP Report: Generating DSP _0_CONCAT_INV_start_flags_BIT_14_45_OR_start_fl_ETC___d959, operation Mode is: (PCIN>>17)+A*B.
-DSP Report: operator _0_CONCAT_INV_start_flags_BIT_14_45_OR_start_fl_ETC___d959 is absorbed into DSP _0_CONCAT_INV_start_flags_BIT_14_45_OR_start_fl_ETC___d959.
-DSP Report: operator _0_CONCAT_INV_start_flags_BIT_14_45_OR_start_fl_ETC___d959 is absorbed into DSP _0_CONCAT_INV_start_flags_BIT_14_45_OR_start_fl_ETC___d959.
+DSP Report: Generating DSP _0_CONCAT_INV_start_flags_BIT_14_37_OR_start_fl_ETC___d951, operation Mode is: A*B.
+DSP Report: operator _0_CONCAT_INV_start_flags_BIT_14_37_OR_start_fl_ETC___d951 is absorbed into DSP _0_CONCAT_INV_start_flags_BIT_14_37_OR_start_fl_ETC___d951.
+DSP Report: operator _0_CONCAT_INV_start_flags_BIT_14_37_OR_start_fl_ETC___d951 is absorbed into DSP _0_CONCAT_INV_start_flags_BIT_14_37_OR_start_fl_ETC___d951.
+DSP Report: Generating DSP _0_CONCAT_INV_start_flags_BIT_14_37_OR_start_fl_ETC___d951, operation Mode is: (PCIN>>17)+A*B.
+DSP Report: operator _0_CONCAT_INV_start_flags_BIT_14_37_OR_start_fl_ETC___d951 is absorbed into DSP _0_CONCAT_INV_start_flags_BIT_14_37_OR_start_fl_ETC___d951.
+DSP Report: operator _0_CONCAT_INV_start_flags_BIT_14_37_OR_start_fl_ETC___d951 is absorbed into DSP _0_CONCAT_INV_start_flags_BIT_14_37_OR_start_fl_ETC___d951.
 WARNING: [Synth 8-3917] design mkfpu_fm_add_sub_pipe_32 has port get_result[3] driven by constant 0
 WARNING: [Synth 8-3917] design mkfpu_fm_add_sub_pipe_32 has port RDY_flush driven by constant 1
 ---------------------------------------------------------------------------------
-Finished Cross Boundary Optimization : Time (s): cpu = 00:00:15 ; elapsed = 00:00:18 . Memory (MB): peak = 1496.039 ; gain = 602.270 ; free physical = 3070 ; free virtual = 13106
+Finished Cross Boundary Optimization : Time (s): cpu = 00:00:14 ; elapsed = 00:00:15 . Memory (MB): peak = 1494.785 ; gain = 601.020 ; free physical = 2715 ; free virtual = 12779
 ---------------------------------------------------------------------------------
-Finished Parallel Reinference  : Time (s): cpu = 00:00:15 ; elapsed = 00:00:18 . Memory (MB): peak = 1496.039 ; gain = 602.270 ; free physical = 3070 ; free virtual = 13106
+Finished Parallel Reinference  : Time (s): cpu = 00:00:14 ; elapsed = 00:00:15 . Memory (MB): peak = 1494.785 ; gain = 601.020 ; free physical = 2715 ; free virtual = 12779
 
 Report RTL Partitions: 
 +-+--------------+------------+----------+
@@ -284,8 +285,7 @@ Finished ROM, RAM, DSP and Shift Register Reporting
 ---------------------------------------------------------------------------------
 Start Area Optimization
 ---------------------------------------------------------------------------------
-INFO: [Synth 8-3333] propagating constant 0 across sequential element (ff_stage1/\data1_reg_reg[176] )
-INFO: [Synth 8-3886] merging instance 'ff_stage1/data1_reg_reg[177]' (FDE) to 'ff_stage1/data1_reg_reg[193]'
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (ff_stage1/\data1_reg_reg[58] )
 INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[123]' (FDE) to 'ff_stage3/data1_reg_reg[7]'
 INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[196]' (FDE) to 'ff_stage3/data1_reg_reg[7]'
 INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[7]' (FDE) to 'ff_stage3/data1_reg_reg[8]'
@@ -385,16 +385,14 @@ INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[167]' (FDE) to 'f
 INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[168]' (FDE) to 'ff_stage3/data1_reg_reg[169]'
 INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[169]' (FDE) to 'ff_stage3/data1_reg_reg[170]'
 INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[170]' (FDE) to 'ff_stage3/data1_reg_reg[195]'
-INFO: [Common 17-14] Message 'Synth 8-3886' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
 INFO: [Synth 8-3333] propagating constant 0 across sequential element (ff_stage3/\data1_reg_reg[195] )
 WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[0]) is unused and will be removed from module FIFO2.
 WARNING: [Synth 8-3332] Sequential element (data0_reg_reg[0]) is unused and will be removed from module FIFO2.
-WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[229]) is unused and will be removed from module FIFO2__parameterized0.
-WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[219]) is unused and will be removed from module FIFO2__parameterized0.
-WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[177]) is unused and will be removed from module FIFO2__parameterized0.
-WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[176]) is unused and will be removed from module FIFO2__parameterized0.
-WARNING: [Synth 8-3332] Sequential element (data0_reg_reg[229]) is unused and will be removed from module FIFO2__parameterized0.
-WARNING: [Synth 8-3332] Sequential element (data0_reg_reg[219]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[101]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[91]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[58]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data0_reg_reg[101]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data0_reg_reg[91]) is unused and will be removed from module FIFO2__parameterized0.
 WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[10]) is unused and will be removed from module FIFO2__parameterized1.
 WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[0]) is unused and will be removed from module FIFO2__parameterized1.
 WARNING: [Synth 8-3332] Sequential element (data0_reg_reg[10]) is unused and will be removed from module FIFO2__parameterized1.
@@ -487,12 +485,12 @@ WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[37]) is unused and wil
 WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[36]) is unused and will be removed from module FIFO2__parameterized2.
 WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[35]) is unused and will be removed from module FIFO2__parameterized2.
 WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[34]) is unused and will be removed from module FIFO2__parameterized2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[33]) is unused and will be removed from module FIFO2__parameterized2.
 INFO: [Common 17-14] Message 'Synth 8-3332' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
-INFO: [Synth 8-3333] propagating constant 0 across sequential element (ff_stage1/\data1_reg_reg[58] )
 ---------------------------------------------------------------------------------
-Finished Area Optimization : Time (s): cpu = 00:00:28 ; elapsed = 00:00:32 . Memory (MB): peak = 1496.039 ; gain = 602.270 ; free physical = 3008 ; free virtual = 13044
+Finished Area Optimization : Time (s): cpu = 00:00:27 ; elapsed = 00:00:28 . Memory (MB): peak = 1494.785 ; gain = 601.020 ; free physical = 2656 ; free virtual = 12719
 ---------------------------------------------------------------------------------
-Finished Parallel Area Optimization  : Time (s): cpu = 00:00:28 ; elapsed = 00:00:32 . Memory (MB): peak = 1496.039 ; gain = 602.270 ; free physical = 3008 ; free virtual = 13044
+Finished Parallel Area Optimization  : Time (s): cpu = 00:00:27 ; elapsed = 00:00:28 . Memory (MB): peak = 1494.785 ; gain = 601.020 ; free physical = 2656 ; free virtual = 12719
 
 Report RTL Partitions: 
 +-+--------------+------------+----------+
@@ -506,10 +504,10 @@ Start Timing Optimization
 Start Applying XDC Timing Constraints
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Applying XDC Timing Constraints : Time (s): cpu = 00:00:35 ; elapsed = 00:00:39 . Memory (MB): peak = 1570.312 ; gain = 676.543 ; free physical = 2877 ; free virtual = 12921
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:00:33 ; elapsed = 00:00:34 . Memory (MB): peak = 1558.059 ; gain = 664.293 ; free physical = 2531 ; free virtual = 12595
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Timing Optimization : Time (s): cpu = 00:00:36 ; elapsed = 00:00:41 . Memory (MB): peak = 1594.328 ; gain = 700.559 ; free physical = 2853 ; free virtual = 12897
+Finished Timing Optimization : Time (s): cpu = 00:00:35 ; elapsed = 00:00:36 . Memory (MB): peak = 1582.074 ; gain = 688.309 ; free physical = 2508 ; free virtual = 12572
 ---------------------------------------------------------------------------------
 
 Report RTL Partitions: 
@@ -521,16 +519,16 @@ Report RTL Partitions:
 Start Technology Mapping
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Technology Mapping : Time (s): cpu = 00:00:38 ; elapsed = 00:00:43 . Memory (MB): peak = 1664.359 ; gain = 770.590 ; free physical = 2782 ; free virtual = 12825
+Finished Technology Mapping : Time (s): cpu = 00:00:36 ; elapsed = 00:00:37 . Memory (MB): peak = 1644.105 ; gain = 750.340 ; free physical = 2446 ; free virtual = 12509
 ---------------------------------------------------------------------------------
-Finished Parallel Technology Mapping Optimization  : Time (s): cpu = 00:00:38 ; elapsed = 00:00:43 . Memory (MB): peak = 1664.359 ; gain = 770.590 ; free physical = 2782 ; free virtual = 12825
+Finished Parallel Technology Mapping Optimization  : Time (s): cpu = 00:00:36 ; elapsed = 00:00:37 . Memory (MB): peak = 1644.105 ; gain = 750.340 ; free physical = 2446 ; free virtual = 12509
 
 Report RTL Partitions: 
 +-+--------------+------------+----------+
 | |RTL Partition |Replication |Instances |
 +-+--------------+------------+----------+
 +-+--------------+------------+----------+
-Finished Parallel Synthesis Optimization  : Time (s): cpu = 00:00:38 ; elapsed = 00:00:43 . Memory (MB): peak = 1664.359 ; gain = 770.590 ; free physical = 2782 ; free virtual = 12825
+Finished Parallel Synthesis Optimization  : Time (s): cpu = 00:00:36 ; elapsed = 00:00:37 . Memory (MB): peak = 1644.105 ; gain = 750.340 ; free physical = 2446 ; free virtual = 12509
 ---------------------------------------------------------------------------------
 Start IO Insertion
 ---------------------------------------------------------------------------------
@@ -541,7 +539,7 @@ Start Final Netlist Cleanup
 Finished Final Netlist Cleanup
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished IO Insertion : Time (s): cpu = 00:00:39 ; elapsed = 00:00:43 . Memory (MB): peak = 1664.359 ; gain = 770.590 ; free physical = 2782 ; free virtual = 12825
+Finished IO Insertion : Time (s): cpu = 00:00:37 ; elapsed = 00:00:38 . Memory (MB): peak = 1644.105 ; gain = 750.340 ; free physical = 2445 ; free virtual = 12509
 ---------------------------------------------------------------------------------
 
 Report Check Netlist: 
@@ -554,7 +552,7 @@ Report Check Netlist:
 Start Renaming Generated Instances
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Instances : Time (s): cpu = 00:00:39 ; elapsed = 00:00:43 . Memory (MB): peak = 1664.359 ; gain = 770.590 ; free physical = 2782 ; free virtual = 12825
+Finished Renaming Generated Instances : Time (s): cpu = 00:00:37 ; elapsed = 00:00:38 . Memory (MB): peak = 1644.105 ; gain = 750.340 ; free physical = 2445 ; free virtual = 12509
 ---------------------------------------------------------------------------------
 
 Report RTL Partitions: 
@@ -566,7 +564,7 @@ Report RTL Partitions:
 Start Handling Custom Attributes
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Handling Custom Attributes : Time (s): cpu = 00:00:39 ; elapsed = 00:00:44 . Memory (MB): peak = 1664.359 ; gain = 770.590 ; free physical = 2782 ; free virtual = 12825
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:38 ; elapsed = 00:00:39 . Memory (MB): peak = 1644.105 ; gain = 750.340 ; free physical = 2445 ; free virtual = 12509
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Writing Synthesis Report
@@ -583,39 +581,40 @@ Report Cell Usage:
 |      |Cell    |Count |
 +------+--------+------+
 |1     |BUFG    |     1|
-|2     |CARRY4  |    76|
+|2     |CARRY4  |    73|
 |3     |DSP48E1 |     2|
-|4     |LUT1    |     5|
-|5     |LUT2    |   302|
-|6     |LUT3    |   429|
-|7     |LUT4    |   501|
-|8     |LUT5    |   576|
-|9     |LUT6    |  2321|
-|10    |FDRE    |  1984|
-|11    |IBUF    |   122|
-|12    |OBUF    |    40|
+|4     |LUT1    |     3|
+|5     |LUT2    |   256|
+|6     |LUT3    |   367|
+|7     |LUT4    |   477|
+|8     |LUT5    |   641|
+|9     |LUT6    |  2146|
+|10    |MUXF7   |     1|
+|11    |FDRE    |  1732|
+|12    |IBUF    |   122|
+|13    |OBUF    |    40|
 +------+--------+------+
 
 Report Instance Areas: 
 +------+------------+----------------------+------+
 |      |Instance    |Module                |Cells |
 +------+------------+----------------------+------+
-|1     |top         |                      |  6359|
+|1     |top         |                      |  5861|
 |2     |  ff_input  |FIFO2                 |   329|
-|3     |  ff_stage1 |FIFO2__parameterized0 |   993|
+|3     |  ff_stage1 |FIFO2__parameterized0 |   608|
 |4     |  ff_stage2 |FIFO2__parameterized1 |   335|
 |5     |  ff_stage3 |FIFO2__parameterized2 |   509|
 |6     |  ff_stage4 |FIFO2__parameterized3 |   524|
 |7     |  ff_stage5 |FIFO2__parameterized4 |   323|
 +------+------------+----------------------+------+
 ---------------------------------------------------------------------------------
-Finished Writing Synthesis Report : Time (s): cpu = 00:00:39 ; elapsed = 00:00:44 . Memory (MB): peak = 1664.359 ; gain = 770.590 ; free physical = 2782 ; free virtual = 12825
+Finished Writing Synthesis Report : Time (s): cpu = 00:00:38 ; elapsed = 00:00:39 . Memory (MB): peak = 1644.105 ; gain = 750.340 ; free physical = 2445 ; free virtual = 12509
 ---------------------------------------------------------------------------------
-Synthesis finished with 0 errors, 0 critical warnings and 226 warnings.
-Synthesis Optimization Runtime : Time (s): cpu = 00:00:33 ; elapsed = 00:00:35 . Memory (MB): peak = 1664.359 ; gain = 287.754 ; free physical = 2782 ; free virtual = 12825
-Synthesis Optimization Complete : Time (s): cpu = 00:00:40 ; elapsed = 00:00:44 . Memory (MB): peak = 1664.367 ; gain = 770.598 ; free physical = 2782 ; free virtual = 12825
+Synthesis finished with 0 errors, 0 critical warnings and 222 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:00:32 ; elapsed = 00:00:32 . Memory (MB): peak = 1644.105 ; gain = 268.754 ; free physical = 2445 ; free virtual = 12509
+Synthesis Optimization Complete : Time (s): cpu = 00:00:38 ; elapsed = 00:00:39 . Memory (MB): peak = 1644.113 ; gain = 750.348 ; free physical = 2445 ; free virtual = 12509
 INFO: [Project 1-571] Translating synthesized netlist
-INFO: [Netlist 29-17] Analyzing 200 Unisim elements for replacement
+INFO: [Netlist 29-17] Analyzing 197 Unisim elements for replacement
 INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
 INFO: [Project 1-570] Preparing netlist for logic optimization
 INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
@@ -623,8 +622,8 @@ INFO: [Project 1-111] Unisim Transformation Summary:
 No Unisim elements were transformed.
 
 INFO: [Common 17-83] Releasing license: Synthesis
-136 Infos, 106 Warnings, 0 Critical Warnings and 0 Errors encountered.
+134 Infos, 106 Warnings, 0 Critical Warnings and 0 Errors encountered.
 synth_design completed successfully
-synth_design: Time (s): cpu = 00:00:39 ; elapsed = 00:00:43 . Memory (MB): peak = 1696.375 ; gain = 716.098 ; free physical = 2783 ; free virtual = 12827
-report_utilization: Time (s): cpu = 00:00:00.07 ; elapsed = 00:00:00.09 . Memory (MB): peak = 1728.391 ; gain = 0.000 ; free physical = 2782 ; free virtual = 12826
-INFO: [Common 17-206] Exiting Vivado at Thu Aug  2 15:05:22 2018...
+synth_design: Time (s): cpu = 00:00:37 ; elapsed = 00:00:38 . Memory (MB): peak = 1676.121 ; gain = 695.848 ; free physical = 2447 ; free virtual = 12510
+report_utilization: Time (s): cpu = 00:00:00.06 ; elapsed = 00:00:00.09 . Memory (MB): peak = 1708.137 ; gain = 0.000 ; free physical = 2446 ; free virtual = 12510
+INFO: [Common 17-206] Exiting Vivado at Thu Aug  2 15:35:34 2018...
