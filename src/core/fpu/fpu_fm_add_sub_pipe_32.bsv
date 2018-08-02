@@ -63,6 +63,17 @@ typedef struct{
     bit lv_product_underflow;
     bit quiet_nan_two;
     bit inp_denormal;
+    Int#(10) lv_actual_product_exponent;         
+    Bit#(6)  msb_zeros;                          
+    Int#(10) possible_shift;                     
+    //Bit#(6) lsb_zeros;                          
+    Bit#(10) shift_neg;                          
+    //Bit#(49) lv_product_mantissa_shiftR;         
+    //Bit#(10) lv_product_exponent_inc_shift;      
+    Bit#(49) lv_product_mantissa_shiftL_expo;    
+    Bit#(10) lv_product_exponent_sub_shift;      
+    Bit#(49) lv_product_mantissa_shiftL_zerosMSB;
+    Bit#(10) lv_product_exponent_sub_zerosMSB;
 }Stage2_data_type  deriving (Bits,Eq);
 
 typedef struct{
@@ -83,9 +94,9 @@ typedef struct{
     bit quiet_nan_two;
     bit quiet_nan_three;
     bit lv_product_is_zero;
-    Bit#(10) lv_minuend;
-    Bit#(10) lv_subtrahend;
-    //Bit#(10) exponent_difference;
+    //Bit#(10) lv_minuend;
+    //Bit#(10) lv_subtrahend;
+    Bit#(10) exponent_difference;
     Bit#(73) mantissa_to_shift;
     bit op2_gt_op3;
     Bit#(10) resultant_exponent;
@@ -225,7 +236,15 @@ module mkfpu_fm_add_sub_pipe_32(Ifc_fpu_fm_add_sub_pipe_32)
          Bit#(8) expo_temp = pack(lv_actual_product_exponent)[fPEXP-1:0];
          bit exp_and           = &(expo_temp);  //Says if Exponent is equal to Bias
          bit is_msb_zeros       = |(msb_zeros);
-
+         Int#(10) possible_shift = 0;
+         //Bit#(49) lv_product_mantissa_shiftR = 0 ;         
+         //Bit#(10) lv_product_exponent_inc_shift = 0 ;
+         Bit#(10) shift_neg = 0;      
+         Bit#(49) lv_product_mantissa_shiftL_expo = 0  ;    
+         Bit#(10) lv_product_exponent_sub_shift = 0  ;      
+         Bit#(49) lv_product_mantissa_shiftL_zerosMSB =0  ;
+         Bit#(10) lv_product_exponent_sub_zerosMSB = 0 ;
+         
          //Change-1 -- Reducing the size of the Muxes from EXP size to just a bunch of 1bits and a Or-tree
          //Change-1 was wrong apparently, according to Paranoia!! Should see why! Rolling back
          //if((exp_overflow_bit==1'b1 && exp_underflow_bit==1'b0) || (is_msb_zeros==1'b0 && exp_and==1'b1)) begin
@@ -271,7 +290,7 @@ module mkfpu_fm_add_sub_pipe_32(Ifc_fpu_fm_add_sub_pipe_32)
 
             //Change-5 Possible shift needn't use lv_actual_product_exponent -- It's enough if exponent is used I guess
 //            Int#(10) possible_shift   =  1-zeroExtend(unpack(bias))-(lv_actual_product_exponent);
-            Int#(10) possible_shift   =  1-unpack(lv_product_exponent);
+            possible_shift   =  1-unpack(lv_product_exponent);
 
             //Experiment-1 -- Do all the operations parallely and use the if-else for just assignments
               lsb_zeros = pack(countZerosLSB(lv_product_mantissa));
@@ -279,13 +298,13 @@ module mkfpu_fm_add_sub_pipe_32(Ifc_fpu_fm_add_sub_pipe_32)
               //lv_product_mantissa_shiftR         = {lv_product_mantissa_shiftR[iMPFPMAN2:1], lv_product_mantissa_shiftR[0] | lv_sticky};
               let lv_product_exponent_inc_shift     = lv_product_exponent + pack(possible_shift);
            
-              let shift_neg = ~pack(possible_shift)+1; 
+              shift_neg = ~pack(possible_shift)+1; 
             
-              let lv_product_mantissa_shiftL_expo = lv_product_mantissa << (shift_neg);
-              let lv_product_exponent_sub_shift = lv_product_exponent - (shift_neg);
-                  
-              let lv_product_mantissa_shiftL_zerosMSB = lv_product_mantissa << (msb_zeros - 1);
-              let lv_product_exponent_sub_zerosMSB = lv_product_exponent - (zeroExtend(msb_zeros) - 1); 
+               lv_product_mantissa_shiftL_expo = lv_product_mantissa << (shift_neg);
+               lv_product_exponent_sub_shift = lv_product_exponent - (shift_neg);
+         
+               lv_product_mantissa_shiftL_zerosMSB = lv_product_mantissa << (msb_zeros - 1);
+               lv_product_exponent_sub_zerosMSB = lv_product_exponent - (zeroExtend(msb_zeros) - 1); 
               
             /*
             msb_zeros = 1 when
@@ -318,11 +337,93 @@ module mkfpu_fm_add_sub_pipe_32(Ifc_fpu_fm_add_sub_pipe_32)
                `ifdef verbose $display("and thus the sticky bit = %b", lv_sticky); `endif
                // lv_product_is_subnormal = 1;
             end
+        end 
 
-            /*
+        let ff_stage2_pipe = Stage2_data_type{
+                                                    lv_product_sign             :   lv_product_sign,
+                                                    lv_negate                   :   lv_negate,
+                                                    lv_product_exponent         :   lv_product_exponent,
+                                                    lv_product_mantissa         :   lv_product_mantissa,
+                                                    lv_operand3                 :   lv_operand3,
+                                                    add_flags                   :   add_flags,
+                                                    operation                   :   operation,
+                                                    mul                         :   mul,
+                                                    muladd                      :   muladd,
+                                                    rounding_mode               :   rounding_mode,
+                                                    lv_product_is_invalid       :   lv_product_is_invalid,
+                                                    lv_product_is_zero          :   lv_product_is_zero,
+                                                    lv_product_is_infinity      :   lv_product_is_infinity,
+                                                    lv_product_overflow         :   lv_product_overflow,
+                                                    lv_product_underflow        :   lv_product_underflow,
+                                                    quiet_nan_two               :   quiet_nan_two,
+                                                    inp_denormal                :   inp_denormal,
+                                                    lv_actual_product_exponent          :  lv_actual_product_exponent,
+                                                    possible_shift                      :  possible_shift,
+                                                    msb_zeros                           :  msb_zeros,
+                                                    //lsb_zeros                           :  lsb_zeros,
+                                                    shift_neg                           :  shift_neg,
+                                                    //lv_product_mantissa_shiftR          :  lv_product_mantissa_shiftR,
+                                                    //lv_product_exponent_inc_shift       :  lv_product_exponent_inc_shift
+                                                    lv_product_mantissa_shiftL_expo     :  lv_product_mantissa_shiftL_expo,
+                                                    lv_product_exponent_sub_shift       :  lv_product_exponent_sub_shift,
+                                                    lv_product_mantissa_shiftL_zerosMSB :  lv_product_mantissa_shiftL_zerosMSB,
+                                                    lv_product_exponent_sub_zerosMSB    :  lv_product_exponent_sub_zerosMSB
+                                    
+                                                   };
+            ff_stage2.enq( ff_stage2_pipe );
+
+
+    endrule
+
+
+            
+         
+    rule rl_stage_3;//rg_state_handler == Stage2 && !rg_flush);
+
+         //rg_state_handler <= Stage3;
+
+         let ff_stage2_pipe = ff_stage2.first ; ff_stage2.deq ;
+
+         let lv_negate              = ff_stage2_pipe.lv_negate;
+         let lv_product_exponent    = ff_stage2_pipe.lv_product_exponent;
+         Bit#(49) lv_product_mantissa    = ff_stage2_pipe.lv_product_mantissa;
+         let lv_operand3            = ff_stage2_pipe.lv_operand3;
+         let add_flags              = ff_stage2_pipe.add_flags;
+         let operation              = ff_stage2_pipe.operation;
+         let mul                    = ff_stage2_pipe.mul;
+         let muladd                 = ff_stage2_pipe.muladd;
+         let lv_product_sign        = ff_stage2_pipe.lv_product_sign;
+         let lv_product_is_invalid  = ff_stage2_pipe.lv_product_is_invalid;
+         let lv_product_is_zero     = ff_stage2_pipe.lv_product_is_zero;
+         let lv_rounding_mode       = ff_stage2_pipe.rounding_mode;
+         let lv_product_is_infinity = ff_stage2_pipe.lv_product_is_infinity;
+         let lv_product_overflow    = ff_stage2_pipe.lv_product_overflow;
+         let lv_product_underflow   = ff_stage2_pipe.lv_product_underflow;
+         let quiet_nan_two          = ff_stage2_pipe.quiet_nan_two;
+         let inp_denormal           = ff_stage2_pipe.inp_denormal;
+
+         Bit#(TSub#(8,1))bias  =  '1;
+        Int#(10) lv_actual_product_exponent             =  ff_stage2_pipe.lv_actual_product_exponent;
+        let msb_zeros                                   =  ff_stage2_pipe.msb_zeros;
+        Int#(10) possible_shift                         =  ff_stage2_pipe.possible_shift;
+        //let lsb_zeros                                   =  ff_stage2_pipe.lsb_zeros;
+        let shift_neg                                 =  ff_stage2_pipe.shift_neg;
+        //let lv_product_mantissa_shiftR                  =  ff_stage2_pipe.lv_product_mantissa_shiftR;
+        //let lv_product_exponent_inc_shift               =  ff_stage2_pipe.lv_product_exponent_inc_shift;
+        let lv_product_mantissa_shiftL_expo           =  ff_stage2_pipe.lv_product_mantissa_shiftL_expo;
+        let lv_product_exponent_sub_shift             =  ff_stage2_pipe.lv_product_exponent_sub_shift;
+        let lv_product_mantissa_shiftL_zerosMSB       =  ff_stage2_pipe.lv_product_mantissa_shiftL_zerosMSB;
+        let lv_product_exponent_sub_zerosMSB          =  ff_stage2_pipe.lv_product_exponent_sub_zerosMSB;
+
+
+         //ff_stage2_pipe <= tagged Invalid;
+        
+
+         if(lv_actual_product_exponent <= zeroExtend(unpack(bias)) && (msb_zeros != 0 || lv_actual_product_exponent != zeroExtend(unpack(bias)))) begin
+        /*
             msb_zeros != 1 means product is of the form 00.xxxx, important case
             */
-            else if(msb_zeros != 'b1) begin
+            if( possible_shift <= 0 && msb_zeros != 'b1) begin
                /*
                if possible shift is < the number of leading zeros then the number can't be made normal
                */
@@ -341,53 +442,6 @@ module mkfpu_fm_add_sub_pipe_32(Ifc_fpu_fm_add_sub_pipe_32)
                end
             end
          end
-         let ff_stage2_pipe = Stage2_data_type{
-                                                    lv_product_sign        :  lv_product_sign,
-                                                    lv_negate              :  lv_negate,
-                                                    lv_product_exponent    :  lv_product_exponent,
-                                                    lv_product_mantissa    :  lv_product_mantissa,
-                                                    lv_operand3            :  lv_operand3,
-                                                    add_flags              :  add_flags,
-                                                    operation              :  operation,
-                                                    mul                    :  mul,
-                                                    muladd                 :  muladd,
-                                                    rounding_mode          :  rounding_mode,
-                                                    lv_product_is_invalid  :  lv_product_is_invalid,
-                                                    lv_product_is_zero     :  lv_product_is_zero,
-                                                    lv_product_is_infinity :  lv_product_is_infinity,
-                                                    lv_product_overflow    :  lv_product_overflow,
-                                                    lv_product_underflow   :  lv_product_underflow,
-                                                    quiet_nan_two          :  quiet_nan_two
-                                                   };
-            ff_stage2.enq( ff_stage2_pipe );
-
-
-    endrule
-
-    rule rl_stage_3;//rg_state_handler == Stage2 && !rg_flush);
-
-         //rg_state_handler <= Stage3;
-
-         let ff_stage2_pipe = ff_stage2.first ; ff_stage2.deq ;
-
-         let lv_negate              = ff_stage2_pipe.lv_negate;
-         let lv_product_exponent    = ff_stage2_pipe.lv_product_exponent;
-         let lv_product_mantissa    = ff_stage2_pipe.lv_product_mantissa;
-         let lv_operand3            = ff_stage2_pipe.lv_operand3;
-         let add_flags              = ff_stage2_pipe.add_flags;
-         let operation              = ff_stage2_pipe.operation;
-         let mul                    = ff_stage2_pipe.mul;
-         let muladd                 = ff_stage2_pipe.muladd;
-         let lv_product_sign        = ff_stage2_pipe.lv_product_sign;
-         let lv_product_is_invalid  = ff_stage2_pipe.lv_product_is_invalid;
-         let lv_product_is_zero     = ff_stage2_pipe.lv_product_is_zero;
-         let lv_rounding_mode       = ff_stage2_pipe.rounding_mode;
-         let lv_product_is_infinity = ff_stage2_pipe.lv_product_is_infinity;
-         let lv_product_overflow    = ff_stage2_pipe.lv_product_overflow;
-         let lv_product_underflow   = ff_stage2_pipe.lv_product_underflow;
-         let quiet_nan_two          = ff_stage2_pipe.quiet_nan_two;
-         let inp_denormal           = ff_stage2_pipe.inp_denormal;
-         //ff_stage2_pipe <= tagged Invalid;
 
          Bit#(1) sign2              = lv_product_sign ^ lv_negate;
          Bit#(10) exponent2     = lv_product_exponent;
@@ -481,7 +535,8 @@ module mkfpu_fm_add_sub_pipe_32(Ifc_fpu_fm_add_sub_pipe_32)
          end
          
          resultant_exponent           = lv_minuend;
-         
+         Bit#(10) exponent_difference = '0;
+         exponent_difference          = lv_minuend - lv_subtrahend;
 
          Bit#(10) lv_zeros_on_right;
          lv_zeros_on_right            = zeroExtend(pack(countZerosLSB(mantissa_to_shift)));
@@ -504,9 +559,9 @@ module mkfpu_fm_add_sub_pipe_32(Ifc_fpu_fm_add_sub_pipe_32)
                                                     quiet_nan_two              :   quiet_nan_two,
                                                     quiet_nan_three            :   quiet_nan_three,
                                                     lv_product_is_zero         :   lv_product_is_zero,
-                                                    //exponent_difference        :   exponent_difference,
-                                                    lv_minuend                 :   lv_minuend,
-                                                    lv_subtrahend              :   lv_subtrahend,
+                                                    exponent_difference        :   exponent_difference,
+                                                    //lv_minuend                 :   lv_minuend,
+                                                    //lv_subtrahend              :   lv_subtrahend,
                                                     mantissa_to_shift          :   mantissa_to_shift,
                                                     op2_gt_op3                 :   op2_gt_op3,
                                                     resultant_exponent         :   resultant_exponent,
@@ -536,21 +591,18 @@ module mkfpu_fm_add_sub_pipe_32(Ifc_fpu_fm_add_sub_pipe_32)
         let quiet_nan_two              = ff_stage3_pipe.quiet_nan_two;
         let quiet_nan_three            = ff_stage3_pipe.quiet_nan_three;
         let lv_product_is_zero         = ff_stage3_pipe.lv_product_is_zero;
-        let lv_minuend                 = ff_stage3_pipe.lv_minuend;
-        let lv_subtrahend              = ff_stage3_pipe.lv_subtrahend;
-        //let exponent_difference        = ff_stage3_pipe.exponent_difference;
+        //let lv_minuend                 = ff_stage3_pipe.lv_minuend;
+        //let lv_subtrahend              = ff_stage3_pipe.lv_subtrahend;
+        let exponent_difference        = ff_stage3_pipe.exponent_difference;
         let mantissa_to_shift          = ff_stage3_pipe.mantissa_to_shift;
         let op2_gt_op3                 = ff_stage3_pipe.op2_gt_op3;
         let resultant_exponent         = ff_stage3_pipe.resultant_exponent;
         let lv_zeros_on_right          = ff_stage3_pipe.lv_zeros_on_right;
 
         bit lv_sticky = 0;
-        
-        Bit#(10) exponent_difference = '0;
-        exponent_difference          = lv_minuend - lv_subtrahend;
-        
-        Bit#(1) shifted_operand_zero = (mantissa_to_shift == '0) ? 1:0;
-        mantissa_to_shift            = mantissa_to_shift >> exponent_difference;
+         
+         Bit#(1) shifted_operand_zero = (mantissa_to_shift == '0) ? 1:0;
+         mantissa_to_shift            = mantissa_to_shift >> exponent_difference;
         
          //Handling sticky
          if(((lv_zeros_on_right < exponent_difference) || (mantissa_to_shift[0] == 1)) && shifted_operand_zero != 1)
