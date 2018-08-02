@@ -2,8 +2,8 @@
 # Vivado v2016.1 (64-bit)
 # SW Build 1538259 on Fri Apr  8 15:45:23 MDT 2016
 # IP Build 1537824 on Fri Apr  8 04:28:57 MDT 2016
-# Start of session at: Fri Jul 20 12:30:48 2018
-# Process ID: 17925
+# Start of session at: Wed Aug  1 21:05:27 2018
+# Process ID: 6636
 # Current directory: /home/surya/Desktop/FPU/fpga/mkfpu_fm_add_sub_pipe_32/mkfpu_fm_add_sub_pipe_32.runs/core_synth_1
 # Command line: vivado -log mkfpu_fm_add_sub_pipe_32.vds -mode batch -messageDb vivado.pb -notrace -source mkfpu_fm_add_sub_pipe_32.tcl
 # Log file: /home/surya/Desktop/FPU/fpga/mkfpu_fm_add_sub_pipe_32/mkfpu_fm_add_sub_pipe_32.runs/core_synth_1/mkfpu_fm_add_sub_pipe_32.vds
@@ -17,32 +17,41 @@ Starting synth_design
 Attempting to get a license for feature 'Synthesis' and/or device 'xc7a100t'
 INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7a100t'
 INFO: Launching helper process for spawning children vivado processes
-INFO: Helper process launched with PID 17932 
+INFO: Helper process launched with PID 6639 
 ---------------------------------------------------------------------------------
-Starting RTL Elaboration : Time (s): cpu = 00:00:07 ; elapsed = 00:00:09 . Memory (MB): peak = 1064.852 ; gain = 171.090 ; free physical = 965 ; free virtual = 12037
+Starting RTL Elaboration : Time (s): cpu = 00:00:05 ; elapsed = 00:00:05 . Memory (MB): peak = 1064.859 ; gain = 171.090 ; free physical = 4284 ; free virtual = 13684
 ---------------------------------------------------------------------------------
 INFO: [Synth 8-638] synthesizing module 'mkfpu_fm_add_sub_pipe_32' [/home/surya/Desktop/FPU/verilog/mkfpu_fm_add_sub_pipe_32.v:44]
 INFO: [Synth 8-638] synthesizing module 'FIFO2' [/home/surya/Desktop/FPU/verilog/FIFO2.v:51]
 	Parameter width bound to: 108 - type: integer 
 	Parameter guarded bound to: 1 - type: integer 
 INFO: [Synth 8-256] done synthesizing module 'FIFO2' (1#1) [/home/surya/Desktop/FPU/verilog/FIFO2.v:51]
+WARNING: [Synth 8-4446] all outputs are unconnected for this instance and logic may be removed [/home/surya/Desktop/FPU/verilog/mkfpu_fm_add_sub_pipe_32.v:359]
 INFO: [Synth 8-638] synthesizing module 'FIFO2__parameterized0' [/home/surya/Desktop/FPU/verilog/FIFO2.v:51]
 	Parameter width bound to: 111 - type: integer 
 	Parameter guarded bound to: 1 - type: integer 
 INFO: [Synth 8-256] done synthesizing module 'FIFO2__parameterized0' (1#1) [/home/surya/Desktop/FPU/verilog/FIFO2.v:51]
 INFO: [Synth 8-638] synthesizing module 'FIFO2__parameterized1' [/home/surya/Desktop/FPU/verilog/FIFO2.v:51]
-	Parameter width bound to: 172 - type: integer 
+	Parameter width bound to: 111 - type: integer 
 	Parameter guarded bound to: 1 - type: integer 
 INFO: [Synth 8-256] done synthesizing module 'FIFO2__parameterized1' (1#1) [/home/surya/Desktop/FPU/verilog/FIFO2.v:51]
 INFO: [Synth 8-638] synthesizing module 'FIFO2__parameterized2' [/home/surya/Desktop/FPU/verilog/FIFO2.v:51]
-	Parameter width bound to: 106 - type: integer 
+	Parameter width bound to: 271 - type: integer 
 	Parameter guarded bound to: 1 - type: integer 
 INFO: [Synth 8-256] done synthesizing module 'FIFO2__parameterized2' (1#1) [/home/surya/Desktop/FPU/verilog/FIFO2.v:51]
+INFO: [Synth 8-638] synthesizing module 'FIFO2__parameterized3' [/home/surya/Desktop/FPU/verilog/FIFO2.v:51]
+	Parameter width bound to: 172 - type: integer 
+	Parameter guarded bound to: 1 - type: integer 
+INFO: [Synth 8-256] done synthesizing module 'FIFO2__parameterized3' (1#1) [/home/surya/Desktop/FPU/verilog/FIFO2.v:51]
+INFO: [Synth 8-638] synthesizing module 'FIFO2__parameterized4' [/home/surya/Desktop/FPU/verilog/FIFO2.v:51]
+	Parameter width bound to: 106 - type: integer 
+	Parameter guarded bound to: 1 - type: integer 
+INFO: [Synth 8-256] done synthesizing module 'FIFO2__parameterized4' (1#1) [/home/surya/Desktop/FPU/verilog/FIFO2.v:51]
 INFO: [Synth 8-256] done synthesizing module 'mkfpu_fm_add_sub_pipe_32' (2#1) [/home/surya/Desktop/FPU/verilog/mkfpu_fm_add_sub_pipe_32.v:44]
 WARNING: [Synth 8-3917] design mkfpu_fm_add_sub_pipe_32 has port get_result[3] driven by constant 0
 WARNING: [Synth 8-3917] design mkfpu_fm_add_sub_pipe_32 has port RDY_flush driven by constant 1
 ---------------------------------------------------------------------------------
-Finished RTL Elaboration : Time (s): cpu = 00:00:08 ; elapsed = 00:00:10 . Memory (MB): peak = 1112.289 ; gain = 218.527 ; free physical = 917 ; free virtual = 11990
+Finished RTL Elaboration : Time (s): cpu = 00:00:06 ; elapsed = 00:00:06 . Memory (MB): peak = 1113.297 ; gain = 219.527 ; free physical = 4235 ; free virtual = 13635
 ---------------------------------------------------------------------------------
 
 Report Check Netlist: 
@@ -52,7 +61,7 @@ Report Check Netlist:
 |1     |multi_driven_nets |      0|        0|Passed |Multi driven nets |
 +------+------------------+-------+---------+-------+------------------+
 ---------------------------------------------------------------------------------
-Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:08 ; elapsed = 00:00:10 . Memory (MB): peak = 1112.289 ; gain = 218.527 ; free physical = 917 ; free virtual = 11990
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:06 ; elapsed = 00:00:06 . Memory (MB): peak = 1113.297 ; gain = 219.527 ; free physical = 4235 ; free virtual = 13635
 ---------------------------------------------------------------------------------
 INFO: [Device 21-403] Loading part xc7a100tcsg324-1
 INFO: [Project 1-570] Preparing netlist for logic optimization
@@ -70,30 +79,30 @@ Completed Processing XDC Constraints
 INFO: [Project 1-111] Unisim Transformation Summary:
 No Unisim elements were transformed.
 
-Constraint Validation Runtime : Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.01 . Memory (MB): peak = 1491.805 ; gain = 0.000 ; free physical = 731 ; free virtual = 11803
+Constraint Validation Runtime : Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 1494.797 ; gain = 0.000 ; free physical = 4046 ; free virtual = 13446
 ---------------------------------------------------------------------------------
-Finished Constraint Validation : Time (s): cpu = 00:00:17 ; elapsed = 00:00:18 . Memory (MB): peak = 1491.805 ; gain = 598.043 ; free physical = 728 ; free virtual = 11801
+Finished Constraint Validation : Time (s): cpu = 00:00:12 ; elapsed = 00:00:13 . Memory (MB): peak = 1494.797 ; gain = 601.027 ; free physical = 4045 ; free virtual = 13446
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Loading Part and Timing Information
 ---------------------------------------------------------------------------------
 Loading part: xc7a100tcsg324-1
 ---------------------------------------------------------------------------------
-Finished Loading Part and Timing Information : Time (s): cpu = 00:00:17 ; elapsed = 00:00:18 . Memory (MB): peak = 1491.805 ; gain = 598.043 ; free physical = 728 ; free virtual = 11801
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:12 ; elapsed = 00:00:13 . Memory (MB): peak = 1494.797 ; gain = 601.027 ; free physical = 4045 ; free virtual = 13446
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Applying 'set_property' XDC Constraints
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:17 ; elapsed = 00:00:18 . Memory (MB): peak = 1491.805 ; gain = 598.043 ; free physical = 728 ; free virtual = 11801
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:12 ; elapsed = 00:00:13 . Memory (MB): peak = 1494.797 ; gain = 601.027 ; free physical = 4045 ; free virtual = 13445
 ---------------------------------------------------------------------------------
-INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [/home/surya/Desktop/FPU/verilog/mkfpu_fm_add_sub_pipe_32.v:560]
-INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [/home/surya/Desktop/FPU/verilog/mkfpu_fm_add_sub_pipe_32.v:646]
-INFO: [Synth 8-5544] ROM "x__h330610" won't be mapped to Block RAM because address size (3) smaller than threshold (5)
-INFO: [Synth 8-5544] ROM "x__h330610" won't be mapped to Block RAM because address size (3) smaller than threshold (5)
-INFO: [Synth 8-5544] ROM "IF_NOT_IF_ff_stage5_first__23_BIT_95_35_THEN_f_ETC___d8140" won't be mapped to Block RAM because address size (1) smaller than threshold (5)
+INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [/home/surya/Desktop/FPU/verilog/mkfpu_fm_add_sub_pipe_32.v:622]
+INFO: [Synth 8-5818] HDL ADVISOR - The operator resource <adder> is shared. To prevent sharing consider applying a KEEP on the output of the operator [/home/surya/Desktop/FPU/verilog/mkfpu_fm_add_sub_pipe_32.v:708]
+INFO: [Synth 8-5544] ROM "x__h335100" won't be mapped to Block RAM because address size (3) smaller than threshold (5)
+INFO: [Synth 8-5544] ROM "x__h335100" won't be mapped to Block RAM because address size (3) smaller than threshold (5)
+INFO: [Synth 8-5544] ROM "IF_NOT_IF_ff_stage5_first__52_BIT_95_64_THEN_f_ETC___d8430" won't be mapped to Block RAM because address size (1) smaller than threshold (5)
 ---------------------------------------------------------------------------------
-Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:18 ; elapsed = 00:00:19 . Memory (MB): peak = 1491.805 ; gain = 598.043 ; free physical = 720 ; free virtual = 11793
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:13 ; elapsed = 00:00:14 . Memory (MB): peak = 1494.797 ; gain = 601.027 ; free physical = 4038 ; free virtual = 13438
 ---------------------------------------------------------------------------------
 
 Report RTL Partitions: 
@@ -118,16 +127,17 @@ Detailed RTL Component Info :
 	   2 Input      6 Bit       Adders := 2     
 +---XORs : 
 	   2 Input     10 Bit         XORs := 3     
-	   2 Input      1 Bit         XORs := 3     
-	   3 Input      1 Bit         XORs := 2     
+	   2 Input      1 Bit         XORs := 7     
+	   3 Input      1 Bit         XORs := 1     
 +---Registers : 
+	              271 Bit    Registers := 2     
 	              172 Bit    Registers := 2     
-	              111 Bit    Registers := 2     
+	              111 Bit    Registers := 4     
 	              108 Bit    Registers := 2     
 	              106 Bit    Registers := 2     
-	                1 Bit    Registers := 8     
+	                1 Bit    Registers := 12    
 +---Muxes : 
-	   2 Input     73 Bit        Muxes := 12    
+	   2 Input     73 Bit        Muxes := 11    
 	   2 Input     49 Bit        Muxes := 5     
 	   3 Input     31 Bit        Muxes := 1     
 	   2 Input     24 Bit        Muxes := 1     
@@ -139,7 +149,7 @@ Detailed RTL Component Info :
 	   3 Input      2 Bit        Muxes := 1     
 	   2 Input      2 Bit        Muxes := 5     
 	   4 Input      2 Bit        Muxes := 1     
-	   2 Input      1 Bit        Muxes := 18    
+	   2 Input      1 Bit        Muxes := 24    
 ---------------------------------------------------------------------------------
 Finished RTL Component Statistics 
 ---------------------------------------------------------------------------------
@@ -162,10 +172,10 @@ Detailed RTL Component Info :
 	   2 Input      6 Bit       Adders := 2     
 +---XORs : 
 	   2 Input     10 Bit         XORs := 3     
-	   2 Input      1 Bit         XORs := 3     
-	   3 Input      1 Bit         XORs := 2     
+	   2 Input      1 Bit         XORs := 7     
+	   3 Input      1 Bit         XORs := 1     
 +---Muxes : 
-	   2 Input     73 Bit        Muxes := 12    
+	   2 Input     73 Bit        Muxes := 11    
 	   2 Input     49 Bit        Muxes := 5     
 	   3 Input     31 Bit        Muxes := 1     
 	   2 Input     24 Bit        Muxes := 1     
@@ -195,11 +205,25 @@ Detailed RTL Component Info :
 Module FIFO2__parameterized1 
 Detailed RTL Component Info : 
 +---Registers : 
-	              172 Bit    Registers := 2     
+	              111 Bit    Registers := 2     
 	                1 Bit    Registers := 2     
 +---Muxes : 
 	   2 Input      1 Bit        Muxes := 3     
 Module FIFO2__parameterized2 
+Detailed RTL Component Info : 
++---Registers : 
+	              271 Bit    Registers := 2     
+	                1 Bit    Registers := 2     
++---Muxes : 
+	   2 Input      1 Bit        Muxes := 3     
+Module FIFO2__parameterized3 
+Detailed RTL Component Info : 
++---Registers : 
+	              172 Bit    Registers := 2     
+	                1 Bit    Registers := 2     
++---Muxes : 
+	   2 Input      1 Bit        Muxes := 3     
+Module FIFO2__parameterized4 
 Detailed RTL Component Info : 
 +---Registers : 
 	              106 Bit    Registers := 2     
@@ -218,22 +242,22 @@ BRAMs: 270 (col length: RAMB18 80 RAMB36 40)
 ---------------------------------------------------------------------------------
 Finished Part Resource Summary
 ---------------------------------------------------------------------------------
-Start Parallel Synthesis Optimization  : Time (s): cpu = 00:00:18 ; elapsed = 00:00:20 . Memory (MB): peak = 1491.805 ; gain = 598.043 ; free physical = 720 ; free virtual = 11793
+Start Parallel Synthesis Optimization  : Time (s): cpu = 00:00:13 ; elapsed = 00:00:14 . Memory (MB): peak = 1494.797 ; gain = 601.027 ; free physical = 4038 ; free virtual = 13438
 ---------------------------------------------------------------------------------
 Start Cross Boundary Optimization
 ---------------------------------------------------------------------------------
-DSP Report: Generating DSP _0_CONCAT_INV_start_flags_BIT_14_72_OR_start_fl_ETC___d886, operation Mode is: A*B.
-DSP Report: operator _0_CONCAT_INV_start_flags_BIT_14_72_OR_start_fl_ETC___d886 is absorbed into DSP _0_CONCAT_INV_start_flags_BIT_14_72_OR_start_fl_ETC___d886.
-DSP Report: operator _0_CONCAT_INV_start_flags_BIT_14_72_OR_start_fl_ETC___d886 is absorbed into DSP _0_CONCAT_INV_start_flags_BIT_14_72_OR_start_fl_ETC___d886.
-DSP Report: Generating DSP _0_CONCAT_INV_start_flags_BIT_14_72_OR_start_fl_ETC___d886, operation Mode is: (PCIN>>17)+A*B.
-DSP Report: operator _0_CONCAT_INV_start_flags_BIT_14_72_OR_start_fl_ETC___d886 is absorbed into DSP _0_CONCAT_INV_start_flags_BIT_14_72_OR_start_fl_ETC___d886.
-DSP Report: operator _0_CONCAT_INV_start_flags_BIT_14_72_OR_start_fl_ETC___d886 is absorbed into DSP _0_CONCAT_INV_start_flags_BIT_14_72_OR_start_fl_ETC___d886.
+DSP Report: Generating DSP _0_CONCAT_INV_start_flags_BIT_14_01_OR_start_fl_ETC___d915, operation Mode is: A*B.
+DSP Report: operator _0_CONCAT_INV_start_flags_BIT_14_01_OR_start_fl_ETC___d915 is absorbed into DSP _0_CONCAT_INV_start_flags_BIT_14_01_OR_start_fl_ETC___d915.
+DSP Report: operator _0_CONCAT_INV_start_flags_BIT_14_01_OR_start_fl_ETC___d915 is absorbed into DSP _0_CONCAT_INV_start_flags_BIT_14_01_OR_start_fl_ETC___d915.
+DSP Report: Generating DSP _0_CONCAT_INV_start_flags_BIT_14_01_OR_start_fl_ETC___d915, operation Mode is: (PCIN>>17)+A*B.
+DSP Report: operator _0_CONCAT_INV_start_flags_BIT_14_01_OR_start_fl_ETC___d915 is absorbed into DSP _0_CONCAT_INV_start_flags_BIT_14_01_OR_start_fl_ETC___d915.
+DSP Report: operator _0_CONCAT_INV_start_flags_BIT_14_01_OR_start_fl_ETC___d915 is absorbed into DSP _0_CONCAT_INV_start_flags_BIT_14_01_OR_start_fl_ETC___d915.
 WARNING: [Synth 8-3917] design mkfpu_fm_add_sub_pipe_32 has port get_result[3] driven by constant 0
 WARNING: [Synth 8-3917] design mkfpu_fm_add_sub_pipe_32 has port RDY_flush driven by constant 1
 ---------------------------------------------------------------------------------
-Finished Cross Boundary Optimization : Time (s): cpu = 00:00:19 ; elapsed = 00:00:21 . Memory (MB): peak = 1491.805 ; gain = 598.043 ; free physical = 721 ; free virtual = 11793
+Finished Cross Boundary Optimization : Time (s): cpu = 00:00:14 ; elapsed = 00:00:15 . Memory (MB): peak = 1494.797 ; gain = 601.027 ; free physical = 4038 ; free virtual = 13438
 ---------------------------------------------------------------------------------
-Finished Parallel Reinference  : Time (s): cpu = 00:00:19 ; elapsed = 00:00:21 . Memory (MB): peak = 1491.805 ; gain = 598.043 ; free physical = 721 ; free virtual = 11793
+Finished Parallel Reinference  : Time (s): cpu = 00:00:14 ; elapsed = 00:00:15 . Memory (MB): peak = 1494.797 ; gain = 601.027 ; free physical = 4038 ; free virtual = 13438
 
 Report RTL Partitions: 
 +-+--------------+------------+----------+
@@ -259,18 +283,211 @@ Finished ROM, RAM, DSP and Shift Register Reporting
 ---------------------------------------------------------------------------------
 Start Area Optimization
 ---------------------------------------------------------------------------------
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[123]' (FDE) to 'ff_stage3/data1_reg_reg[7]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[196]' (FDE) to 'ff_stage3/data1_reg_reg[7]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[7]' (FDE) to 'ff_stage3/data1_reg_reg[8]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[8]' (FDE) to 'ff_stage3/data1_reg_reg[9]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[9]' (FDE) to 'ff_stage3/data1_reg_reg[21]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[21]' (FDE) to 'ff_stage3/data1_reg_reg[22]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[124]' (FDE) to 'ff_stage3/data1_reg_reg[22]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[197]' (FDE) to 'ff_stage3/data1_reg_reg[22]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[22]' (FDE) to 'ff_stage3/data1_reg_reg[23]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[125]' (FDE) to 'ff_stage3/data1_reg_reg[23]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[198]' (FDE) to 'ff_stage3/data1_reg_reg[23]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[23]' (FDE) to 'ff_stage3/data1_reg_reg[24]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[126]' (FDE) to 'ff_stage3/data1_reg_reg[24]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[199]' (FDE) to 'ff_stage3/data1_reg_reg[24]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[24]' (FDE) to 'ff_stage3/data1_reg_reg[25]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[127]' (FDE) to 'ff_stage3/data1_reg_reg[25]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[200]' (FDE) to 'ff_stage3/data1_reg_reg[25]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[25]' (FDE) to 'ff_stage3/data1_reg_reg[26]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[128]' (FDE) to 'ff_stage3/data1_reg_reg[26]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[201]' (FDE) to 'ff_stage3/data1_reg_reg[26]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[26]' (FDE) to 'ff_stage3/data1_reg_reg[27]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[129]' (FDE) to 'ff_stage3/data1_reg_reg[27]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[202]' (FDE) to 'ff_stage3/data1_reg_reg[27]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[27]' (FDE) to 'ff_stage3/data1_reg_reg[28]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[130]' (FDE) to 'ff_stage3/data1_reg_reg[28]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[203]' (FDE) to 'ff_stage3/data1_reg_reg[28]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[28]' (FDE) to 'ff_stage3/data1_reg_reg[29]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[131]' (FDE) to 'ff_stage3/data1_reg_reg[29]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[204]' (FDE) to 'ff_stage3/data1_reg_reg[29]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[29]' (FDE) to 'ff_stage3/data1_reg_reg[30]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[132]' (FDE) to 'ff_stage3/data1_reg_reg[30]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[205]' (FDE) to 'ff_stage3/data1_reg_reg[30]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[30]' (FDE) to 'ff_stage3/data1_reg_reg[31]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[133]' (FDE) to 'ff_stage3/data1_reg_reg[31]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[206]' (FDE) to 'ff_stage3/data1_reg_reg[31]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[31]' (FDE) to 'ff_stage3/data1_reg_reg[32]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[134]' (FDE) to 'ff_stage3/data1_reg_reg[32]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[207]' (FDE) to 'ff_stage3/data1_reg_reg[32]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[32]' (FDE) to 'ff_stage3/data1_reg_reg[33]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[135]' (FDE) to 'ff_stage3/data1_reg_reg[33]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[208]' (FDE) to 'ff_stage3/data1_reg_reg[33]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[33]' (FDE) to 'ff_stage3/data1_reg_reg[34]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[136]' (FDE) to 'ff_stage3/data1_reg_reg[34]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[209]' (FDE) to 'ff_stage3/data1_reg_reg[34]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[34]' (FDE) to 'ff_stage3/data1_reg_reg[35]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[137]' (FDE) to 'ff_stage3/data1_reg_reg[35]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[210]' (FDE) to 'ff_stage3/data1_reg_reg[35]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[35]' (FDE) to 'ff_stage3/data1_reg_reg[36]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[138]' (FDE) to 'ff_stage3/data1_reg_reg[36]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[211]' (FDE) to 'ff_stage3/data1_reg_reg[36]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[36]' (FDE) to 'ff_stage3/data1_reg_reg[37]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[139]' (FDE) to 'ff_stage3/data1_reg_reg[37]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[212]' (FDE) to 'ff_stage3/data1_reg_reg[37]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[37]' (FDE) to 'ff_stage3/data1_reg_reg[38]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[140]' (FDE) to 'ff_stage3/data1_reg_reg[38]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[213]' (FDE) to 'ff_stage3/data1_reg_reg[38]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[38]' (FDE) to 'ff_stage3/data1_reg_reg[39]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[141]' (FDE) to 'ff_stage3/data1_reg_reg[39]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[214]' (FDE) to 'ff_stage3/data1_reg_reg[39]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[39]' (FDE) to 'ff_stage3/data1_reg_reg[40]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[142]' (FDE) to 'ff_stage3/data1_reg_reg[40]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[215]' (FDE) to 'ff_stage3/data1_reg_reg[40]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[40]' (FDE) to 'ff_stage3/data1_reg_reg[41]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[143]' (FDE) to 'ff_stage3/data1_reg_reg[41]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[216]' (FDE) to 'ff_stage3/data1_reg_reg[41]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[41]' (FDE) to 'ff_stage3/data1_reg_reg[42]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[144]' (FDE) to 'ff_stage3/data1_reg_reg[42]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[217]' (FDE) to 'ff_stage3/data1_reg_reg[42]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[42]' (FDE) to 'ff_stage3/data1_reg_reg[43]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[145]' (FDE) to 'ff_stage3/data1_reg_reg[43]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[218]' (FDE) to 'ff_stage3/data1_reg_reg[43]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[43]' (FDE) to 'ff_stage3/data1_reg_reg[44]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[146]' (FDE) to 'ff_stage3/data1_reg_reg[44]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[219]' (FDE) to 'ff_stage3/data1_reg_reg[44]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[44]' (FDE) to 'ff_stage3/data1_reg_reg[147]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[147]' (FDE) to 'ff_stage3/data1_reg_reg[148]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[148]' (FDE) to 'ff_stage3/data1_reg_reg[149]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[149]' (FDE) to 'ff_stage3/data1_reg_reg[150]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[150]' (FDE) to 'ff_stage3/data1_reg_reg[151]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[151]' (FDE) to 'ff_stage3/data1_reg_reg[152]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[152]' (FDE) to 'ff_stage3/data1_reg_reg[153]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[153]' (FDE) to 'ff_stage3/data1_reg_reg[154]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[154]' (FDE) to 'ff_stage3/data1_reg_reg[155]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[155]' (FDE) to 'ff_stage3/data1_reg_reg[156]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[156]' (FDE) to 'ff_stage3/data1_reg_reg[157]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[157]' (FDE) to 'ff_stage3/data1_reg_reg[158]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[158]' (FDE) to 'ff_stage3/data1_reg_reg[159]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[159]' (FDE) to 'ff_stage3/data1_reg_reg[160]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[160]' (FDE) to 'ff_stage3/data1_reg_reg[161]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[161]' (FDE) to 'ff_stage3/data1_reg_reg[162]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[162]' (FDE) to 'ff_stage3/data1_reg_reg[163]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[163]' (FDE) to 'ff_stage3/data1_reg_reg[164]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[164]' (FDE) to 'ff_stage3/data1_reg_reg[165]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[165]' (FDE) to 'ff_stage3/data1_reg_reg[166]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[166]' (FDE) to 'ff_stage3/data1_reg_reg[167]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[167]' (FDE) to 'ff_stage3/data1_reg_reg[168]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[168]' (FDE) to 'ff_stage3/data1_reg_reg[169]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[169]' (FDE) to 'ff_stage3/data1_reg_reg[170]'
+INFO: [Synth 8-3886] merging instance 'ff_stage3/data1_reg_reg[170]' (FDE) to 'ff_stage3/data1_reg_reg[195]'
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (ff_stage3/\data1_reg_reg[195] )
 WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[0]) is unused and will be removed from module FIFO2.
 WARNING: [Synth 8-3332] Sequential element (data0_reg_reg[0]) is unused and will be removed from module FIFO2.
-WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[10]) is unused and will be removed from module FIFO2__parameterized0.
-WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[0]) is unused and will be removed from module FIFO2__parameterized0.
-WARNING: [Synth 8-3332] Sequential element (data0_reg_reg[10]) is unused and will be removed from module FIFO2__parameterized0.
-WARNING: [Synth 8-3332] Sequential element (data0_reg_reg[0]) is unused and will be removed from module FIFO2__parameterized0.
-INFO: [Synth 8-3333] propagating constant 0 across sequential element (ff_stage4/\data1_reg_reg[85] )
-WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[85]) is unused and will be removed from module FIFO2__parameterized1.
+WARNING: [Synth 8-3332] Sequential element (empty_reg_reg) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (full_reg_reg) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[110]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[109]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[108]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[107]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[106]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[105]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[104]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[103]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[102]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[101]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[100]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[99]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[98]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[97]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[96]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[95]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[94]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[93]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[92]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[91]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[90]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[89]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[88]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[87]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[86]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[85]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[84]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[83]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[82]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[81]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[80]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[79]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[78]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[77]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[76]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[75]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[74]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[73]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[72]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[71]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[70]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[69]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[68]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[67]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[66]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[65]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[64]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[63]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[62]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[61]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[60]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[59]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[58]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[57]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[56]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[55]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[54]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[53]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[52]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[51]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[50]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[49]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[48]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[47]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[46]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[45]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[44]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[43]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[42]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[41]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[40]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[39]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[38]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[37]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[36]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[35]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[34]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[33]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[32]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[31]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[30]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[29]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[28]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[27]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[26]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[25]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[24]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[23]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[22]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[21]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[20]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[19]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[18]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[17]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[16]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[15]) is unused and will be removed from module FIFO2__parameterized0.
+INFO: [Common 17-14] Message 'Synth 8-3332' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
 ---------------------------------------------------------------------------------
-Finished Area Optimization : Time (s): cpu = 00:00:37 ; elapsed = 00:00:39 . Memory (MB): peak = 1491.805 ; gain = 598.043 ; free physical = 623 ; free virtual = 11696
+Finished Area Optimization : Time (s): cpu = 00:00:27 ; elapsed = 00:00:28 . Memory (MB): peak = 1494.797 ; gain = 601.027 ; free physical = 3994 ; free virtual = 13394
 ---------------------------------------------------------------------------------
-Finished Parallel Area Optimization  : Time (s): cpu = 00:00:37 ; elapsed = 00:00:39 . Memory (MB): peak = 1491.805 ; gain = 598.043 ; free physical = 623 ; free virtual = 11696
+Finished Parallel Area Optimization  : Time (s): cpu = 00:00:27 ; elapsed = 00:00:28 . Memory (MB): peak = 1494.797 ; gain = 601.027 ; free physical = 3994 ; free virtual = 13394
 
 Report RTL Partitions: 
 +-+--------------+------------+----------+
@@ -284,10 +501,10 @@ Start Timing Optimization
 Start Applying XDC Timing Constraints
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Applying XDC Timing Constraints : Time (s): cpu = 00:00:46 ; elapsed = 00:00:48 . Memory (MB): peak = 1542.789 ; gain = 649.027 ; free physical = 723 ; free virtual = 11795
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:00:34 ; elapsed = 00:00:34 . Memory (MB): peak = 1548.781 ; gain = 655.012 ; free physical = 3863 ; free virtual = 13263
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Timing Optimization : Time (s): cpu = 00:00:53 ; elapsed = 00:00:55 . Memory (MB): peak = 1626.469 ; gain = 732.707 ; free physical = 639 ; free virtual = 11712
+Finished Timing Optimization : Time (s): cpu = 00:00:41 ; elapsed = 00:00:42 . Memory (MB): peak = 1716.156 ; gain = 822.387 ; free physical = 3696 ; free virtual = 13096
 ---------------------------------------------------------------------------------
 
 Report RTL Partitions: 
@@ -298,18 +515,17 @@ Report RTL Partitions:
 ---------------------------------------------------------------------------------
 Start Technology Mapping
 ---------------------------------------------------------------------------------
-WARNING: [Synth 8-3332] Sequential element (data0_reg_reg[85]) is unused and will be removed from module FIFO2__parameterized1.
 ---------------------------------------------------------------------------------
-Finished Technology Mapping : Time (s): cpu = 00:00:54 ; elapsed = 00:00:57 . Memory (MB): peak = 1685.492 ; gain = 791.730 ; free physical = 581 ; free virtual = 11653
+Finished Technology Mapping : Time (s): cpu = 00:00:43 ; elapsed = 00:00:44 . Memory (MB): peak = 1732.172 ; gain = 838.402 ; free physical = 3684 ; free virtual = 13085
 ---------------------------------------------------------------------------------
-Finished Parallel Technology Mapping Optimization  : Time (s): cpu = 00:00:54 ; elapsed = 00:00:57 . Memory (MB): peak = 1685.492 ; gain = 791.730 ; free physical = 581 ; free virtual = 11653
+Finished Parallel Technology Mapping Optimization  : Time (s): cpu = 00:00:43 ; elapsed = 00:00:44 . Memory (MB): peak = 1732.172 ; gain = 838.402 ; free physical = 3684 ; free virtual = 13085
 
 Report RTL Partitions: 
 +-+--------------+------------+----------+
 | |RTL Partition |Replication |Instances |
 +-+--------------+------------+----------+
 +-+--------------+------------+----------+
-Finished Parallel Synthesis Optimization  : Time (s): cpu = 00:00:54 ; elapsed = 00:00:57 . Memory (MB): peak = 1685.492 ; gain = 791.730 ; free physical = 581 ; free virtual = 11653
+Finished Parallel Synthesis Optimization  : Time (s): cpu = 00:00:43 ; elapsed = 00:00:44 . Memory (MB): peak = 1732.172 ; gain = 838.402 ; free physical = 3684 ; free virtual = 13085
 ---------------------------------------------------------------------------------
 Start IO Insertion
 ---------------------------------------------------------------------------------
@@ -320,7 +536,7 @@ Start Final Netlist Cleanup
 Finished Final Netlist Cleanup
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished IO Insertion : Time (s): cpu = 00:00:55 ; elapsed = 00:00:57 . Memory (MB): peak = 1685.492 ; gain = 791.730 ; free physical = 580 ; free virtual = 11653
+Finished IO Insertion : Time (s): cpu = 00:00:43 ; elapsed = 00:00:44 . Memory (MB): peak = 1732.172 ; gain = 838.402 ; free physical = 3684 ; free virtual = 13085
 ---------------------------------------------------------------------------------
 
 Report Check Netlist: 
@@ -333,7 +549,7 @@ Report Check Netlist:
 Start Renaming Generated Instances
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Instances : Time (s): cpu = 00:00:55 ; elapsed = 00:00:57 . Memory (MB): peak = 1685.492 ; gain = 791.730 ; free physical = 580 ; free virtual = 11653
+Finished Renaming Generated Instances : Time (s): cpu = 00:00:43 ; elapsed = 00:00:44 . Memory (MB): peak = 1732.172 ; gain = 838.402 ; free physical = 3684 ; free virtual = 13085
 ---------------------------------------------------------------------------------
 
 Report RTL Partitions: 
@@ -345,7 +561,7 @@ Report RTL Partitions:
 Start Handling Custom Attributes
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Handling Custom Attributes : Time (s): cpu = 00:00:56 ; elapsed = 00:00:58 . Memory (MB): peak = 1685.492 ; gain = 791.730 ; free physical = 580 ; free virtual = 11652
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:44 ; elapsed = 00:00:45 . Memory (MB): peak = 1732.172 ; gain = 838.402 ; free physical = 3684 ; free virtual = 13085
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Writing Synthesis Report
@@ -364,13 +580,13 @@ Report Cell Usage:
 |1     |BUFG    |     1|
 |2     |CARRY4  |    73|
 |3     |DSP48E1 |     2|
-|4     |LUT1    |    12|
-|5     |LUT2    |   207|
-|6     |LUT3    |   312|
-|7     |LUT4    |   488|
-|8     |LUT5    |   446|
-|9     |LUT6    |  1918|
-|10    |FDRE    |   994|
+|4     |LUT1    |     4|
+|5     |LUT2    |   254|
+|6     |LUT3    |   400|
+|7     |LUT4    |   435|
+|8     |LUT5    |   491|
+|9     |LUT6    |  2070|
+|10    |FDRE    |  1332|
 |11    |IBUF    |   122|
 |12    |OBUF    |    40|
 +------+--------+------+
@@ -379,18 +595,19 @@ Report Instance Areas:
 +------+------------+----------------------+------+
 |      |Instance    |Module                |Cells |
 +------+------------+----------------------+------+
-|1     |top         |                      |  4615|
+|1     |top         |                      |  5224|
 |2     |  ff_input  |FIFO2                 |   329|
-|3     |  ff_stage2 |FIFO2__parameterized0 |   335|
-|4     |  ff_stage4 |FIFO2__parameterized1 |   521|
-|5     |  ff_stage5 |FIFO2__parameterized2 |   323|
+|3     |  ff_stage2 |FIFO2__parameterized1 |   335|
+|4     |  ff_stage3 |FIFO2__parameterized2 |   509|
+|5     |  ff_stage4 |FIFO2__parameterized3 |   524|
+|6     |  ff_stage5 |FIFO2__parameterized4 |   323|
 +------+------------+----------------------+------+
 ---------------------------------------------------------------------------------
-Finished Writing Synthesis Report : Time (s): cpu = 00:00:56 ; elapsed = 00:00:58 . Memory (MB): peak = 1685.492 ; gain = 791.730 ; free physical = 580 ; free virtual = 11652
+Finished Writing Synthesis Report : Time (s): cpu = 00:00:44 ; elapsed = 00:00:45 . Memory (MB): peak = 1732.172 ; gain = 838.402 ; free physical = 3684 ; free virtual = 13085
 ---------------------------------------------------------------------------------
-Synthesis finished with 0 errors, 0 critical warnings and 10 warnings.
-Synthesis Optimization Runtime : Time (s): cpu = 00:00:48 ; elapsed = 00:00:48 . Memory (MB): peak = 1685.492 ; gain = 313.121 ; free physical = 580 ; free virtual = 11652
-Synthesis Optimization Complete : Time (s): cpu = 00:00:56 ; elapsed = 00:00:58 . Memory (MB): peak = 1685.500 ; gain = 791.738 ; free physical = 580 ; free virtual = 11652
+Synthesis finished with 0 errors, 0 critical warnings and 440 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:00:38 ; elapsed = 00:00:38 . Memory (MB): peak = 1732.172 ; gain = 357.809 ; free physical = 3684 ; free virtual = 13085
+Synthesis Optimization Complete : Time (s): cpu = 00:00:44 ; elapsed = 00:00:45 . Memory (MB): peak = 1732.180 ; gain = 838.410 ; free physical = 3684 ; free virtual = 13085
 INFO: [Project 1-571] Translating synthesized netlist
 INFO: [Netlist 29-17] Analyzing 197 Unisim elements for replacement
 INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
@@ -400,8 +617,8 @@ INFO: [Project 1-111] Unisim Transformation Summary:
 No Unisim elements were transformed.
 
 INFO: [Common 17-83] Releasing license: Synthesis
-29 Infos, 14 Warnings, 0 Critical Warnings and 0 Errors encountered.
+133 Infos, 107 Warnings, 0 Critical Warnings and 0 Errors encountered.
 synth_design completed successfully
-synth_design: Time (s): cpu = 00:00:55 ; elapsed = 00:00:55 . Memory (MB): peak = 1717.508 ; gain = 737.238 ; free physical = 582 ; free virtual = 11655
-report_utilization: Time (s): cpu = 00:00:00.08 ; elapsed = 00:00:00.13 . Memory (MB): peak = 1749.523 ; gain = 0.000 ; free physical = 581 ; free virtual = 11654
-INFO: [Common 17-206] Exiting Vivado at Fri Jul 20 12:31:54 2018...
+synth_design: Time (s): cpu = 00:00:43 ; elapsed = 00:00:44 . Memory (MB): peak = 1764.188 ; gain = 783.910 ; free physical = 3686 ; free virtual = 13086
+report_utilization: Time (s): cpu = 00:00:00.07 ; elapsed = 00:00:00.12 . Memory (MB): peak = 1796.203 ; gain = 0.000 ; free physical = 3685 ; free virtual = 13085
+INFO: [Common 17-206] Exiting Vivado at Wed Aug  1 21:06:18 2018...

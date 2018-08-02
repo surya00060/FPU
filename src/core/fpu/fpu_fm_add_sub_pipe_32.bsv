@@ -45,6 +45,27 @@ typedef struct{
     bit inp_denormal;
 }Input_data_type  deriving (Bits,Eq);
 
+
+typedef struct{
+    Bit#(1) lv_product_sign;                 //The result of the integer multiplier stage
+    Bit#(1) lv_negate;
+    Bit#(10) lv_product_exponent;
+    Bit#(49) lv_product_mantissa;
+    Bit#(32) lv_operand3;
+    Bit#(5) add_flags;
+    bit operation;
+    bit mul;
+    bit muladd;
+    Bit#(3) rounding_mode;
+    bit lv_product_is_invalid;
+    bit lv_product_is_zero;
+    bit lv_product_is_infinity;
+    bit lv_product_overflow;
+    bit lv_product_underflow;
+    bit quiet_nan_two;
+    bit inp_denormal;
+}Stage1_data_type  deriving (Bits,Eq);
+
 typedef struct{
     Bit#(1) lv_product_sign;                 //The result of the integer multiplier stage
     Bit#(1) lv_negate;
@@ -64,6 +85,33 @@ typedef struct{
     bit quiet_nan_two;
     bit inp_denormal;
 }Stage2_data_type  deriving (Bits,Eq);
+
+typedef struct{
+    Bit#(1) sign2;
+    Bit#(1) sign3;
+    //Bit#(10) exponent2;
+    //Bit#(10) exponent3;
+    Bit#(TAdd#(TMul#(23,3),4)) mantissa2;
+    Bit#(TAdd#(TMul#(23,3),4)) mantissa3;
+    bit operation;
+    Bit#(5) add_flags;
+    Bit#(3) lv_rounding_mode;
+    bit lv_result_is_invalid;
+    Bit#(2) lv_result_is_infinity;
+    Bit#(2) lv_result_is_zero;
+    bit lv_product_overflow;
+    bit lv_product_underflow;
+    bit quiet_nan_two;
+    bit quiet_nan_three;
+    bit lv_product_is_zero;
+    //Bit#(10) lv_minuend;
+    //Bit#(10) lv_subtrahend;
+    Bit#(10) exponent_difference;
+    Bit#(73) mantissa_to_shift;
+    bit op2_gt_op3;
+    Bit#(10) resultant_exponent;
+    Bit#(10) lv_zeros_on_right;
+}Stage3_data_type deriving (Bits , Eq) ;
 
 typedef struct{
     bit actual_operation;
@@ -126,11 +174,13 @@ module mkfpu_fm_add_sub_pipe_32(Ifc_fpu_fm_add_sub_pipe_32)
 						 Add#(r__, TAdd#(1, TAdd#(8, f__)), 73)
              );
 
-    Wire#(Floating_output#(32))           ff_final_out        <-   mkWire();   
+    Wire#(Floating_output#(32))           ff_final_out        <-   mkWire();
+    FIFOF#(Stage1_data_type)              ff_stage1           <-   mkFIFOF();   
     FIFOF#(Stage2_data_type)              ff_stage2           <-   mkFIFOF();
     FIFOF#(Stage4_data_type)              ff_stage4           <-   mkFIFOF();
     FIFOF#(Stage5_data_type)              ff_stage5           <-   mkFIFOF();
     FIFOF#(Input_data_type)               ff_input            <-   mkFIFOF();
+    FIFOF#(Stage3_data_type)              ff_stage3           <-   mkFIFOF();
     //Reg#(FMA_states)                      rg_state_handler    <-   mkReg(Begin);
     Reg#(Bool)                           rg_flush_stage2     <-   mkReg(False);
     
@@ -431,15 +481,13 @@ module mkfpu_fm_add_sub_pipe_32(Ifc_fpu_fm_add_sub_pipe_32)
             exponent2 = '0;
             mantissa2 = '0;
          end
-         
+        
+
          Bit#(10) lv_minuend, lv_subtrahend;
-         Bit#(10) exponent_difference = '0;
          Bit#(10) resultant_exponent = '0;
          bit op2_gt_op3 = 0;
          
          Bit#(73) mantissa_to_shift;
-         let lv_zeros_on_right;
-         bit lv_sticky = 0;
          
          if(exponent2 > exponent3) begin
             lv_minuend        = exponent2;
@@ -455,8 +503,72 @@ module mkfpu_fm_add_sub_pipe_32(Ifc_fpu_fm_add_sub_pipe_32)
          end
          
          resultant_exponent           = lv_minuend;
+         Bit#(10) exponent_difference = '0;
          exponent_difference          = lv_minuend - lv_subtrahend;
+
+         Bit#(10) lv_zeros_on_right;
          lv_zeros_on_right            = zeroExtend(pack(countZerosLSB(mantissa_to_shift)));
+
+         let ff_stage3_pipe = Stage3_data_type{
+                                                    sign2                      :   sign2,
+                                                    sign3                      :   sign3,
+                                                    //exponent2                  :   exponent2,
+                                                    //exponent3                  :   exponent3,
+                                                    mantissa2                  :   mantissa2,
+                                                    mantissa3                  :   mantissa3,
+                                                    operation                  :   operation,
+                                                    add_flags                  :   add_flags,
+                                                    lv_rounding_mode           :   lv_rounding_mode,
+                                                    lv_result_is_invalid       :   lv_result_is_invalid,
+                                                    lv_result_is_infinity      :   lv_result_is_infinity,
+                                                    lv_result_is_zero          :   lv_result_is_zero,
+                                                    lv_product_overflow        :   lv_product_overflow,
+                                                    lv_product_underflow       :   lv_product_underflow,
+                                                    quiet_nan_two              :   quiet_nan_two,
+                                                    quiet_nan_three            :   quiet_nan_three,
+                                                    lv_product_is_zero         :   lv_product_is_zero,
+                                                    exponent_difference        :   exponent_difference,
+                                                    //lv_minuend                 :   lv_minuend,
+                                                    //lv_subtrahend              :   lv_subtrahend,
+                                                    mantissa_to_shift          :   mantissa_to_shift,
+                                                    op2_gt_op3                 :   op2_gt_op3,
+                                                    resultant_exponent         :   resultant_exponent,
+                                                    lv_zeros_on_right          :   lv_zeros_on_right 
+                                                };
+         ff_stage3.enq(ff_stage3_pipe);
+    endrule
+
+    rule rl_stage_3_1;
+
+        let ff_stage3_pipe = ff_stage3.first ; ff_stage3.deq ;
+
+        let sign2                      = ff_stage3_pipe.sign2;
+        let sign3                      = ff_stage3_pipe.sign3;
+        //let exponent2                  = ff_stage3_pipe.exponent2;
+        //let exponent3                  = ff_stage3_pipe.exponent3;
+        let mantissa2                  = ff_stage3_pipe.mantissa2;
+        let mantissa3                  = ff_stage3_pipe.mantissa3;
+        let operation                  = ff_stage3_pipe.operation;
+        let add_flags                  = ff_stage3_pipe.add_flags;
+        let lv_rounding_mode           = ff_stage3_pipe.lv_rounding_mode;
+        let lv_result_is_invalid       = ff_stage3_pipe.lv_result_is_invalid;
+        let lv_result_is_infinity      = ff_stage3_pipe.lv_result_is_infinity;
+        let lv_result_is_zero          = ff_stage3_pipe.lv_result_is_zero;
+        let lv_product_overflow        = ff_stage3_pipe.lv_product_overflow;
+        let lv_product_underflow       = ff_stage3_pipe.lv_product_underflow;
+        let quiet_nan_two              = ff_stage3_pipe.quiet_nan_two;
+        let quiet_nan_three            = ff_stage3_pipe.quiet_nan_three;
+        let lv_product_is_zero         = ff_stage3_pipe.lv_product_is_zero;
+        //let lv_minuend                 = ff_stage3_pipe.lv_minuend;
+        //let lv_subtrahend              = ff_stage3_pipe.lv_subtrahend;
+        let exponent_difference        = ff_stage3_pipe.exponent_difference;
+        let mantissa_to_shift          = ff_stage3_pipe.mantissa_to_shift;
+        let op2_gt_op3                 = ff_stage3_pipe.op2_gt_op3;
+        let resultant_exponent         = ff_stage3_pipe.resultant_exponent;
+        let lv_zeros_on_right          = ff_stage3_pipe.lv_zeros_on_right;
+
+        bit lv_sticky = 0;
+         
          Bit#(1) shifted_operand_zero = (mantissa_to_shift == '0) ? 1:0;
          mantissa_to_shift            = mantissa_to_shift >> exponent_difference;
         
@@ -500,7 +612,7 @@ module mkfpu_fm_add_sub_pipe_32(Ifc_fpu_fm_add_sub_pipe_32)
                                                 };
          ff_stage4.enq( ff_stage4_pipe ) ;
 
-    endrule:rl_stage_3
+    endrule
 
     rule rl_stage4;//rg_state_handler == Stage3 && !rg_flush);
          let ff_stage4_pipe = ff_stage4.first ; ff_stage4.deq ;

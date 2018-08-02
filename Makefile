@@ -7,8 +7,8 @@ include soc_config.inc
 SHAKTI_C_HOME=$(PWD)
 export SHAKTI_C_HOME
 
-TOP_MODULE:=mkfpu_divider_pipe32
-TOP_FILE:=fpu_divider_pipe.bsv
+TOP_MODULE:=mkfpu_fm_add_sub_pipe_32
+TOP_FILE:=fpu_fm_add_sub_pipe_32.bsv
 HOMEDIR:=./
 TOP_DIR:=./src/core/fpu
 BSVBUILDDIR:=./build/

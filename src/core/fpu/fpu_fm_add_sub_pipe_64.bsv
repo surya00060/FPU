@@ -951,7 +951,7 @@ module mkTb_fpu_fm_add_sub_pipe_64(Empty);
       	if(rg_clock=='d20) $finish(0);
     endrule
 
-    rule rl_input1(rg_clock < 15);
+    rule rl_input1;//(rg_clock < 15);
              let {man1,man2,man3}   <- getMant64.func(operand1,operand2, operand3);
              let {exp1,exp2,exp3}   <- getExp64.func(operand1,operand2, operand3);
              let x <- condFlags64.func(tuple2(man1,exp1),tuple2(man2,exp2),tuple2(man3,exp3));

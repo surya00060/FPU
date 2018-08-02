@@ -6,20 +6,16 @@
 <Project Version="7" Minor="12" Path="/home/surya/Desktop/FPU/fpga/mkfpu_divider_pipe32/mkfpu_divider_pipe32.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
-<<<<<<< HEAD
-    <Option Name="Id" Val="5d37aa7249754897be2a491970298fd6"/>
-=======
-    <Option Name="Id" Val="00042049aa334e17b6f5ae0ff47cedf7"/>
->>>>>>> 46780639f3eb4599826a13269524785fabe9cd4e
+    <Option Name="Id" Val="b365f506b9cb441f88c38374a7d43e8c"/>
     <Option Name="Part" Val="xc7a100tcsg324-1"/>
     <Option Name="CompiledLibDir" Val="$PCACHEDIR/compile_simlib"/>
     <Option Name="CompiledLibDirXSim" Val=""/>
-    <Option Name="CompiledLibDirModelSim" Val="$PCACHEDIR/compile_simlib/modelsim"/>
-    <Option Name="CompiledLibDirQuesta" Val="$PCACHEDIR/compile_simlib/questa"/>
-    <Option Name="CompiledLibDirIES" Val="$PCACHEDIR/compile_simlib/ies"/>
-    <Option Name="CompiledLibDirVCS" Val="$PCACHEDIR/compile_simlib/vcs"/>
-    <Option Name="CompiledLibDirRiviera" Val="$PCACHEDIR/compile_simlib/riviera"/>
-    <Option Name="CompiledLibDirActivehdl" Val="$PCACHEDIR/compile_simlib/activehdl"/>
+    <Option Name="CompiledLibDirModelSim" Val="/home/surya/Desktop/FPU/fpga/mkfpu_divider_pipe32/mkfpu_divider_pipe32.cache/compile_simlib/modelsim"/>
+    <Option Name="CompiledLibDirQuesta" Val="/home/surya/Desktop/FPU/fpga/mkfpu_divider_pipe32/mkfpu_divider_pipe32.cache/compile_simlib/questa"/>
+    <Option Name="CompiledLibDirIES" Val="/home/surya/Desktop/FPU/fpga/mkfpu_divider_pipe32/mkfpu_divider_pipe32.cache/compile_simlib/ies"/>
+    <Option Name="CompiledLibDirVCS" Val="/home/surya/Desktop/FPU/fpga/mkfpu_divider_pipe32/mkfpu_divider_pipe32.cache/compile_simlib/vcs"/>
+    <Option Name="CompiledLibDirRiviera" Val="/home/surya/Desktop/FPU/fpga/mkfpu_divider_pipe32/mkfpu_divider_pipe32.cache/compile_simlib/riviera"/>
+    <Option Name="CompiledLibDirActivehdl" Val="/home/surya/Desktop/FPU/fpga/mkfpu_divider_pipe32/mkfpu_divider_pipe32.cache/compile_simlib/activehdl"/>
     <Option Name="BoardPart" Val=""/>
     <Option Name="ActiveSimSet" Val="sim_1"/>
     <Option Name="DefaultLib" Val="xil_defaultlib"/>
@@ -49,6 +45,7 @@
       <Filter Type="Srcs"/>
       <File Path="$PPRDIR/../../verilog/FIFO2.v">
         <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -56,6 +53,7 @@
       </File>
       <File Path="$PPRDIR/../../verilog/mkfpu_divider_pipe64.v">
         <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -63,6 +61,7 @@
       </File>
       <File Path="$PPRDIR/../../verilog/mkfpu_divider_pipe32.v">
         <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -70,7 +69,6 @@
       </File>
       <Config>
         <Option Name="DesignMode" Val="RTL"/>
-        <Option Name="TopModule" Val="mkfpu_divider_pipe32"/>
         <Option Name="TopAutoSet" Val="TRUE"/>
         <Option Name="VerilogDir" Val="$PPRDIR/../../verilog"/>
       </Config>

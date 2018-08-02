@@ -23,7 +23,7 @@ wait_on_run core_synth_1
 open_run core_synth_1 -name core_synth_1
 report_utilization -hierarchical -file $core_project_dir/syn_area.txt
 report_timing_summary -delay_type min_max -report_unconstrained -check_timing_verbose\
-  -max_paths 10 -input_pins -file $core_project_dir/syn_timing.txt
+  -max_paths 1000 -input_pins -file $core_project_dir/syn_timing.txt
 
 #launch_run core_impl_1 -job 4
 #wait_on_run core_impl_1

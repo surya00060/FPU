@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<GenRun Id="core_synth_1" LaunchPart="xc7a100tcsg324-1" LaunchTime="1532070047">
+<GenRun Id="core_synth_1" LaunchPart="xc7a100tcsg324-1" LaunchTime="1533137726">
   <File Type="VDS-TIMING-PB" Name="mkfpu_fm_add_sub_pipe_32_timing_summary_synth.pb"/>
+  <File Type="VDS-TIMINGSUMMARY" Name="mkfpu_fm_add_sub_pipe_32_timing_summary_synth.rpt"/>
   <File Type="RDS-RDS" Name="mkfpu_fm_add_sub_pipe_32.vds"/>
   <File Type="PA-TCL" Name="mkfpu_fm_add_sub_pipe_32.tcl"/>
-  <File Type="VDS-TIMINGSUMMARY" Name="mkfpu_fm_add_sub_pipe_32_timing_summary_synth.rpt"/>
-  <File Type="RDS-DCP" Name="mkfpu_fm_add_sub_pipe_32.dcp"/>
-  <File Type="RDS-UTIL-PB" Name="mkfpu_fm_add_sub_pipe_32_utilization_synth.pb"/>
-  <File Type="RDS-UTIL" Name="mkfpu_fm_add_sub_pipe_32_utilization_synth.rpt"/>
   <File Type="RDS-PROPCONSTRS" Name="mkfpu_fm_add_sub_pipe_32_drc_synth.rpt"/>
+  <File Type="RDS-UTIL" Name="mkfpu_fm_add_sub_pipe_32_utilization_synth.rpt"/>
+  <File Type="RDS-UTIL-PB" Name="mkfpu_fm_add_sub_pipe_32_utilization_synth.pb"/>
+  <File Type="RDS-DCP" Name="mkfpu_fm_add_sub_pipe_32.dcp"/>
   <FileSet Name="sources" Type="DesignSrcs" RelSrcDir="$PSRCDIR/sources_1">
     <Filter Type="Srcs"/>
     <File Path="$PPRDIR/../../verilog/FIFO2.v">

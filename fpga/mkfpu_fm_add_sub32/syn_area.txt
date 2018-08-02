@@ -1,7 +1,7 @@
 Copyright 1986-2016 Xilinx, Inc. All Rights Reserved.
 ------------------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2016.1 (lin64) Build 1538259 Fri Apr  8 15:45:23 MDT 2016
-| Date         : Thu Jul 12 19:32:05 2018
+| Date         : Wed Aug  1 18:32:45 2018
 | Host         : surya-HP-Pavilion-Power-Laptop-15-cb0xx running 64-bit Ubuntu 16.04.4 LTS
 | Command      : report_utilization -hierarchical -file .//fpga/mkfpu_fm_add_sub32/syn_area.txt
 | Design       : mkfpu_fm_add_sub32
@@ -21,7 +21,7 @@ Table of Contents
 +--------------------+--------+------------+------------+---------+------+-----+--------+--------+--------------+
 |      Instance      | Module | Total LUTs | Logic LUTs | LUTRAMs | SRLs | FFs | RAMB36 | RAMB18 | DSP48 Blocks |
 +--------------------+--------+------------+------------+---------+------+-----+--------+--------+--------------+
-| mkfpu_fm_add_sub32 |  (top) |       2580 |       2580 |       0 |    0 | 475 |      0 |      0 |            2 |
+| mkfpu_fm_add_sub32 |  (top) |       2578 |       2578 |       0 |    0 | 474 |      0 |      0 |            2 |
 +--------------------+--------+------------+------------+---------+------+-----+--------+--------+--------------+
 
 

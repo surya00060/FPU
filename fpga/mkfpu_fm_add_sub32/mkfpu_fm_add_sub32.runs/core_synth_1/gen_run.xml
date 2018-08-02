@@ -1,22 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<GenRun Id="core_synth_1" LaunchPart="xc7a100tcsg324-1" LaunchTime="1531404059">
+<GenRun Id="core_synth_1" LaunchPart="xc7a100tcsg324-1" LaunchTime="1533129027">
+  <File Type="VDS-TIMING-PB" Name="mkfpu_fm_add_sub32_timing_summary_synth.pb"/>
+  <File Type="VDS-TIMINGSUMMARY" Name="mkfpu_fm_add_sub32_timing_summary_synth.rpt"/>
   <File Type="RDS-DCP" Name="mkfpu_fm_add_sub32.dcp"/>
   <File Type="RDS-UTIL-PB" Name="mkfpu_fm_add_sub32_utilization_synth.pb"/>
-  <File Type="VDS-TIMINGSUMMARY" Name="mkfpu_fm_add_sub32_timing_summary_synth.rpt"/>
-  <File Type="VDS-TIMING-PB" Name="mkfpu_fm_add_sub32_timing_summary_synth.pb"/>
+  <File Type="RDS-UTIL" Name="mkfpu_fm_add_sub32_utilization_synth.rpt"/>
+  <File Type="RDS-PROPCONSTRS" Name="mkfpu_fm_add_sub32_drc_synth.rpt"/>
   <File Type="RDS-RDS" Name="mkfpu_fm_add_sub32.vds"/>
   <File Type="PA-TCL" Name="mkfpu_fm_add_sub32.tcl"/>
-  <File Type="RDS-PROPCONSTRS" Name="mkfpu_fm_add_sub32_drc_synth.rpt"/>
-  <File Type="RDS-UTIL" Name="mkfpu_fm_add_sub32_utilization_synth.rpt"/>
   <FileSet Name="sources" Type="DesignSrcs" RelSrcDir="$PSRCDIR/sources_1">
     <Filter Type="Srcs"/>
-    <File Path="$PPRDIR/../../verilog/mkfpu_fm_add_sub64.v">
-      <FileInfo>
-        <Attr Name="UsedIn" Val="synthesis"/>
-        <Attr Name="UsedIn" Val="implementation"/>
-        <Attr Name="UsedIn" Val="simulation"/>
-      </FileInfo>
-    </File>
     <File Path="$PPRDIR/../../verilog/mkfpu_fm_add_sub32.v">
       <FileInfo>
         <Attr Name="UsedIn" Val="synthesis"/>
