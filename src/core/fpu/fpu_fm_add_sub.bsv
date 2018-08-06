@@ -860,7 +860,7 @@ endmodule
 
 module mkTb_fpu_fm_add_sub(Empty);
 
-	Ifc_fpu_fm_add_sub#(32,23,8) uut <- mkfpu_fm_add_sub();
+	Ifc_fpu_fm_add_sub#(64,52,11) uut <- mkfpu_fm_add_sub();
 
     function Tuple3#(Bit#(5), Bit#(5), Bit#(5)) condFlags (Tuple2#(Bit#(m), Bit#(e)) x, Tuple2#(Bit#(m), Bit#(e)) y, Tuple2#(Bit#(m),Bit#(e)) z);
         let s = valueOf(m);
@@ -927,12 +927,12 @@ module mkTb_fpu_fm_add_sub(Empty);
     Wrapper3#(Bit#(64),Bit#(64),Bit#(64),Tuple3#(Bit#(32),Bit#(32),Bit#(32)))                                                          setCanonicalNaN <- mkUniqueWrapper3(setCanNaN);
 
     Reg#(Bit#(32)) rg_clock <-mkReg(0);
-    //Reg#(Bit#(64)) operand1 <- mkReg(64'h17fffffffffff860);
-    //Reg#(Bit#(64)) operand2 <- mkReg(64'h0000000000000200);
-    //Reg#(Bit#(64)) operand3 <- mkReg(64'h000000000000005f);
-    Reg#(Bit#(32)) operand1 <- mkReg(32'h31f36ab4);
-    Reg#(Bit#(32)) operand2 <- mkReg(32'h08835f4d);
-    Reg#(Bit#(32)) operand3 <- mkReg(32'h0);
+    Reg#(Bit#(64)) operand1 <- mkReg(64'h17fffffffffff860);
+    Reg#(Bit#(64)) operand2 <- mkReg(64'h0000000000000200);
+    Reg#(Bit#(64)) operand3 <- mkReg(64'h000000000000005f);
+    //Reg#(Bit#(32)) operand1 <- mkReg(32'h31f36ab4);
+    //Reg#(Bit#(32)) operand2 <- mkReg(32'h08835f4d);
+    //Reg#(Bit#(32)) operand3 <- mkReg(32'h0);
 
     rule rl_count_clock ;
       	rg_clock<=rg_clock+1;
@@ -940,20 +940,22 @@ module mkTb_fpu_fm_add_sub(Empty);
     endrule
 
     rule rl_input1(rg_clock==1);
-             let {man1,man2,man3}   <- getMant32.func(operand1,operand2, operand3);
-             let {exp1,exp2,exp3}   <- getExp32.func(operand1,operand2, operand3);
-             let x <- condFlags32.func(tuple2(man1,exp1),tuple2(man2,exp2),tuple2(man3,exp3));
-             let sign1 = operand1[31];
-             let sign2 = operand2[31];
-             let sign3 = operand3[31];
+             let {man1,man2,man3}   <- getMant64.func(operand1,operand2, operand3);
+             let {exp1,exp2,exp3}   <- getExp64.func(operand1,operand2, operand3);
+             let x <- condFlags64.func(tuple2(man1,exp1),tuple2(man2,exp2),tuple2(man3,exp3));
+             let sign1 = operand1[63];
+             let sign2 = operand2[63];
+             let sign3 = operand3[63];
              uut._start(tuple3(sign1,exp1,man1),tuple3(sign2,exp2,man2),tuple3(sign3,exp3,man3),3'b0,1'b0,1'b0,1'b0,1'b1,x);
 `ifdef verbose $display("giving inputs at %0d", rg_clock); `endif
+$display("giving inputs at %0d", rg_clock);
 
     endrule
 
     rule rl_finish;
         let res = uut.get_result();
-        `ifdef verbose $display("Output = %h at %0d",res.final_result[31:0], rg_clock); `endif
+        `ifdef verbose $display("Output = %h at %0d",res.final_result[63:0], rg_clock); `endif
+        $display("Output = %h at %0d",res.final_result[63:0], rg_clock);
     endrule
 
 endmodule

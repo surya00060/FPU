@@ -6,7 +6,7 @@
 <Project Version="7" Minor="12" Path="/home/surya/Desktop/FPU/fpga/mkfpu_fm_add_sub_pipe_64/mkfpu_fm_add_sub_pipe_64.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
-    <Option Name="Id" Val="9f5a45b69a144cf3a551d41be74f886e"/>
+    <Option Name="Id" Val="14ba0b4627804d48952a7e0c45aa8e85"/>
     <Option Name="Part" Val="xc7a100tcsg324-1"/>
     <Option Name="CompiledLibDir" Val="$PCACHEDIR/compile_simlib"/>
     <Option Name="CompiledLibDirXSim" Val=""/>
@@ -51,13 +51,6 @@
         </FileInfo>
       </File>
       <File Path="$PPRDIR/../../verilog/mkfpu_fm_add_sub_pipe_64.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../../verilog/FIFO1.v">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>

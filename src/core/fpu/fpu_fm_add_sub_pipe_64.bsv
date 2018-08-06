@@ -62,11 +62,12 @@ typedef struct{
     bit inp_denormal;
 }Stage2_data_type  deriving (Bits,Eq);
 
+
 typedef struct{
     Bit#(1) sign2;
     Bit#(1) sign3;
-    Bit#(13) exponent2;
-    Bit#(13) exponent3;
+    //Bit#(13) exponent2;
+    //Bit#(13) exponent3;
     Bit#(TAdd#(TMul#(52,3),4)) mantissa2;
     Bit#(TAdd#(TMul#(52,3),4)) mantissa3;
     bit operation;
@@ -80,6 +81,11 @@ typedef struct{
     bit quiet_nan_two;
     bit quiet_nan_three;
     bit lv_product_is_zero;
+    Bit#(13) exponent_difference ;
+    Bit#(160)  mantissa_to_shift;
+    bit op2_gt_op3 ;
+    Bit#(13) resultant_exponent;
+    Bit#(13) lv_zeros_on_right;
 }Stage3_data_type deriving (Bits , Eq) ;
 
 typedef struct{
@@ -476,14 +482,13 @@ module mkfpu_fm_add_sub_pipe_64(Ifc_fpu_fm_add_sub_pipe_64)
             exponent2 = '0;
             mantissa2 = '0;
          end
-    
+        
          Bit#(13) lv_minuend, lv_subtrahend;
          Bit#(13) exponent_difference = '0;
          Bit#(13) resultant_exponent = '0;
          bit op2_gt_op3 = 0;
          
          Bit#(160) mantissa_to_shift;
-         let lv_zeros_on_right;
          bit lv_sticky = 0;
          
          if(exponent2 > exponent3) begin
@@ -501,10 +506,75 @@ module mkfpu_fm_add_sub_pipe_64(Ifc_fpu_fm_add_sub_pipe_64)
          
          resultant_exponent           = lv_minuend;
          exponent_difference          = lv_minuend - lv_subtrahend;
-         lv_zeros_on_right            = zeroExtend(pack(countZerosLSB(mantissa_to_shift)));
-         Bit#(1) shifted_operand_zero = (mantissa_to_shift == '0) ? 1:0;
-         mantissa_to_shift            = mantissa_to_shift >> exponent_difference;
+
+         let lv_zeros_on_right            = zeroExtend(pack(countZerosLSB(mantissa_to_shift)));
+         
+         let ff_stage3_pipe = Stage3_data_type{
+                                                    sign2                      :   sign2,
+                                                    sign3                      :   sign3,
+                                                    //exponent2                  :   exponent2,
+                                                    //exponent3                  :   exponent3,
+                                                    mantissa2                  :   mantissa2,
+                                                    mantissa3                  :   mantissa3,
+                                                    operation                  :   operation,
+                                                    add_flags                  :   add_flags,
+                                                    lv_rounding_mode           :   lv_rounding_mode,
+                                                    lv_result_is_invalid       :   lv_result_is_invalid,
+                                                    lv_result_is_infinity      :   lv_result_is_infinity,
+                                                    lv_result_is_zero          :   lv_result_is_zero,
+                                                    lv_product_overflow        :   lv_product_overflow,
+                                                    lv_product_underflow       :   lv_product_underflow,
+                                                    quiet_nan_two              :   quiet_nan_two,
+                                                    quiet_nan_three            :   quiet_nan_three,
+                                                    lv_product_is_zero         :   lv_product_is_zero,
+                                                    exponent_difference        :   exponent_difference,
+                                                    //lv_minuend                 :   lv_minuend,
+                                                    //lv_subtrahend              :   lv_subtrahend,
+                                                    mantissa_to_shift          :   mantissa_to_shift,
+                                                    op2_gt_op3                 :   op2_gt_op3,
+                                                    resultant_exponent         :   resultant_exponent,
+                                                    lv_zeros_on_right          :   lv_zeros_on_right 
+                                                };
+         ff_stage3.enq(ff_stage3_pipe);
+    endrule
+
+
+
+    rule rl_stage_3_1;
+
+        let ff_stage3_pipe = ff_stage3.first ; ff_stage3.deq ;
+
+        let sign2                      = ff_stage3_pipe.sign2;
+        let sign3                      = ff_stage3_pipe.sign3;
+        //let exponent2                  = ff_stage3_pipe.exponent2;
+        //let exponent3                  = ff_stage3_pipe.exponent3;
+        let mantissa2                  = ff_stage3_pipe.mantissa2;
+        let mantissa3                  = ff_stage3_pipe.mantissa3;
+        let operation                  = ff_stage3_pipe.operation;
+        let add_flags                  = ff_stage3_pipe.add_flags;
+        let lv_rounding_mode           = ff_stage3_pipe.lv_rounding_mode;
+        let lv_result_is_invalid       = ff_stage3_pipe.lv_result_is_invalid;
+        let lv_result_is_infinity      = ff_stage3_pipe.lv_result_is_infinity;
+        let lv_result_is_zero          = ff_stage3_pipe.lv_result_is_zero;
+        let lv_product_overflow        = ff_stage3_pipe.lv_product_overflow;
+        let lv_product_underflow       = ff_stage3_pipe.lv_product_underflow;
+        let quiet_nan_two              = ff_stage3_pipe.quiet_nan_two;
+        let quiet_nan_three            = ff_stage3_pipe.quiet_nan_three;
+        let lv_product_is_zero         = ff_stage3_pipe.lv_product_is_zero;
+        //let lv_minuend                 = ff_stage3_pipe.lv_minuend;
+        //let lv_subtrahend              = ff_stage3_pipe.lv_subtrahend;
+        let exponent_difference        = ff_stage3_pipe.exponent_difference;
+        let mantissa_to_shift          = ff_stage3_pipe.mantissa_to_shift;
+        let op2_gt_op3                 = ff_stage3_pipe.op2_gt_op3;
+        let resultant_exponent         = ff_stage3_pipe.resultant_exponent;
+        let lv_zeros_on_right          = ff_stage3_pipe.lv_zeros_on_right;
+
+        bit lv_sticky = 0;
         
+         
+        Bit#(1) shifted_operand_zero = (mantissa_to_shift == '0) ? 1:0;
+         mantissa_to_shift            = mantissa_to_shift >> exponent_difference;
+         
          //Handling sticky
          if(((lv_zeros_on_right < exponent_difference) || (mantissa_to_shift[0] == 1)) && shifted_operand_zero != 1)
             lv_sticky = 1;
@@ -545,7 +615,7 @@ module mkfpu_fm_add_sub_pipe_64(Ifc_fpu_fm_add_sub_pipe_64)
                                                 };
         ff_stage4.enq(ff_stage4_pipe);
 
-    endrule:rl_stage_3
+    endrule
 
     rule rl_stage4;
          //rg_state_handler <= Stage4

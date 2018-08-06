@@ -1,7 +1,7 @@
 Copyright 1986-2016 Xilinx, Inc. All Rights Reserved.
 ------------------------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2016.1 (lin64) Build 1538259 Fri Apr  8 15:45:23 MDT 2016
-| Date         : Wed Aug  1 17:46:18 2018
+| Date         : Mon Aug  6 17:36:09 2018
 | Host         : surya-HP-Pavilion-Power-Laptop-15-cb0xx running 64-bit Ubuntu 16.04.4 LTS
 | Command      : report_utilization -hierarchical -file .//fpga/mkfpu_fm_add_sub_pipe_64/syn_area.txt
 | Design       : mkfpu_fm_add_sub_pipe_64
@@ -21,12 +21,13 @@ Table of Contents
 +------------------------------+-----------------------+------------+------------+---------+------+------+--------+--------+--------------+
 |           Instance           |         Module        | Total LUTs | Logic LUTs | LUTRAMs | SRLs |  FFs | RAMB36 | RAMB18 | DSP48 Blocks |
 +------------------------------+-----------------------+------------+------------+---------+------+------+--------+--------+--------------+
-| mkfpu_fm_add_sub_pipe_64     |                 (top) |       6673 |       6673 |       0 |    0 | 1904 |      0 |      0 |            9 |
-|   (mkfpu_fm_add_sub_pipe_64) |                 (top) |       5685 |       5685 |       0 |    0 |    0 |      0 |      0 |            9 |
-|   ff_input                   |                 FIFO2 |        212 |        212 |       0 |    0 |  402 |      0 |      0 |            0 |
-|   ff_stage2                  | FIFO2__parameterized0 |        212 |        212 |       0 |    0 |  406 |      0 |      0 |            0 |
-|   ff_stage4                  | FIFO2__parameterized1 |        362 |        362 |       0 |    0 |  700 |      0 |      0 |            0 |
-|   ff_stage5                  | FIFO2__parameterized2 |        202 |        202 |       0 |    0 |  396 |      0 |      0 |            0 |
+| mkfpu_fm_add_sub_pipe_64     |                 (top) |       7198 |       7198 |       0 |    0 | 2544 |      0 |      0 |            9 |
+|   (mkfpu_fm_add_sub_pipe_64) |                 (top) |       5885 |       5885 |       0 |    0 |    0 |      0 |      0 |            9 |
+|   ff_input                   |                 FIFO2 |        209 |        209 |       0 |    0 |  402 |      0 |      0 |            0 |
+|   ff_stage2                  | FIFO2__parameterized0 |        210 |        210 |       0 |    0 |  406 |      0 |      0 |            0 |
+|   ff_stage3                  | FIFO2__parameterized1 |        330 |        330 |       0 |    0 |  640 |      0 |      0 |            0 |
+|   ff_stage4                  | FIFO2__parameterized2 |        362 |        362 |       0 |    0 |  700 |      0 |      0 |            0 |
+|   ff_stage5                  | FIFO2__parameterized3 |        202 |        202 |       0 |    0 |  396 |      0 |      0 |            0 |
 +------------------------------+-----------------------+------------+------------+---------+------+------+--------+--------+--------------+
 
 
