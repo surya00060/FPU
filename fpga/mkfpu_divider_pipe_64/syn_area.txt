@@ -1,0 +1,32 @@
+Copyright 1986-2016 Xilinx, Inc. All Rights Reserved.
+---------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2016.1 (lin64) Build 1538259 Fri Apr  8 15:45:23 MDT 2016
+| Date         : Sat Aug 18 13:26:30 2018
+| Host         : surya-HP-Pavilion-Power-Laptop-15-cb0xx running 64-bit Ubuntu 16.04.4 LTS
+| Command      : report_utilization -hierarchical -file .//fpga/mkfpu_divider_pipe_64/syn_area.txt
+| Design       : mkfpu_divider_pipe_64
+| Device       : 7a100tcsg324-1
+| Design State : Synthesized
+---------------------------------------------------------------------------------------------------
+
+Utilization Design Information
+
+Table of Contents
+-----------------
+1. Utilization by Hierarchy
+
+1. Utilization by Hierarchy
+---------------------------
+
++---------------------------+-----------------------+------------+------------+---------+------+------+--------+--------+--------------+
+|          Instance         |         Module        | Total LUTs | Logic LUTs | LUTRAMs | SRLs |  FFs | RAMB36 | RAMB18 | DSP48 Blocks |
++---------------------------+-----------------------+------------+------------+---------+------+------+--------+--------+--------------+
+| mkfpu_divider_pipe_64     |                 (top) |       2584 |       2584 |       0 |    0 | 1025 |      0 |      0 |            0 |
+|   (mkfpu_divider_pipe_64) |                 (top) |       2142 |       2142 |       0 |    0 |  173 |      0 |      0 |            0 |
+|   ff_stage1               |                 FIFO2 |        134 |        134 |       0 |    0 |  258 |      0 |      0 |            0 |
+|   ff_stage2               | FIFO2__parameterized0 |         26 |         26 |       0 |    0 |   46 |      0 |      0 |            0 |
+|   ff_stage2_1             | FIFO2__parameterized1 |        140 |        140 |       0 |    0 |  272 |      0 |      0 |            0 |
+|   ff_stage3               | FIFO2__parameterized2 |        142 |        142 |       0 |    0 |  276 |      0 |      0 |            0 |
++---------------------------+-----------------------+------------+------------+---------+------+------+--------+--------+--------------+
+
+

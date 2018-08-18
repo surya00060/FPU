@@ -6,7 +6,7 @@ See LICENSE for more details
 Description:
 TODO
 */
-package fpu_divider_pipe;
+package fpu_divider_pipe_64;
     import DReg::*;
     import defined_types::*;                              //contains typedef of exceptions which are generated here
     import integer_divider::*;               //divider module
@@ -15,9 +15,9 @@ package fpu_divider_pipe;
     import FIFOF        :: *;
 
     typedef struct{
-    	Bit#(TAdd#(fpexp,2)) exponent;                              
-    	Bit#(TAdd#(fpman,1)) dividend;
-    	Bit#(TAdd#(fpman,1)) divisor;
+    	Bit#(TAdd#(11,2)) exponent;                              
+    	Bit#(TAdd#(52,1)) dividend;
+    	Bit#(TAdd#(52,1)) divisor;
         bit sign;
     	bit invalid;
     	bit infinity;
@@ -25,10 +25,10 @@ package fpu_divider_pipe;
     	bit zero;
 		Bit#(3) rounding_mode;
     bit quiet_nan;
-    } Stage1_type#(numeric type fpman,numeric type fpexp) deriving (Bits,Eq);                   //Structure of 1st Stage of the pipeline
+    } Stage1_type deriving (Bits,Eq);                   //Structure of 1st Stage of the pipeline
 
      typedef struct {
-            Bit#(fpexp2) exponent;
+            Bit#(13) exponent;
             Bit#(1) sign;
             Bit#(1) infinity;
             Bit#(1) invalid;
@@ -36,12 +36,25 @@ package fpu_divider_pipe;
             Bit#(1) zero;
             Bit#(3) rounding_mode;
             bit quiet_nan;
-     } Stage2_type#(numeric type fpexp2) deriving (Bits,Eq);
+     } Stage2_type deriving (Bits,Eq);
+
+     typedef struct {
+            Bit#(56) lv_quotient;
+            Bit#(57) lv_remainder;
+            Bit#(13) exponent;
+            Bit#(1) sign;
+            Bit#(1) infinity;
+            Bit#(1) invalid;
+            Bit#(1) dz;
+            Bit#(1) zero;
+            Bit#(3) rounding_mode;
+            bit quiet_nan;
+     } Stage2_1_type deriving (Bits,Eq);
 
       typedef struct {
-            Bit#(TAdd#(fpman,4)) lv_quotient;
-            Bit#(TAdd#(fpman,5)) lv_remainder;
-            Bit#(fpexp2) lv_exponent;
+            Bit#(TAdd#(52,4)) lv_quotient;
+            Bit#(TAdd#(52,5)) lv_remainder;
+            Bit#(13) lv_exponent;
             Bit#(1) lv_sign;
             Bit#(1) lv_infinity;
             Bit#(1) lv_invalid;
@@ -53,93 +66,59 @@ package fpu_divider_pipe;
             Bit#(3) lv_rounding_mode;
             bit lv_quotient_is_subnormal;
             bit quiet_nan;
-     } Stage3_type#(numeric type fpexp2, numeric type fpman) deriving (Bits,Eq);
+     } Stage3_type deriving (Bits,Eq);
      
-     typedef struct {
-            Bit#(TAdd#(fpman,2)) lv_rounded_quotient;
-            Bit#(fpexp2) lv_exponent;
-            Bit#(1) lv_sign;
-            Bit#(1) lv_infinity;
-            Bit#(1) lv_invalid;
-            Bit#(1) lv_dz;
-            bit lv_underflow;
-            bit lv_overflow;
-            Bit#(1) lv_zero;
-            Bit#(3) lv_rounding_mode;
-            bit quiet_nan;
-            bit lv_inexact;
-     } Stage4_type#(numeric type fpexp2, numeric type fpman) deriving (Bits,Eq);
 
-      //typedef enum {
-      //              Begin,
-      //              Stage1,
-      //              Stage2,
-      //              Stage3
-      //            }Div_states deriving (Bits,Eq);
+      
 
 
-    interface Ifc_fpu_divider_pipe#(numeric type fpinp, numeric type fpman, numeric type fpexp);
-	    method Action _start(Bit#(1) lv_sign, Bit#(fpman) lv_mantissa1, Bit#(fpexp) lv_exponent1, Bit#(fpman) lv_mantissa2, Bit#(fpexp) lv_exponent2, Bit#(3) rounding_mode, Tuple2#(Bit#(5),Bit#(5)) flags);
-    	method Floating_output#(fpinp) final_result_();				 // Output method
-        method Action flush;
-    endinterface
-
- `ifdef fpu_hierarchical
-    interface Ifc_fpu_divider_pipe32;
-	    method Action _start(Bit#(1) lv_sign, Bit#(23) lv_mantissa1, Bit#(8) lv_exponent1, Bit#(23) lv_mantissa2, Bit#(8) lv_exponent2, Bit#(3) rounding_mode, Tuple2#(Bit#(5),Bit#(5)) flags);
-    	method Floating_output#(32) final_result_();				 // Output method
-        method Action flush;
-    endinterface
-
-    interface Ifc_fpu_divider_pipe64;
+     interface Ifc_fpu_divider_pipe_64;
 	    method Action _start(Bit#(1) lv_sign, Bit#(52) lv_mantissa1, Bit#(11) lv_exponent1, Bit#(52) lv_mantissa2, Bit#(11) lv_exponent2, Bit#(3) rounding_mode, Tuple2#(Bit#(5),Bit#(5)) flags);
     	method Floating_output#(64) final_result_();				 // Output method
         method Action flush;
     endinterface
- `endif
+
     
 //(*synthesize*)
-module mkfpu_divider_pipe(Ifc_fpu_divider_pipe#(fpinp,fpman,fpexp))
+module mkfpu_divider_pipe_64(Ifc_fpu_divider_pipe_64)
        provisos(
-                Add#(TAdd#(fpman,fpexp),1,fpinp), // fpman -23 fpexp=8 fpinp = 32
-                Add#(fpman,2,fpman2), // fpman2 = 25
-                Add#(fpman2,2,fpman4), // fpman4 = 27
-                Add#(fpman4,1,fpman5), // fpman5 = 28
-                Add#(fpexp,2,fpexp2), // fpexp2 = 10
-                Add#(fpman5,1,fpman6), // fpman6 = 29
-                Add#(fpman4,fpman6,acc_bits), // acc_bits= 56
-                Add#(fpexp2,b__,fpman),
-                Add#(TSub#(fpexp,1),c__,fpman),
+                //Add#(TAdd#(52,11),1,64), // 52 -52 11=11 64 = 64
+                //Add#(52,2,54), // 54 = 54
+                //Add#(54,2,56), // 56 = 56
+                //Add#(56,1,57), // 57 = 57
+                //Add#(11,2,13), // 13 = 13
+                //Add#(57,1,58), // 58 = 58
+                //Add#(56,58,114), // 114= 114
+                Add#(13,b__,52),
+                Add#(TSub#(11,1),c__,52),
                 //per request of bsc
-                Add#(a__, 1, fpexp2),
-                Add#(d__, TLog#(TAdd#(1, TAdd#(fpexp, c__))), fpexp2),
-                Add#(e__, TLog#(fpman5), fpexp2),
-                Add#(1, f__, fpman2),
-                Add#(g__, 1, fpman4),
-				Add#(h__, TLog#(TAdd#(1, TAdd#(c__, fpexp))), fpexp2),
-                Add#(1, fpexp2, TAdd#(fpexp, i__))
+                Add#(a__, 1, 13),
+                Add#(d__, TLog#(TAdd#(1, TAdd#(11, c__))), 13),
+                Add#(e__, TLog#(57), 13),
+                Add#(1, f__, 54),
+                Add#(g__, 1, 56),
+				Add#(h__, TLog#(TAdd#(1, TAdd#(c__, 11))), 13),
+                Add#(1, 13, TAdd#(11, i__))
                );
 
-    Ifc_integer_divider#(fpman4) int_div <- mkinteger_divider();    // instantiation of divider module
+    Ifc_integer_divider#(56) int_div <- mkinteger_divider();    // instantiation of divider module
 
-	//Wire#(Floating_output#(fpinp))  wr_final_out <- mkWire();			// instantiation of output FIFO whose structure definition is given in riscv_types.bsv
-    Wire#(Floating_output#(fpinp)) wr_final_out <- mkWire();
-	//Reg#(Stage1_type#(fpman,fpexp)) rg_stage1    <- mkRegU();       // instantiation of Stage 1 FIFO
-    //Reg#((Stage2_type#(fpexp2)))    rg_stage2    <- mkRegU();
-    //Reg#((Stage3_type#(fpexp2,fpman))) rg_stage3 <- mkRegU();
-    FIFOF#(Stage1_type#(fpman,fpexp))   ff_stage1    <-mkFIFOF();
-    FIFOF#(Stage2_type#(fpexp2))        ff_stage2    <-mkFIFOF();
-    FIFOF#(Stage3_type#(fpexp2,fpman))  ff_stage3    <-mkFIFOF();
-    FIFOF#(Stage4_type#(fpexp2,fpman))  ff_stage4    <-mkFIFOF();
+	
+    Wire#(Floating_output#(64)) wr_final_out <- mkWire();
+	FIFOF#(Stage1_type)  ff_stage1    <-mkFIFOF();
+    FIFOF#(Stage2_type)  ff_stage2    <-mkFIFOF();
+    FIFOF#(Stage2_1_type) ff_stage2_1  <- mkFIFOF();
+    FIFOF#(Stage2_type)  ff_stage_nothing <- mkFIFOF();
+    FIFOF#(Stage3_type)  ff_stage3    <-mkFIFOF();
     //Reg#(Div_states) rg_state_handler            <- mkReg(Begin);
     Wire#(Bool) wr_flush <- mkDWire(False);
-    let fPINP 	= valueOf(fpinp);
-    let fPMAN 	= valueOf(fpman);
-    let fPMAN5  = valueOf(fpman5);
-    let fPEXP 	= valueOf(fpexp);
-    let aCC   	= valueOf(acc_bits);
+    let fPINP 	= valueOf(64);
+    let fPMAN 	= valueOf(52);
+    let fPMAN5  = valueOf(57);
+    let fPEXP 	= valueOf(11);
+    let aCC   	= valueOf(114);
 
-    //(*mutually_exclusive = "rl_flush,rl_stage2,rl_stage3"*)
+    (*mutually_exclusive = "rl_stage2,rl_stage3"*)
     //rule rl_flush(wr_flush);
     //    rg_state_handler <= Begin;
         //rg_stage1 <= tagged Invalid;
@@ -169,32 +148,68 @@ module mkfpu_divider_pipe(Ifc_fpu_divider_pipe#(fpinp,fpman,fpexp))
 
 	endrule
 
-	rule rl_stage3;//(rg_state_handler == Stage2 && !wr_flush);
+    /*rule rl_stage_nothing;
+        let stage_nothing = ff_stage_nothing.first ; ff_stage_nothing.deq ;
+        ff_stage2.enq( stage_nothing ) ;
+    endrule*/ 
+    
+    rule rl_stage2_1 ;
         let int_out = int_div.result_();
-        Bit#(TSub#(fpexp,1)) bias = '1;
-        `ifdef verbose $display("Int Data %h", int_out); `endif
-		Bit#(fpman4) lv_quotient 	= int_out[fPMAN+3:0];	//Quotient from the integer divider
-		Bit#(fpman5) lv_remainder 	= int_out[aCC-1:fPMAN5]; //Remainder from the integer divider
+
+        Bit#(56) lv_quotient 	= int_out[fPMAN+3:0];	//Quotient from the integer divider
+		Bit#(57) lv_remainder 	= int_out[aCC-1:fPMAN5]; //Remainder from the integer divider
         
         let stage2 = ff_stage2.first ; ff_stage2.deq;
 
-        Bit#(fpexp2) lv_exponent 	= stage2.exponent;
+        Bit#(13) lv_exponent 	    = stage2.exponent;
 		Bit#(1)  lv_sign			= stage2.sign;
 		Bit#(1)  lv_infinity    	= stage2.infinity;
 		Bit#(1)  lv_invalid 		= stage2.invalid;
 		Bit#(1)  lv_dz 				= stage2.dz;
 		Bit#(1)  lv_zero 			= stage2.zero;
 		Bit#(3)  lv_rounding_mode	= stage2.rounding_mode;
-        let quiet_nan = stage2.quiet_nan;
+        let quiet_nan               = stage2.quiet_nan;
+
+        let stage2_1 = Stage2_1_type {              lv_quotient     : lv_quotient,
+                                                    lv_remainder    : lv_remainder,
+                                                    exponent        : lv_exponent,
+                                     				sign            : lv_sign,
+                                     				infinity        : lv_infinity,
+                                     				invalid         : lv_invalid,
+                                     				dz              : lv_dz,
+                                     				zero            : lv_zero,
+                                     				rounding_mode   : lv_rounding_mode,
+                                                    quiet_nan       : quiet_nan
+                                    };
+	    ff_stage2_1.enq( stage2_1 );
+    
+    endrule
+
+	rule rl_stage3;//(rg_state_handler == Stage2 && !wr_flush);
+        Bit#(TSub#(11,1)) bias = '1;
+        `ifdef verbose $display("Int Data %h", int_out); `endif
+
+        let stage2_1 = ff_stage2_1.first ; ff_stage2_1.deq;
+
+        Bit#(56) lv_quotient        = stage2_1.lv_quotient;
+        Bit#(57) lv_remainder       = stage2_1.lv_remainder;
+        Bit#(13) lv_exponent 	    = stage2_1.exponent;
+		Bit#(1)  lv_sign			= stage2_1.sign;
+		Bit#(1)  lv_infinity    	= stage2_1.infinity;
+		Bit#(1)  lv_invalid 		= stage2_1.invalid;
+		Bit#(1)  lv_dz 				= stage2_1.dz;
+		Bit#(1)  lv_zero 			= stage2_1.zero;
+		Bit#(3)  lv_rounding_mode	= stage2_1.rounding_mode;
+        let quiet_nan               = stage2_1.quiet_nan;
 
     //rg_stage2 <= tagged Invalid;
 
 		bit lv_underflow = 0;
 		bit lv_overflow = 0;
 
-		Int#(fpexp2) lv_actual_exponent = unpack(lv_exponent - {3'b0,bias});
+		Int#(13) lv_actual_exponent = unpack(lv_exponent - {3'b0,bias});
         //Change-1 Removing not_required variable
-       // Int#(fpman) lv_actual_exponent_temp = signExtend(lv_actual_exponent); 
+       // Int#(52) lv_actual_exponent_temp = signExtend(lv_actual_exponent); 
 		let msb_zeros = pack(countZerosMSB(lv_quotient));
     `ifdef verbose $display("MSB Zeros: %d",msb_zeros); `endif
 		let lsb_zeros = 0;
@@ -202,7 +217,7 @@ module mkfpu_divider_pipe(Ifc_fpu_divider_pipe#(fpinp,fpman,fpexp))
 		// lv_quotient_is_subnormal construct is like a flag which can be used in difficult situations
 		bit lv_quotient_is_subnormal = 0;
 		bit lv_sticky = lv_quotient[0];
-        //Bit#(fpman) bias_temp = zeroExtend(bias);
+        //Bit#(52) bias_temp = zeroExtend(bias);
 		/*
 		if exponent is > 128 then obviously none of the numbers are subnormal
 		so the product is of the form 1x.xxxx or 01.xxxx
@@ -221,7 +236,7 @@ module mkfpu_divider_pipe(Ifc_fpu_divider_pipe#(fpinp,fpman,fpexp))
 		*/
 		else if(lv_actual_exponent < unpack(-zeroExtend(bias)-fromInteger(fPMAN)-1)) begin            //TODO What here? TODO Check <-150 or <-151
 		//else if(lv_actual_exponent_temp < unpack(-bias_temp-fromInteger(fPMAN)-1)) begin            //TODO What here? TODO Check <-150 or <-151
-            //`ifdef verbose $display("lv_actual_exponent : %d bias-fpman-1 :  %d", lv_actual_exponent, -bias_temp-fromInteger(fPMAN-1)); `endif
+            //`ifdef verbose $display("lv_actual_exponent : %d bias-52-1 :  %d", lv_actual_exponent, -bias_temp-fromInteger(fPMAN-1)); `endif
 			lv_underflow = 1;
 			lv_quotient = 1;
 			lv_exponent = 0;
@@ -234,7 +249,7 @@ module mkfpu_divider_pipe(Ifc_fpu_divider_pipe#(fpinp,fpman,fpexp))
 			// possible shift is positive when exponent is lesser than -126
             //Change-x it's enough if possible shift is reduced from lv_exponent - reducing again from bias is actually redundant and incurs another adder
             //Same Experiment here, do all the if-else parallely and just use the if and else for assignments
-			Int#(fpexp2) possible_shift = 1-unpack(lv_exponent);
+			Int#(13) possible_shift = 1-unpack(lv_exponent);
 			`ifdef verbose $display("possible_shift = %0d", possible_shift); `endif
 			
             lsb_zeros = pack(countZerosLSB(lv_quotient));
@@ -366,7 +381,7 @@ module mkfpu_divider_pipe(Ifc_fpu_divider_pipe#(fpinp,fpman,fpexp))
 
         // otherwise if round to zero mode, then do nothing
 
-		Bit#(fpman2) lv_rounded_quotient = {1'b0,lv_quotient[fPMAN+3:3]};
+		Bit#(54) lv_rounded_quotient = {1'b0,lv_quotient[fPMAN+3:3]};
 
 		if( lv_round_up == 1) begin
 			lv_rounded_quotient = lv_rounded_quotient + 1;
@@ -382,7 +397,7 @@ module mkfpu_divider_pipe(Ifc_fpu_divider_pipe#(fpinp,fpman,fpexp))
 			lv_exponent = lv_exponent + 1;
         end
         
-        let stage4 = Stage4_type{ 
+       /* let stage4 = Stage4_type{ 
                 lv_rounded_quotient     : lv_rounded_quotient,
                 lv_exponent             : lv_exponent,
                 lv_sign                 : lv_sign,
@@ -415,18 +430,18 @@ module mkfpu_divider_pipe(Ifc_fpu_divider_pipe#(fpinp,fpman,fpexp))
     let lv_zero                 = stage4.lv_zero;
     let lv_rounding_mode        = stage4.lv_rounding_mode;
     let quiet_nan               = stage4.quiet_nan;
-    let lv_inexact              = stage4.lv_inexact; 
+    let lv_inexact              = stage4.lv_inexact;*/ 
        
-    Bit#(fpexp) out_exp = lv_exponent[fPEXP-1:0];
-    Bit#(fpman) out_man = lv_rounded_quotient[fPMAN-1:0];
-    Bit#(fpexp) exp_all_zeros = '0;
-	Bit#(fpexp) exp_all_ones = '1;
-    Bit#(TSub#(fpexp,1)) exp_all_ones_1 = '1;
-    Bit#(fpman) man_all_zeros = '0;
-    Bit#(fpman) man_all_ones = '1;
-    Bit#(TSub#(fpman,1)) man1_all_zeros = '0;
-    Bit#(TSub#(fpman,1)) man_all_ones_1 = '1;
-	Bit#(fpinp) lv_final_output= 0;
+    Bit#(11) out_exp = lv_exponent[fPEXP-1:0];
+    Bit#(52) out_man = lv_rounded_quotient[fPMAN-1:0];
+    Bit#(11) exp_all_zeros = '0;
+	Bit#(11) exp_all_ones = '1;
+    Bit#(TSub#(11,1)) exp_all_ones_1 = '1;
+    Bit#(52) man_all_zeros = '0;
+    Bit#(52) man_all_ones = '1;
+    Bit#(TSub#(52,1)) man1_all_zeros = '0;
+    Bit#(TSub#(52,1)) man_all_ones_1 = '1;
+	Bit#(64) lv_final_output= 0;
 	Bit#(5) exception = 0;  
      
 		// result is infinity
@@ -483,13 +498,13 @@ module mkfpu_divider_pipe(Ifc_fpu_divider_pipe#(fpinp,fpman,fpexp))
 
 	endrule
 
-	method Action _start(Bit#(1) lv_sign, Bit#(fpman) lv_mantissa1, Bit#(fpexp) lv_exponent1, Bit#(fpman) lv_mantissa2, Bit#(fpexp) lv_exponent2, Bit#(3) rounding_mode, Tuple2#(Bit#(5),Bit#(5)) flags);
+	method Action _start(Bit#(1) lv_sign, Bit#(52) lv_mantissa1, Bit#(11) lv_exponent1, Bit#(52) lv_mantissa2, Bit#(11) lv_exponent2, Bit#(3) rounding_mode, Tuple2#(Bit#(5),Bit#(5)) flags);
  
-        Bit#(TSub#(fpexp,1)) bias = '1;
+        Bit#(TSub#(11,1)) bias = '1;
         let condFlags1 = tpl_1(flags);
         let condFlags2 = tpl_2(flags);
-        Int#(fpexp) actual_exponent1 = unpack(lv_exponent1 - {1'b0,bias});
-		Int#(fpexp) actual_exponent2 = unpack(lv_exponent2 - {1'b0,bias});
+        Int#(11) actual_exponent1 = unpack(lv_exponent1 - {1'b0,bias});
+		Int#(11) actual_exponent2 = unpack(lv_exponent2 - {1'b0,bias});
         `ifdef verbose $display("Exp1: %h, Man1: %h, Exp2: %h Man2: %h",lv_exponent1,lv_mantissa1,lv_exponent2,lv_mantissa2); `endif
         `ifdef verbose $display("condFlags1 : %b condFlags2: %b",condFlags1,condFlags2); `endif
 		Bit#(1) lv_inf = 0;
@@ -531,8 +546,8 @@ module mkfpu_divider_pipe(Ifc_fpu_divider_pipe#(fpinp,fpman,fpexp))
     let zeros2 =countZerosMSB(man2);
     man1=man1<<zeros1;
     man2=man2<<zeros2;
-    Bit#(fpexp2) exp1={2'b0,lv_exponent1};
-    Bit#(fpexp2) exp2={2'b0,lv_exponent2};
+    Bit#(13) exp1={2'b0,lv_exponent1};
+    Bit#(13) exp2={2'b0,lv_exponent2};
     exp1=exp1- zeroExtend(unpack(pack(zeros1)));
     exp2=exp2- zeroExtend(unpack(pack(zeros2)));
         /*
@@ -545,10 +560,10 @@ module mkfpu_divider_pipe(Ifc_fpu_divider_pipe#(fpinp,fpman,fpexp))
 		total_biased_exponent = bias + (op1_biased_expo + is_op1_denorm) - (op2_biased_expo + is_op2_denorm)
         */
 
-    Bit#(fpexp2) lv_exponent = {3'b0,bias} + ((exp1 + zeroExtend(lv_op1_subnormal)) - (exp2 + zeroExtend(lv_op2_subnormal))); //error will come obv
+    Bit#(13) lv_exponent = {3'b0,bias} + ((exp1 + zeroExtend(lv_op1_subnormal)) - (exp2 + zeroExtend(lv_op2_subnormal))); //error will come obv
 
 
-		Int#(fpexp2) lv_actual_exponent = unpack(lv_exponent - {3'b0,bias});
+		Int#(13) lv_actual_exponent = unpack(lv_exponent - {3'b0,bias});
 		`ifdef verbose $display("lv_sign: %h lv_exponent = %h, lv_actual_exponent = %d",lv_sign, lv_exponent, lv_actual_exponent); `endif
     `ifdef verbose $display("lv_inv: %b lv_inf %b lv_dz %b lv_zero %b",lv_inv,lv_inf,lv_dz,lv_zero); `endif
      // rg_state_handler <= Stage1; 
@@ -568,7 +583,7 @@ module mkfpu_divider_pipe(Ifc_fpu_divider_pipe#(fpinp,fpman,fpexp))
 	endmethod
 
     // Output method which send the result
-	method Floating_output#(fpinp) final_result_();
+	method Floating_output#(64) final_result_();
 	    return wr_final_out;
 	endmethod
 
@@ -585,7 +600,7 @@ endmodule
 
 //(*synthesize*)
 /*
-module mkTb_fpu_divider_pipe(Empty);
+module mkTb_fpu_divider_pipe_64(Empty);
 	
     function Tuple2#(Bit#(5), Bit#(5)) condFlags (Tuple2#(Bit#(52), Bit#(11)) x, Tuple2#(Bit#(52), Bit#(11)) y);
         let man1  = tpl_1(x);
@@ -623,7 +638,7 @@ module mkTb_fpu_divider_pipe(Empty);
 	Reg#(Bit#(64)) rg_operand2<-mkReg(64'hbff0000000000000);
 
 	Reg#(Bit#(32)) rg_clock<-mkReg(0); 
-	Ifc_fpu_divider_pipe#(64,52,11) divider<-mkfpu_divider_pipe();
+	Ifc_fpu_divider_pipe_64#(64,52,11) divider<-mkfpu_divider_pipe_64();
 
 	Reg#(Bit#(32)) rg_arbit <-mkReg(0);
 
@@ -649,40 +664,10 @@ module mkTb_fpu_divider_pipe(Empty);
 		$finish(0);
 	endrule
 
-endmodule:mkTb_fpu_divider_pipe
+endmodule:mkTb_fpu_divider_pipe_64
 */
 
-`ifdef fpu_hierarchical
-(*synthesize*)
-module mkfpu_divider_pipe32(Ifc_fpu_divider_pipe32);
-    Ifc_fpu_divider_pipe#(32,23,8) uut <- mkfpu_divider_pipe();
-        method Action _start(Bit#(1) lv_sign, Bit#(23) lv_mantissa1, Bit#(8) lv_exponent1, Bit#(23) lv_mantissa2, Bit#(8) lv_exponent2, Bit#(3) rounding_mode, Tuple2#(Bit#(5),Bit#(5)) flags);
-            uut._start(lv_sign,lv_mantissa1,lv_exponent1,lv_mantissa2,lv_exponent2,rounding_mode,flags);
-        endmethod
-    	method Floating_output#(32) final_result_();				 // Output method
-            return uut.final_result_;
-        endmethod
-        method Action flush;
-            uut.flush;
-        endmethod
-endmodule
-
-(*synthesize*)
-module mkfpu_divider_pipe64(Ifc_fpu_divider_pipe64);
-    Ifc_fpu_divider_pipe#(64,52,11) uut <- mkfpu_divider_pipe();
-        method Action _start(Bit#(1) lv_sign, Bit#(52) lv_mantissa1, Bit#(11) lv_exponent1, Bit#(52) lv_mantissa2, Bit#(11) lv_exponent2, Bit#(3) rounding_mode, Tuple2#(Bit#(5),Bit#(5)) flags);
-            uut._start(lv_sign,lv_mantissa1,lv_exponent1,lv_mantissa2,lv_exponent2,rounding_mode,flags);
-        endmethod
-    	method Floating_output#(64) final_result_();				 // Output method
-            return uut.final_result_;
-        endmethod
-        method Action flush;
-            uut.flush;
-        endmethod
-endmodule
-`endif
-
-//module mkTb_fpu_divider_pipe_2(Empty);
+//module mkTb_fpu_divider_pipe_64_2(Empty);
 //	
 //	RegFile #(Bit #(10), Bit #(68))  input_data <- mkRegFileFullLoad("./testcases/Div_denormal_testcases.hex");
 //	Reg #(Bit #(10)) index <- mkReg(0);
@@ -690,7 +675,7 @@ endmodule
 //	Reg #(Bit #(32)) state_clock <- mkReg(1);
 //    Reg #(Bit #(32)) rg_state <- mkReg(0);
 // 	/*****************Module Instantiation******************************/
-//	Ifc_fpu_divider_pipe#(32,23,8) divider <- mkfpu_divider_pipe();
+//	Ifc_fpu_divider_pipe_64#(32,23,8) divider <- mkfpu_divider_pipe_64();
 //
 //
 //	/******************File Creation************************************/

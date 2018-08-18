@@ -68,21 +68,6 @@ package fpu_divider_pipe_32;
             bit quiet_nan;
      } Stage3_type deriving (Bits,Eq);
      
-     typedef struct {
-            Bit#(TAdd#(23,2)) lv_rounded_quotient;
-            Bit#(10) lv_exponent;
-            Bit#(1) lv_sign;
-            Bit#(1) lv_infinity;
-            Bit#(1) lv_invalid;
-            Bit#(1) lv_dz;
-            bit lv_underflow;
-            bit lv_overflow;
-            Bit#(1) lv_zero;
-            Bit#(3) lv_rounding_mode;
-            bit quiet_nan;
-            bit lv_inexact;
-     } Stage4_type deriving (Bits,Eq);
-
 
     interface Ifc_fpu_divider_pipe_32;
 	    method Action _start(Bit#(1) lv_sign, Bit#(23) lv_mantissa1, Bit#(8) lv_exponent1, Bit#(23) lv_mantissa2, Bit#(8) lv_exponent2, Bit#(3) rounding_mode, Tuple2#(Bit#(5),Bit#(5)) flags);
@@ -124,7 +109,6 @@ module mkfpu_divider_pipe_32(Ifc_fpu_divider_pipe_32)
     FIFOF#(Stage2_type)  ff_stage2    <-mkFIFOF();
     FIFOF#(Stage2_1_type)  ff_stage2_1    <-mkFIFOF();
     FIFOF#(Stage3_type)  ff_stage3    <-mkFIFOF();
-    FIFOF#(Stage4_type)  ff_stage4    <-mkFIFOF();
     //Reg#(Div_states) rg_state_handler            <- mkReg(Begin);
     Wire#(Bool) wr_flush <- mkDWire(False);
     let fPINP 	= valueOf(32);
@@ -189,6 +173,7 @@ module mkfpu_divider_pipe_32(Ifc_fpu_divider_pipe_32)
         ff_stage2_1.enq( stage2_1);
 
     endrule
+    
 	rule rl_stage3;//(rg_state_handler == Stage2 && !wr_flush);
         
 
@@ -398,7 +383,7 @@ module mkfpu_divider_pipe_32(Ifc_fpu_divider_pipe_32)
 			lv_exponent = lv_exponent + 1;
         end
         
-        let stage4 = Stage4_type{ 
+        /*let stage4 = Stage4_type{ 
                 lv_rounded_quotient     : lv_rounded_quotient,
                 lv_exponent             : lv_exponent,
                 lv_sign                 : lv_sign,
@@ -431,7 +416,7 @@ module mkfpu_divider_pipe_32(Ifc_fpu_divider_pipe_32)
     let lv_zero                 = stage4.lv_zero;
     let lv_rounding_mode        = stage4.lv_rounding_mode;
     let quiet_nan               = stage4.quiet_nan;
-    let lv_inexact              = stage4.lv_inexact; 
+    let lv_inexact              = stage4.lv_inexact; */
        
     Bit#(8) out_exp = lv_exponent[fPEXP-1:0];
     Bit#(23) out_man = lv_rounded_quotient[fPMAN-1:0];
