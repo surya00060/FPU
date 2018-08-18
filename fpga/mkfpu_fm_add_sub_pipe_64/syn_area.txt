@@ -1,7 +1,7 @@
 Copyright 1986-2016 Xilinx, Inc. All Rights Reserved.
 ------------------------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2016.1 (lin64) Build 1538259 Fri Apr  8 15:45:23 MDT 2016
-| Date         : Mon Aug  6 19:15:03 2018
+| Date         : Sun Aug 12 15:45:25 2018
 | Host         : surya-HP-Pavilion-Power-Laptop-15-cb0xx running 64-bit Ubuntu 16.04.4 LTS
 | Command      : report_utilization -hierarchical -file .//fpga/mkfpu_fm_add_sub_pipe_64/syn_area.txt
 | Design       : mkfpu_fm_add_sub_pipe_64
@@ -21,10 +21,9 @@ Table of Contents
 +------------------------------+-----------------------+------------+------------+---------+------+------+--------+--------+--------------+
 |           Instance           |         Module        | Total LUTs | Logic LUTs | LUTRAMs | SRLs |  FFs | RAMB36 | RAMB18 | DSP48 Blocks |
 +------------------------------+-----------------------+------------+------------+---------+------+------+--------+--------+--------------+
-| mkfpu_fm_add_sub_pipe_64     |                 (top) |       7845 |       7845 |       0 |    0 | 3570 |      0 |      0 |            9 |
-|   (mkfpu_fm_add_sub_pipe_64) |                 (top) |       5995 |       5995 |       0 |    0 |    0 |      0 |      0 |            9 |
-|   ff_input                   |                 FIFO2 |        212 |        212 |       0 |    0 |  402 |      0 |      0 |            0 |
-|   ff_stage1                  | FIFO2__parameterized0 |        375 |        375 |       0 |    0 |  724 |      0 |      0 |            0 |
+| mkfpu_fm_add_sub_pipe_64     |                 (top) |       7726 |       7726 |       0 |    0 | 2846 |      0 |      0 |            9 |
+|   (mkfpu_fm_add_sub_pipe_64) |                 (top) |       6254 |       6254 |       0 |    0 |    0 |      0 |      0 |            9 |
+|   ff_input                   |                 FIFO2 |        209 |        209 |       0 |    0 |  402 |      0 |      0 |            0 |
 |   ff_stage2                  | FIFO2__parameterized1 |        210 |        210 |       0 |    0 |  406 |      0 |      0 |            0 |
 |   ff_stage3                  | FIFO2__parameterized2 |        330 |        330 |       0 |    0 |  640 |      0 |      0 |            0 |
 |   ff_stage4                  | FIFO2__parameterized3 |        362 |        362 |       0 |    0 |  700 |      0 |      0 |            0 |

@@ -387,8 +387,8 @@ module mkfpu_fm_add_sub_pipe_32(Ifc_fpu_fm_add_sub_pipe_32)
         Int#(10) possible_shift                      =  ff_stage1_pipe.possible_shift;
         let lsb_zeros                           =  ff_stage1_pipe.lsb_zeros;
         //let shift_neg                           =  ff_stage1_pipe.shift_neg;
-        let lv_product_mantissa_shiftR          =  ff_stage1_pipe.lv_product_mantissa_shiftR;
-        let lv_product_exponent_inc_shift       =  ff_stage1_pipe.lv_product_exponent_inc_shift;
+        //let lv_product_mantissa_shiftR          =  ff_stage1_pipe.lv_product_mantissa_shiftR;
+        //let lv_product_exponent_inc_shift       =  ff_stage1_pipe.lv_product_exponent_inc_shift;
         //let lv_product_mantissa_shiftL_expo     =  ff_stage1_pipe.lv_product_mantissa_shiftL_expo;
         //let lv_product_exponent_sub_shift       =  ff_stage1_pipe.lv_product_exponent_sub_shift;
         //let lv_product_mantissa_shiftL_zerosMSB =  ff_stage1_pipe.lv_product_mantissa_shiftL_zerosMSB;
