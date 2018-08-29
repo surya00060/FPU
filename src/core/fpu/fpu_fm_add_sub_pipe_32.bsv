@@ -1,5 +1,5 @@
 /*
-Authors     : Vinod.G, Aditya Govardhan 
+Authors     : Surya.S , Vinod.G, Aditya Govardhan 
 Email       : g.vinod1993@gmail.com
 Last Update : 27th November 2017
 See LICENSE for more details

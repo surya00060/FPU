@@ -31,7 +31,8 @@ module mkinteger_divider(Ifc_integer_divider#(fpman4))
 	Reg#(Bit#(6)) rg_state <- mkReg(0);
 	Wire#((Bit#(op_fpman))) wr_final_out <- mkWire;
     Wire#(Bool) wr_flush <- mkDWire(False);
-    function Bit#(op_fpman) fn_divide_step (Bit#(op_fpman) packed_div, Bit#(1) final_stage, Bit#(1) is_even)
+    
+function Bit#(op_fpman) fn_divide_step (Bit#(op_fpman) packed_div, Bit#(1) final_stage, Bit#(1) is_even)
     provisos(
             
                     // fpman4 = 27
