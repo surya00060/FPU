@@ -1,0 +1,491 @@
+#-----------------------------------------------------------
+# Vivado v2016.1 (64-bit)
+# SW Build 1538259 on Fri Apr  8 15:45:23 MDT 2016
+# IP Build 1537824 on Fri Apr  8 04:28:57 MDT 2016
+# Start of session at: Wed Sep 12 19:59:18 2018
+# Process ID: 5651
+# Current directory: /home/surya/Desktop/FPU/fpga/mkfpu_int_to_dp_pipe/mkfpu_int_to_dp_pipe.runs/core_synth_1
+# Command line: vivado -log mkfpu_int_to_dp_pipe.vds -mode batch -messageDb vivado.pb -notrace -source mkfpu_int_to_dp_pipe.tcl
+# Log file: /home/surya/Desktop/FPU/fpga/mkfpu_int_to_dp_pipe/mkfpu_int_to_dp_pipe.runs/core_synth_1/mkfpu_int_to_dp_pipe.vds
+# Journal file: /home/surya/Desktop/FPU/fpga/mkfpu_int_to_dp_pipe/mkfpu_int_to_dp_pipe.runs/core_synth_1/vivado.jou
+#-----------------------------------------------------------
+source mkfpu_int_to_dp_pipe.tcl -notrace
+WARNING: [Board 49-26] cannot add Board Part digilentinc.com:arty-s7-25:part0:1.0 available at /tools/Vivado/Vivado/2016.1/data/boards/board_files/arty-s7-25/E.0/board.xml as part xc7s25csga324-1 specified in board_part file is either invalid or not available
+WARNING: [Board 49-26] cannot add Board Part digilentinc.com:arty-s7-50:part0:1.0 available at /tools/Vivado/Vivado/2016.1/data/boards/board_files/arty-s7-50/B.0/board.xml as part xc7s50csga324-1 specified in board_part file is either invalid or not available
+Command: synth_design -top mkfpu_int_to_dp_pipe -part xc7a100tcsg324-1 -flatten_hierarchy none
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xc7a100t'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7a100t'
+INFO: Launching helper process for spawning children vivado processes
+INFO: Helper process launched with PID 5657 
+---------------------------------------------------------------------------------
+Starting RTL Elaboration : Time (s): cpu = 00:00:06 ; elapsed = 00:00:08 . Memory (MB): peak = 1064.852 ; gain = 171.090 ; free physical = 671 ; free virtual = 11079
+---------------------------------------------------------------------------------
+INFO: [Synth 8-638] synthesizing module 'mkfpu_int_to_dp_pipe' [/home/surya/Desktop/FPU/verilog/mkfpu_int_to_dp_pipe.v:38]
+INFO: [Synth 8-638] synthesizing module 'FIFO2' [/home/surya/Desktop/FPU/verilog/FIFO2.v:51]
+	Parameter width bound to: 69 - type: integer 
+	Parameter guarded bound to: 1 - type: integer 
+INFO: [Synth 8-256] done synthesizing module 'FIFO2' (1#1) [/home/surya/Desktop/FPU/verilog/FIFO2.v:51]
+INFO: [Synth 8-638] synthesizing module 'FIFO2__parameterized0' [/home/surya/Desktop/FPU/verilog/FIFO2.v:51]
+	Parameter width bound to: 78 - type: integer 
+	Parameter guarded bound to: 1 - type: integer 
+INFO: [Synth 8-256] done synthesizing module 'FIFO2__parameterized0' (1#1) [/home/surya/Desktop/FPU/verilog/FIFO2.v:51]
+INFO: [Synth 8-3536] HDL ADVISOR - Pragma parallel_case detected. Simulation mismatch may occur [/home/surya/Desktop/FPU/verilog/mkfpu_int_to_dp_pipe.v:310]
+INFO: [Synth 8-256] done synthesizing module 'mkfpu_int_to_dp_pipe' (2#1) [/home/surya/Desktop/FPU/verilog/mkfpu_int_to_dp_pipe.v:38]
+---------------------------------------------------------------------------------
+Finished RTL Elaboration : Time (s): cpu = 00:00:06 ; elapsed = 00:00:09 . Memory (MB): peak = 1105.289 ; gain = 211.527 ; free physical = 597 ; free virtual = 11019
+---------------------------------------------------------------------------------
+
+Report Check Netlist: 
++------+------------------+-------+---------+-------+------------------+
+|      |Item              |Errors |Warnings |Status |Description       |
++------+------------------+-------+---------+-------+------------------+
+|1     |multi_driven_nets |      0|        0|Passed |Multi driven nets |
++------+------------------+-------+---------+-------+------------------+
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:06 ; elapsed = 00:00:09 . Memory (MB): peak = 1105.289 ; gain = 211.527 ; free physical = 596 ; free virtual = 11018
+---------------------------------------------------------------------------------
+INFO: [Device 21-403] Loading part xc7a100tcsg324-1
+INFO: [Project 1-570] Preparing netlist for logic optimization
+
+Processing XDC Constraints
+Initializing timing engine
+Parsing XDC File [/home/surya/Desktop/FPU/src/tcl/constraints.xdc]
+INFO: [Vivado 12-2286] Implicit search of objects for pattern 'CLK' matched to 'port' objects. [/home/surya/Desktop/FPU/src/tcl/constraints.xdc:1]
+Resolution: To avoid ambiguous patterns, provide proper objects using get commands e.g. [get_nets xyz].
+Finished Parsing XDC File [/home/surya/Desktop/FPU/src/tcl/constraints.xdc]
+INFO: [Project 1-236] Implementation specific constraints were found while reading constraint file [/home/surya/Desktop/FPU/src/tcl/constraints.xdc]. These constraints will be ignored for synthesis but will be used in implementation. Impacted constraints are listed in the file [.Xil/mkfpu_int_to_dp_pipe_propImpl.xdc].
+Resolution: To avoid this warning, move constraints listed in [.Xil/mkfpu_int_to_dp_pipe_propImpl.xdc] to another XDC file and exclude this new file from synthesis with the used_in_synthesis property (File Properties dialog in GUI) and re-run elaboration/synthesis.
+Completed Processing XDC Constraints
+
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+Constraint Validation Runtime : Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 1479.781 ; gain = 0.000 ; free physical = 443 ; free virtual = 10852
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:00:13 ; elapsed = 00:00:16 . Memory (MB): peak = 1479.781 ; gain = 586.020 ; free physical = 427 ; free virtual = 10843
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xc7a100tcsg324-1
+---------------------------------------------------------------------------------
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:13 ; elapsed = 00:00:16 . Memory (MB): peak = 1479.781 ; gain = 586.020 ; free physical = 427 ; free virtual = 10843
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying 'set_property' XDC Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:13 ; elapsed = 00:00:16 . Memory (MB): peak = 1479.781 ; gain = 586.020 ; free physical = 427 ; free virtual = 10843
+---------------------------------------------------------------------------------
+INFO: [Synth 8-5544] ROM "MUX_rg_rule_decider$write_1__VAL_1" won't be mapped to Block RAM because address size (1) smaller than threshold (5)
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:14 ; elapsed = 00:00:17 . Memory (MB): peak = 1479.781 ; gain = 586.020 ; free physical = 412 ; free virtual = 10828
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start RTL Component Statistics 
+---------------------------------------------------------------------------------
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input     64 Bit       Adders := 1     
+	   2 Input     53 Bit       Adders := 1     
+	   2 Input     32 Bit       Adders := 1     
+	   2 Input     11 Bit       Adders := 3     
++---Registers : 
+	               78 Bit    Registers := 2     
+	               69 Bit    Registers := 6     
+	               32 Bit    Registers := 2     
+	                1 Bit    Registers := 8     
++---Muxes : 
+	   4 Input     69 Bit        Muxes := 1     
+	   2 Input     64 Bit        Muxes := 1     
+	   2 Input     32 Bit        Muxes := 3     
+	   5 Input     32 Bit        Muxes := 1     
+	  64 Input      7 Bit        Muxes := 1     
+	  32 Input      6 Bit        Muxes := 1     
+	   2 Input      5 Bit        Muxes := 2     
+	   2 Input      4 Bit        Muxes := 2     
+	   2 Input      3 Bit        Muxes := 1     
+	   4 Input      2 Bit        Muxes := 1     
+	   2 Input      1 Bit        Muxes := 12    
+	   4 Input      1 Bit        Muxes := 1     
+---------------------------------------------------------------------------------
+Finished RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start RTL Hierarchical Component Statistics 
+---------------------------------------------------------------------------------
+Hierarchical RTL Component report 
+Module mkfpu_int_to_dp_pipe 
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input     64 Bit       Adders := 1     
+	   2 Input     53 Bit       Adders := 1     
+	   2 Input     32 Bit       Adders := 1     
+	   2 Input     11 Bit       Adders := 3     
++---Registers : 
+	               32 Bit    Registers := 2     
++---Muxes : 
+	   4 Input     69 Bit        Muxes := 1     
+	   2 Input     64 Bit        Muxes := 1     
+	   2 Input     32 Bit        Muxes := 3     
+	   5 Input     32 Bit        Muxes := 1     
+	  64 Input      7 Bit        Muxes := 1     
+	  32 Input      6 Bit        Muxes := 1     
+	   2 Input      5 Bit        Muxes := 2     
+	   2 Input      4 Bit        Muxes := 2     
+	   2 Input      3 Bit        Muxes := 1     
+	   4 Input      2 Bit        Muxes := 1     
+	   4 Input      1 Bit        Muxes := 1     
+Module FIFO2 
+Detailed RTL Component Info : 
++---Registers : 
+	               69 Bit    Registers := 2     
+	                1 Bit    Registers := 2     
++---Muxes : 
+	   2 Input      1 Bit        Muxes := 3     
+Module FIFO2__parameterized0 
+Detailed RTL Component Info : 
++---Registers : 
+	               78 Bit    Registers := 2     
+	                1 Bit    Registers := 2     
++---Muxes : 
+	   2 Input      1 Bit        Muxes := 3     
+---------------------------------------------------------------------------------
+Finished RTL Hierarchical Component Statistics
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Part Resource Summary
+---------------------------------------------------------------------------------
+Part Resources:
+DSPs: 240 (col length:80)
+BRAMs: 270 (col length: RAMB18 80 RAMB36 40)
+---------------------------------------------------------------------------------
+Finished Part Resource Summary
+---------------------------------------------------------------------------------
+Start Parallel Synthesis Optimization  : Time (s): cpu = 00:00:14 ; elapsed = 00:00:17 . Memory (MB): peak = 1479.781 ; gain = 586.020 ; free physical = 412 ; free virtual = 10828
+---------------------------------------------------------------------------------
+Start Cross Boundary Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Cross Boundary Optimization : Time (s): cpu = 00:00:14 ; elapsed = 00:00:17 . Memory (MB): peak = 1479.781 ; gain = 586.020 ; free physical = 412 ; free virtual = 10828
+---------------------------------------------------------------------------------
+Finished Parallel Reinference  : Time (s): cpu = 00:00:14 ; elapsed = 00:00:17 . Memory (MB): peak = 1479.781 ; gain = 586.020 ; free physical = 412 ; free virtual = 10828
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start Area Optimization
+---------------------------------------------------------------------------------
+INFO: [Synth 8-3886] merging instance 'ff_stage1/data1_reg_reg[9]' (FDE) to 'ff_stage1/data1_reg_reg[10]'
+INFO: [Synth 8-3886] merging instance 'ff_stage1/data1_reg_reg[10]' (FDE) to 'ff_stage1/data1_reg_reg[11]'
+INFO: [Synth 8-3886] merging instance 'ff_stage1/data1_reg_reg[11]' (FDE) to 'ff_stage1/data1_reg_reg[12]'
+INFO: [Synth 8-3886] merging instance 'rg_rule_decider_2_reg[2]' (FDRE) to 'rg_rule_decider_2_reg[4]'
+INFO: [Synth 8-3886] merging instance 'rg_rule_decider_2_reg[3]' (FDRE) to 'rg_rule_decider_2_reg[5]'
+INFO: [Synth 8-3886] merging instance 'rg_rule_decider_2_reg[4]' (FDRE) to 'rg_rule_decider_2_reg[6]'
+INFO: [Synth 8-3886] merging instance 'rg_rule_decider_2_reg[5]' (FDRE) to 'rg_rule_decider_2_reg[7]'
+INFO: [Synth 8-3886] merging instance 'rg_rule_decider_2_reg[6]' (FDRE) to 'rg_rule_decider_2_reg[8]'
+INFO: [Synth 8-3886] merging instance 'rg_rule_decider_2_reg[7]' (FDRE) to 'rg_rule_decider_2_reg[9]'
+INFO: [Synth 8-3886] merging instance 'rg_rule_decider_2_reg[8]' (FDRE) to 'rg_rule_decider_2_reg[10]'
+INFO: [Synth 8-3886] merging instance 'rg_rule_decider_2_reg[9]' (FDRE) to 'rg_rule_decider_2_reg[11]'
+INFO: [Synth 8-3886] merging instance 'rg_rule_decider_2_reg[10]' (FDRE) to 'rg_rule_decider_2_reg[12]'
+INFO: [Synth 8-3886] merging instance 'rg_rule_decider_2_reg[11]' (FDRE) to 'rg_rule_decider_2_reg[13]'
+INFO: [Synth 8-3886] merging instance 'rg_rule_decider_2_reg[12]' (FDRE) to 'rg_rule_decider_2_reg[14]'
+INFO: [Synth 8-3886] merging instance 'rg_rule_decider_2_reg[13]' (FDRE) to 'rg_rule_decider_2_reg[15]'
+INFO: [Synth 8-3886] merging instance 'rg_rule_decider_2_reg[14]' (FDRE) to 'rg_rule_decider_2_reg[16]'
+INFO: [Synth 8-3886] merging instance 'rg_rule_decider_2_reg[15]' (FDRE) to 'rg_rule_decider_2_reg[17]'
+INFO: [Synth 8-3886] merging instance 'rg_rule_decider_2_reg[30]' (FDRE) to 'rg_rule_decider_2_reg[16]'
+INFO: [Synth 8-3886] merging instance 'rg_rule_decider_2_reg[16]' (FDRE) to 'rg_rule_decider_2_reg[18]'
+INFO: [Synth 8-3886] merging instance 'rg_rule_decider_2_reg[17]' (FDRE) to 'rg_rule_decider_2_reg[19]'
+INFO: [Synth 8-3886] merging instance 'rg_rule_decider_2_reg[18]' (FDRE) to 'rg_rule_decider_2_reg[20]'
+INFO: [Synth 8-3886] merging instance 'rg_rule_decider_2_reg[19]' (FDRE) to 'rg_rule_decider_2_reg[21]'
+INFO: [Synth 8-3886] merging instance 'rg_rule_decider_2_reg[20]' (FDRE) to 'rg_rule_decider_2_reg[22]'
+INFO: [Synth 8-3886] merging instance 'rg_rule_decider_2_reg[21]' (FDRE) to 'rg_rule_decider_2_reg[23]'
+INFO: [Synth 8-3886] merging instance 'rg_rule_decider_2_reg[22]' (FDRE) to 'rg_rule_decider_2_reg[24]'
+INFO: [Synth 8-3886] merging instance 'rg_rule_decider_2_reg[23]' (FDRE) to 'rg_rule_decider_2_reg[25]'
+INFO: [Synth 8-3886] merging instance 'rg_rule_decider_2_reg[24]' (FDRE) to 'rg_rule_decider_2_reg[26]'
+INFO: [Synth 8-3886] merging instance 'rg_rule_decider_2_reg[25]' (FDRE) to 'rg_rule_decider_2_reg[27]'
+INFO: [Synth 8-3886] merging instance 'rg_rule_decider_2_reg[26]' (FDRE) to 'rg_rule_decider_2_reg[28]'
+INFO: [Synth 8-3886] merging instance 'rg_rule_decider_2_reg[27]' (FDRE) to 'rg_rule_decider_2_reg[29]'
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\rg_rule_decider_2_reg[28] )
+INFO: [Synth 8-3886] merging instance 'rg_rule_decider_2_reg[29]' (FDRE) to 'rg_rule_decider_2_reg[31]'
+INFO: [Synth 8-3886] merging instance 'rg_rule_decider_reg[2]' (FDRE) to 'rg_rule_decider_reg[3]'
+INFO: [Synth 8-3886] merging instance 'rg_rule_decider_reg[3]' (FDRE) to 'rg_rule_decider_reg[4]'
+INFO: [Synth 8-3886] merging instance 'rg_rule_decider_reg[4]' (FDRE) to 'rg_rule_decider_reg[5]'
+INFO: [Synth 8-3886] merging instance 'rg_rule_decider_reg[5]' (FDRE) to 'rg_rule_decider_reg[6]'
+INFO: [Synth 8-3886] merging instance 'rg_rule_decider_reg[6]' (FDRE) to 'rg_rule_decider_reg[7]'
+INFO: [Synth 8-3886] merging instance 'rg_rule_decider_reg[7]' (FDRE) to 'rg_rule_decider_reg[8]'
+INFO: [Synth 8-3886] merging instance 'rg_rule_decider_reg[8]' (FDRE) to 'rg_rule_decider_reg[9]'
+INFO: [Synth 8-3886] merging instance 'rg_rule_decider_reg[9]' (FDRE) to 'rg_rule_decider_reg[10]'
+INFO: [Synth 8-3886] merging instance 'rg_rule_decider_reg[10]' (FDRE) to 'rg_rule_decider_reg[11]'
+INFO: [Synth 8-3886] merging instance 'rg_rule_decider_reg[11]' (FDRE) to 'rg_rule_decider_reg[12]'
+INFO: [Synth 8-3886] merging instance 'rg_rule_decider_reg[12]' (FDRE) to 'rg_rule_decider_reg[13]'
+INFO: [Synth 8-3886] merging instance 'rg_rule_decider_reg[13]' (FDRE) to 'rg_rule_decider_reg[14]'
+INFO: [Synth 8-3886] merging instance 'rg_rule_decider_reg[14]' (FDRE) to 'rg_rule_decider_reg[15]'
+INFO: [Synth 8-3886] merging instance 'rg_rule_decider_reg[15]' (FDRE) to 'rg_rule_decider_reg[30]'
+INFO: [Synth 8-3886] merging instance 'rg_rule_decider_reg[30]' (FDRE) to 'rg_rule_decider_reg[16]'
+INFO: [Synth 8-3886] merging instance 'rg_rule_decider_reg[16]' (FDRE) to 'rg_rule_decider_reg[17]'
+INFO: [Synth 8-3886] merging instance 'rg_rule_decider_reg[17]' (FDRE) to 'rg_rule_decider_reg[18]'
+INFO: [Synth 8-3886] merging instance 'rg_rule_decider_reg[18]' (FDRE) to 'rg_rule_decider_reg[19]'
+INFO: [Synth 8-3886] merging instance 'rg_rule_decider_reg[19]' (FDRE) to 'rg_rule_decider_reg[20]'
+INFO: [Synth 8-3886] merging instance 'rg_rule_decider_reg[20]' (FDRE) to 'rg_rule_decider_reg[21]'
+INFO: [Synth 8-3886] merging instance 'rg_rule_decider_reg[21]' (FDRE) to 'rg_rule_decider_reg[22]'
+INFO: [Synth 8-3886] merging instance 'rg_rule_decider_reg[22]' (FDRE) to 'rg_rule_decider_reg[23]'
+INFO: [Synth 8-3886] merging instance 'rg_rule_decider_reg[23]' (FDRE) to 'rg_rule_decider_reg[24]'
+INFO: [Synth 8-3886] merging instance 'rg_rule_decider_reg[24]' (FDRE) to 'rg_rule_decider_reg[25]'
+INFO: [Synth 8-3886] merging instance 'rg_rule_decider_reg[25]' (FDRE) to 'rg_rule_decider_reg[26]'
+INFO: [Synth 8-3886] merging instance 'rg_rule_decider_reg[26]' (FDRE) to 'rg_rule_decider_reg[27]'
+INFO: [Synth 8-3886] merging instance 'rg_rule_decider_reg[27]' (FDRE) to 'rg_rule_decider_reg[28]'
+INFO: [Synth 8-3886] merging instance 'rg_rule_decider_reg[28]' (FDRE) to 'rg_rule_decider_reg[29]'
+INFO: [Synth 8-3886] merging instance 'rg_rule_decider_reg[29]' (FDRE) to 'rg_rule_decider_reg[31]'
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\rg_rule_decider_reg[31] )
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[11]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[10]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[9]) is unused and will be removed from module FIFO2__parameterized0.
+WARNING: [Synth 8-3332] Sequential element (rg_rule_decider_reg[31]) is unused and will be removed from module mkfpu_int_to_dp_pipe.
+WARNING: [Synth 8-3332] Sequential element (rg_rule_decider_reg[30]) is unused and will be removed from module mkfpu_int_to_dp_pipe.
+WARNING: [Synth 8-3332] Sequential element (rg_rule_decider_reg[29]) is unused and will be removed from module mkfpu_int_to_dp_pipe.
+WARNING: [Synth 8-3332] Sequential element (rg_rule_decider_reg[28]) is unused and will be removed from module mkfpu_int_to_dp_pipe.
+WARNING: [Synth 8-3332] Sequential element (rg_rule_decider_reg[27]) is unused and will be removed from module mkfpu_int_to_dp_pipe.
+WARNING: [Synth 8-3332] Sequential element (rg_rule_decider_reg[26]) is unused and will be removed from module mkfpu_int_to_dp_pipe.
+WARNING: [Synth 8-3332] Sequential element (rg_rule_decider_reg[25]) is unused and will be removed from module mkfpu_int_to_dp_pipe.
+WARNING: [Synth 8-3332] Sequential element (rg_rule_decider_reg[24]) is unused and will be removed from module mkfpu_int_to_dp_pipe.
+WARNING: [Synth 8-3332] Sequential element (rg_rule_decider_reg[23]) is unused and will be removed from module mkfpu_int_to_dp_pipe.
+WARNING: [Synth 8-3332] Sequential element (rg_rule_decider_reg[22]) is unused and will be removed from module mkfpu_int_to_dp_pipe.
+WARNING: [Synth 8-3332] Sequential element (rg_rule_decider_reg[21]) is unused and will be removed from module mkfpu_int_to_dp_pipe.
+WARNING: [Synth 8-3332] Sequential element (rg_rule_decider_reg[20]) is unused and will be removed from module mkfpu_int_to_dp_pipe.
+WARNING: [Synth 8-3332] Sequential element (rg_rule_decider_reg[19]) is unused and will be removed from module mkfpu_int_to_dp_pipe.
+WARNING: [Synth 8-3332] Sequential element (rg_rule_decider_reg[18]) is unused and will be removed from module mkfpu_int_to_dp_pipe.
+WARNING: [Synth 8-3332] Sequential element (rg_rule_decider_reg[17]) is unused and will be removed from module mkfpu_int_to_dp_pipe.
+WARNING: [Synth 8-3332] Sequential element (rg_rule_decider_reg[16]) is unused and will be removed from module mkfpu_int_to_dp_pipe.
+WARNING: [Synth 8-3332] Sequential element (rg_rule_decider_reg[15]) is unused and will be removed from module mkfpu_int_to_dp_pipe.
+WARNING: [Synth 8-3332] Sequential element (rg_rule_decider_reg[14]) is unused and will be removed from module mkfpu_int_to_dp_pipe.
+WARNING: [Synth 8-3332] Sequential element (rg_rule_decider_reg[13]) is unused and will be removed from module mkfpu_int_to_dp_pipe.
+WARNING: [Synth 8-3332] Sequential element (rg_rule_decider_reg[12]) is unused and will be removed from module mkfpu_int_to_dp_pipe.
+WARNING: [Synth 8-3332] Sequential element (rg_rule_decider_reg[11]) is unused and will be removed from module mkfpu_int_to_dp_pipe.
+WARNING: [Synth 8-3332] Sequential element (rg_rule_decider_reg[10]) is unused and will be removed from module mkfpu_int_to_dp_pipe.
+WARNING: [Synth 8-3332] Sequential element (rg_rule_decider_reg[9]) is unused and will be removed from module mkfpu_int_to_dp_pipe.
+WARNING: [Synth 8-3332] Sequential element (rg_rule_decider_reg[8]) is unused and will be removed from module mkfpu_int_to_dp_pipe.
+WARNING: [Synth 8-3332] Sequential element (rg_rule_decider_reg[7]) is unused and will be removed from module mkfpu_int_to_dp_pipe.
+WARNING: [Synth 8-3332] Sequential element (rg_rule_decider_reg[6]) is unused and will be removed from module mkfpu_int_to_dp_pipe.
+WARNING: [Synth 8-3332] Sequential element (rg_rule_decider_reg[5]) is unused and will be removed from module mkfpu_int_to_dp_pipe.
+WARNING: [Synth 8-3332] Sequential element (rg_rule_decider_reg[4]) is unused and will be removed from module mkfpu_int_to_dp_pipe.
+WARNING: [Synth 8-3332] Sequential element (rg_rule_decider_reg[3]) is unused and will be removed from module mkfpu_int_to_dp_pipe.
+WARNING: [Synth 8-3332] Sequential element (rg_rule_decider_reg[2]) is unused and will be removed from module mkfpu_int_to_dp_pipe.
+WARNING: [Synth 8-3332] Sequential element (rg_rule_decider_2_reg[30]) is unused and will be removed from module mkfpu_int_to_dp_pipe.
+WARNING: [Synth 8-3332] Sequential element (rg_rule_decider_2_reg[29]) is unused and will be removed from module mkfpu_int_to_dp_pipe.
+WARNING: [Synth 8-3332] Sequential element (rg_rule_decider_2_reg[28]) is unused and will be removed from module mkfpu_int_to_dp_pipe.
+WARNING: [Synth 8-3332] Sequential element (rg_rule_decider_2_reg[27]) is unused and will be removed from module mkfpu_int_to_dp_pipe.
+WARNING: [Synth 8-3332] Sequential element (rg_rule_decider_2_reg[26]) is unused and will be removed from module mkfpu_int_to_dp_pipe.
+WARNING: [Synth 8-3332] Sequential element (rg_rule_decider_2_reg[25]) is unused and will be removed from module mkfpu_int_to_dp_pipe.
+WARNING: [Synth 8-3332] Sequential element (rg_rule_decider_2_reg[24]) is unused and will be removed from module mkfpu_int_to_dp_pipe.
+WARNING: [Synth 8-3332] Sequential element (rg_rule_decider_2_reg[23]) is unused and will be removed from module mkfpu_int_to_dp_pipe.
+WARNING: [Synth 8-3332] Sequential element (rg_rule_decider_2_reg[22]) is unused and will be removed from module mkfpu_int_to_dp_pipe.
+WARNING: [Synth 8-3332] Sequential element (rg_rule_decider_2_reg[21]) is unused and will be removed from module mkfpu_int_to_dp_pipe.
+WARNING: [Synth 8-3332] Sequential element (rg_rule_decider_2_reg[20]) is unused and will be removed from module mkfpu_int_to_dp_pipe.
+WARNING: [Synth 8-3332] Sequential element (rg_rule_decider_2_reg[19]) is unused and will be removed from module mkfpu_int_to_dp_pipe.
+WARNING: [Synth 8-3332] Sequential element (rg_rule_decider_2_reg[18]) is unused and will be removed from module mkfpu_int_to_dp_pipe.
+WARNING: [Synth 8-3332] Sequential element (rg_rule_decider_2_reg[17]) is unused and will be removed from module mkfpu_int_to_dp_pipe.
+WARNING: [Synth 8-3332] Sequential element (rg_rule_decider_2_reg[16]) is unused and will be removed from module mkfpu_int_to_dp_pipe.
+WARNING: [Synth 8-3332] Sequential element (rg_rule_decider_2_reg[15]) is unused and will be removed from module mkfpu_int_to_dp_pipe.
+WARNING: [Synth 8-3332] Sequential element (rg_rule_decider_2_reg[14]) is unused and will be removed from module mkfpu_int_to_dp_pipe.
+WARNING: [Synth 8-3332] Sequential element (rg_rule_decider_2_reg[13]) is unused and will be removed from module mkfpu_int_to_dp_pipe.
+WARNING: [Synth 8-3332] Sequential element (rg_rule_decider_2_reg[12]) is unused and will be removed from module mkfpu_int_to_dp_pipe.
+WARNING: [Synth 8-3332] Sequential element (rg_rule_decider_2_reg[11]) is unused and will be removed from module mkfpu_int_to_dp_pipe.
+WARNING: [Synth 8-3332] Sequential element (rg_rule_decider_2_reg[10]) is unused and will be removed from module mkfpu_int_to_dp_pipe.
+WARNING: [Synth 8-3332] Sequential element (rg_rule_decider_2_reg[9]) is unused and will be removed from module mkfpu_int_to_dp_pipe.
+WARNING: [Synth 8-3332] Sequential element (rg_rule_decider_2_reg[8]) is unused and will be removed from module mkfpu_int_to_dp_pipe.
+WARNING: [Synth 8-3332] Sequential element (rg_rule_decider_2_reg[7]) is unused and will be removed from module mkfpu_int_to_dp_pipe.
+WARNING: [Synth 8-3332] Sequential element (rg_rule_decider_2_reg[6]) is unused and will be removed from module mkfpu_int_to_dp_pipe.
+WARNING: [Synth 8-3332] Sequential element (rg_rule_decider_2_reg[5]) is unused and will be removed from module mkfpu_int_to_dp_pipe.
+WARNING: [Synth 8-3332] Sequential element (rg_rule_decider_2_reg[4]) is unused and will be removed from module mkfpu_int_to_dp_pipe.
+WARNING: [Synth 8-3332] Sequential element (rg_rule_decider_2_reg[3]) is unused and will be removed from module mkfpu_int_to_dp_pipe.
+WARNING: [Synth 8-3332] Sequential element (rg_rule_decider_2_reg[2]) is unused and will be removed from module mkfpu_int_to_dp_pipe.
+INFO: [Synth 8-3886] merging instance 'ff_out/data1_reg_reg[1]' (FDE) to 'ff_out/data1_reg_reg[3]'
+INFO: [Synth 8-3886] merging instance 'ff_out/data1_reg_reg[2]' (FDE) to 'ff_out/data1_reg_reg[4]'
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (ff_out/\data1_reg_reg[4] )
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[3]) is unused and will be removed from module FIFO2__1.
+WARNING: [Synth 8-3332] Sequential element (data0_reg_reg[3]) is unused and will be removed from module FIFO2__1.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[4]) is unused and will be removed from module FIFO2__2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[2]) is unused and will be removed from module FIFO2__2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[1]) is unused and will be removed from module FIFO2__2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[68]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[67]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[66]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[65]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[64]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[63]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[62]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[61]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[60]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[59]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[58]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[57]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[56]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[55]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[54]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[53]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[52]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[51]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[50]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[49]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[48]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[47]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[46]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[45]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[44]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[43]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[42]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[41]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[40]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[39]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[38]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[37]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[3]) is unused and will be removed from module FIFO2.
+INFO: [Common 17-14] Message 'Synth 8-3332' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+---------------------------------------------------------------------------------
+Finished Area Optimization : Time (s): cpu = 00:00:18 ; elapsed = 00:00:21 . Memory (MB): peak = 1479.781 ; gain = 586.020 ; free physical = 391 ; free virtual = 10802
+---------------------------------------------------------------------------------
+Finished Parallel Area Optimization  : Time (s): cpu = 00:00:18 ; elapsed = 00:00:21 . Memory (MB): peak = 1479.781 ; gain = 586.020 ; free physical = 391 ; free virtual = 10802
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start Timing Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying XDC Timing Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:00:23 ; elapsed = 00:00:26 . Memory (MB): peak = 1479.781 ; gain = 586.020 ; free physical = 325 ; free virtual = 10736
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Timing Optimization : Time (s): cpu = 00:00:24 ; elapsed = 00:00:27 . Memory (MB): peak = 1487.781 ; gain = 594.020 ; free physical = 288 ; free virtual = 10700
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start Technology Mapping
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Technology Mapping : Time (s): cpu = 00:00:24 ; elapsed = 00:00:28 . Memory (MB): peak = 1503.797 ; gain = 610.035 ; free physical = 276 ; free virtual = 10688
+---------------------------------------------------------------------------------
+Finished Parallel Technology Mapping Optimization  : Time (s): cpu = 00:00:24 ; elapsed = 00:00:28 . Memory (MB): peak = 1503.797 ; gain = 610.035 ; free physical = 276 ; free virtual = 10688
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+Finished Parallel Synthesis Optimization  : Time (s): cpu = 00:00:24 ; elapsed = 00:00:28 . Memory (MB): peak = 1503.797 ; gain = 610.035 ; free physical = 276 ; free virtual = 10688
+---------------------------------------------------------------------------------
+Start IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished IO Insertion : Time (s): cpu = 00:00:25 ; elapsed = 00:00:28 . Memory (MB): peak = 1503.797 ; gain = 610.035 ; free physical = 276 ; free virtual = 10688
+---------------------------------------------------------------------------------
+
+Report Check Netlist: 
++------+------------------+-------+---------+-------+------------------+
+|      |Item              |Errors |Warnings |Status |Description       |
++------+------------------+-------+---------+-------+------------------+
+|1     |multi_driven_nets |      0|        0|Passed |Multi driven nets |
++------+------------------+-------+---------+-------+------------------+
+---------------------------------------------------------------------------------
+Start Renaming Generated Instances
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Instances : Time (s): cpu = 00:00:25 ; elapsed = 00:00:28 . Memory (MB): peak = 1503.797 ; gain = 610.035 ; free physical = 276 ; free virtual = 10688
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:25 ; elapsed = 00:00:28 . Memory (MB): peak = 1503.797 ; gain = 610.035 ; free physical = 276 ; free virtual = 10688
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Writing Synthesis Report
+---------------------------------------------------------------------------------
+
+Report BlackBoxes: 
++-+--------------+----------+
+| |BlackBox name |Instances |
++-+--------------+----------+
++-+--------------+----------+
+
+Report Cell Usage: 
++------+-------+------+
+|      |Cell   |Count |
++------+-------+------+
+|1     |BUFG   |     1|
+|2     |CARRY4 |    47|
+|3     |LUT1   |   159|
+|4     |LUT2   |    21|
+|5     |LUT3   |    56|
+|6     |LUT4   |   122|
+|7     |LUT5   |   135|
+|8     |LUT6   |   643|
+|9     |FDRE   |   496|
+|10    |FDSE   |     4|
+|11    |IBUF   |    73|
+|12    |OBUF   |    71|
++------+-------+------+
+
+Report Instance Areas: 
++------+------------+----------------------+------+
+|      |Instance    |Module                |Cells |
++------+------------+----------------------+------+
+|1     |top         |                      |  1828|
+|2     |  ff_input  |FIFO2__1              |   212|
+|3     |  ff_out    |FIFO2__2              |   208|
+|4     |  ff_pseudo |FIFO2                 |   107|
+|5     |  ff_stage1 |FIFO2__parameterized0 |   240|
++------+------------+----------------------+------+
+---------------------------------------------------------------------------------
+Finished Writing Synthesis Report : Time (s): cpu = 00:00:25 ; elapsed = 00:00:28 . Memory (MB): peak = 1503.797 ; gain = 610.035 ; free physical = 276 ; free virtual = 10688
+---------------------------------------------------------------------------------
+Synthesis finished with 0 errors, 0 critical warnings and 142 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:00:19 ; elapsed = 00:00:19 . Memory (MB): peak = 1503.797 ; gain = 136.449 ; free physical = 276 ; free virtual = 10688
+Synthesis Optimization Complete : Time (s): cpu = 00:00:25 ; elapsed = 00:00:28 . Memory (MB): peak = 1503.805 ; gain = 610.043 ; free physical = 277 ; free virtual = 10689
+INFO: [Project 1-571] Translating synthesized netlist
+INFO: [Netlist 29-17] Analyzing 120 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-570] Preparing netlist for logic optimization
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+INFO: [Common 17-83] Releasing license: Synthesis
+87 Infos, 102 Warnings, 0 Critical Warnings and 0 Errors encountered.
+synth_design completed successfully
+synth_design: Time (s): cpu = 00:00:24 ; elapsed = 00:00:24 . Memory (MB): peak = 1535.812 ; gain = 555.543 ; free physical = 278 ; free virtual = 10689
+report_utilization: Time (s): cpu = 00:00:00.06 ; elapsed = 00:00:00.09 . Memory (MB): peak = 1567.828 ; gain = 0.000 ; free physical = 317 ; free virtual = 10729
+INFO: [Common 17-206] Exiting Vivado at Wed Sep 12 19:59:52 2018...

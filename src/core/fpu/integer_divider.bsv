@@ -45,14 +45,15 @@ function Bit#(op_fpman) fn_divide_step (Bit#(op_fpman) packed_div, Bit#(1) final
          let aCC    = valueOf(acc_bits);
          let oP_FPMAN = valueOf(op_fpman);
 
-         Bit#(fpman4) all_zeros = '0;
-         Bit#(fpman4) _divisor   = packed_div[oP_FPMAN-1:aCC];
-         Bit#(fpman6) _remainder = packed_div[aCC-1:fPMAN4];
-         Bit#(fpman4) _dividend  = packed_div[fPMAN4-1:0];
+         Bit#(fpman4) all_zeros  = '0;
+         Bit#(fpman4) _divisor   = packed_div[oP_FPMAN-1:aCC];   // Q
+         Bit#(fpman6) _remainder = packed_div[aCC-1:fPMAN4];     // R
+         Bit#(fpman4) _dividend  = packed_div[fPMAN4-1:0];       // D
          Bit#(acc_bits) accumulator = 0;
 
     for(Integer i = 0 ; i <=1  ; i=i+1) begin
-      if(final_stage == 0 || (final_stage == 1 && i == 0)) begin
+      if(final_stage == 0 || (final_stage == 1 && i == 0)) 
+       begin
         if(_remainder[fPMAN4+1]==1'b0) begin
           accumulator = ({_remainder,_dividend}<<1) - {1'b0,_divisor,1'b0,all_zeros} ;
           accumulator[0] = 1'b1;
@@ -63,7 +64,7 @@ function Bit#(op_fpman) fn_divide_step (Bit#(op_fpman) packed_div, Bit#(1) final
          end
         _remainder = accumulator[aCC-1:fPMAN4];
         _dividend = accumulator[fPMAN4-1:0];
-    	end
+       end
     	else begin
         if(is_even == 0) begin
           if(_remainder[fPMAN4+1]==1'b0) begin
@@ -99,6 +100,7 @@ endfunction
 	rule stage_1(rg_state == 1 && !wr_flush);
 		rg_state <= rg_state + 1;
         `ifdef verbose $display("Int Data %h rg_state %d",rg_inter_stage[55:0], rg_state); `endif
+        $display("Int Data %h rg_state %d",rg_inter_stage[55:0], rg_state);
         let x <- wfn_divide_step.func(rg_inter_stage,0,0);
 		rg_inter_stage <= x;
 	endrule
@@ -106,6 +108,7 @@ endfunction
 	rule recursive_stage(rg_state > 1 && rg_state <= ((fromInteger(fPMAN4-5)>>1) +1) && !wr_flush );
 	rg_state <= rg_state + 1;
     `ifdef verbose $display($time,"\t Int Data %h rg_state %d", rg_inter_stage[55:0], rg_state);`endif
+    $display($time,"\t Int Data %h rg_state %d", rg_inter_stage[55:0], rg_state);
         let x<- wfn_divide_step.func(rg_inter_stage,0,0);
         rg_inter_stage <=  x;
 	endrule
@@ -113,6 +116,7 @@ endfunction
 	rule end_stage(rg_state == ((fromInteger(fPMAN4-5)>>1)+2) && !wr_flush);
         rg_state <= 0;
         `ifdef verbose $display($time,"\t End stage Int Data %h rg_state %d fpman4[0] %d", rg_inter_stage[55:0], rg_state, fromInteger(fPMAN4)[0]);`endif
+        $display($time,"\t End stage Int Data %h rg_state %d %d", rg_inter_stage[55:0], rg_state, fromInteger(fPMAN4)[0]);
         let x <- wfn_divide_step.func(rg_inter_stage,1,fromInteger(fPMAN4)[0]);
 		wr_final_out <= x;
 	endrule
@@ -150,7 +154,8 @@ endmodule
 
      rule rl_finish;
       let temp = instance_divider.result_();
- 		  `ifdef verbose $display("Quotient=%h remainder=%h at %0d",temp[26:0],temp[53:27], rg_clock);`endif
+           `ifdef verbose $display("Quotient=%h remainder=%h at %0d",temp[26:0],temp[53:27], rg_clock);`endif
+           $display("Quotient=%h remainder=%h at %0d",temp[26:0],temp[53:27], rg_clock);
      endrule
      
      rule rl_count_clock ;

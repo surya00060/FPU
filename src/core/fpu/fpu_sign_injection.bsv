@@ -35,13 +35,13 @@ endinterface
 module mkfpu_sign_injection(Ifc_fpu_sign_injection#(fpinp,fpman,fpexp))
 	provisos (
 		 Add#(TAdd#(fpexp,fpman),1,fpinp),	                //Defining fpinp to be fpexp + fpman + 1
-       Add#(fpexp,2,fpexp2)
+       Add#(fpexp,2,fpexp2)//,
+       //Bit#( sz , fpinp )
 		 );
 
    let fPINP  = valueOf(fpinp);
 
-	method ActionValue#(Floating_output#(fpinp)) _start(Bit#(fpinp) operand1, Bit#(fpinp) operand2, Bit#(3) operation);
-
+	method ActionValue#(Floating_output#(fpinp)) _start(Bit#(fpinp) operand1, Bit#(fpinp) operand2, Bit#(3) operation); 
      if(operation == 3'b000)                           //FSGNJ
 	    operand1[fPINP-1] = operand2[fPINP-1];
 	 else if(operation == 3'b001)			   //FSNGNJN
@@ -50,7 +50,6 @@ module mkfpu_sign_injection(Ifc_fpu_sign_injection#(fpinp,fpman,fpexp))
 	    operand1[fPINP-1] = operand1[fPINP-1]^operand2[fPINP-1];
 
 		Bit#(5) lv_exception = 0;
-
 	return Floating_output { 
 		final_result : zeroExtend(operand1),
 		fflags : lv_exception};

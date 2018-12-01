@@ -9,6 +9,7 @@ TODO
 package fpu_int_to_dp;
 import defined_types ::*;
 import UniqueWrappers::*;
+import FIFOF        :: *;
 `include "defined_parameters.bsv"	
 //TODO Rework and optimize
 function Bit#(m) zeroExtendLSB(Bit#(n) value)
@@ -24,9 +25,17 @@ function Bit#(m) truncateLSB(Bit#(n) value);
 endfunction
 
 interface Ifc_fpu_int_to_dp;
-    method ActionValue#(Floating_output#(64)) _start(Bit#(64) inp_int, Bit#(1) unsigned_bit, Bit#(1) long, Bit#(3) rounding_mode);
+    method Action _start(Bit#(64) inp_int, Bit#(1) unsigned_bit, Bit#(1) long, Bit#(3) rounding_mode);
+    method ActionValue#(Floating_output#(64)) get_result();    
 endinterface
     
+
+typedef struct{
+    Bit#(64) inp_int;
+    Bit#(1) unsigned_bit; 
+    Bit#(1) long;
+    Bit#(3) rounding_mode;
+}Input_data_type  deriving (Bits,Eq);
 
     function Bit#(69) roundFunc(Bit#(64) unrounded, Bit#(11) expo, Bit#(3) rounding_mode);
            bit guard  = unrounded[10];
@@ -65,8 +74,21 @@ endinterface
     //Wrapper3#(Bit#(32), Bit#(1), Bit#(3),Bit#(69)) fcvt_d_wwu <- mkUniqueWrapper3(fcvt_s_w_l);
     //Wrapper3#(Bit#(64), Bit#(1), Bit#(3),Bit#(69)) fcvt_d_llu <- mkUniqueWrapper3(fcvt_s_w_l);
 
-    method ActionValue#(Floating_output#(64)) _start(Bit#(64) inp_int, Bit#(1) unsigned_bit, Bit#(1) long, Bit#(3) rounding_mode);
-			Floating_output#(64) wr_final_out=?;
+    FIFOF#(Input_data_type) ff_input    <- mkFIFOF();
+    FIFOF#(Floating_output#(64)) ff_out <- mkFIFOF();
+    
+    Reg#(Bit#(32))          rg_rule_decider <- mkReg(0);
+
+    rule rl_int_to_dp;
+
+        let ff_input_pipe = ff_input.first ; ff_input.deq ;
+
+        let inp_int         = ff_input_pipe.inp_int ;
+        let unsigned_bit    = ff_input_pipe.unsigned_bit ;
+        let long            = ff_input_pipe.long ;
+        let rounding_mode   = ff_input_pipe.rounding_mode ;
+
+        Floating_output#(64) wr_final_out=?;
         `ifdef verbose $display($time,"Giving inputs: %h unsigned %b long %b rounding %b", inp_int, unsigned_bit, long, rounding_mode); `endif
         if((inp_int == 0 && long==1) || (inp_int[31:0] == 0 && long == 0))
                     wr_final_out = Floating_output{ final_result : 64'b0,
@@ -111,10 +133,58 @@ endinterface
                                                     };
   
             end
-			return wr_final_out;
+            ff_out.enq(wr_final_out);
+    endrule
+    
+    method Action _start(Bit#(64) inp_int, Bit#(1) unsigned_bit, Bit#(1) long, Bit#(3) rounding_mode);
+        
+        
+        
+        
+        let ff_input_pipe = Input_data_type{
+                                            inp_int : inp_int ,
+                                            unsigned_bit : unsigned_bit ,
+                                            long : long ,
+                                            rounding_mode : rounding_mode
+                                            };
+        ff_input.enq( ff_input_pipe );
+
     endmethod
+
+    method ActionValue#(Floating_output#(64 )) get_result();
+        let  ff_final = ff_out.first ; ff_out.deq ;
+        return ff_final ;
+    endmethod
+
 endmodule
 
+module mkTb(Empty);
+    Reg#(Bit#(64)) rg_operand1<-mkReg(64'h039e781bab642be4); 
+    //Reg#(Bit#(64)) rg_operand1<-mkReg(~(64'hfffffffffffff812)+1); 
+    Reg#(Bit#(32)) rg_clock<-mkReg(0); 
+    Ifc_fpu_int_to_dp itof <- mkfpu_int_to_dp();
+    Reg#(Bit#(32)) rg_arbit <-mkReg(0);
+ 
+    rule rl_clk_count;
+       rg_clock<=rg_clock+1;
+       if(rg_clock=='d25) $finish(0);
+    endrule
+ 
+    rule rl_start_1(rg_clock <='d10);
+        `ifdef verbose $display("Giving inputs rg_operand 1 : %h through testbench",rg_operand1,$time); `endif
+        $display("Giving inputs rg_operand 1 : %h through testbench %d ",rg_operand1,rg_clock);
+        itof._start(zeroExtend(rg_operand1),1'b1,1'b0,3'b000);
+    endrule
+ 
+    rule rl_out ;
+         let abc <- itof.get_result();
+         `ifdef verbose $display("Final result= %h fflags= %h", abc.final_result, abc.fflags, $time); `endif
+         $display("                          Final result= %h  %d", abc.final_result[31:0], rg_clock);
+     endrule
+        
+ 
+ endmodule
+ 
 //module mkTb(Empty);
 //   Reg#(Bit#(64)) rg_operand1<-mkReg(64'hffffffffe945c730); 
 //   //Reg#(Bit#(64)) rg_operand1<-mkReg(~(64'hfffffffffffff812)+1); 

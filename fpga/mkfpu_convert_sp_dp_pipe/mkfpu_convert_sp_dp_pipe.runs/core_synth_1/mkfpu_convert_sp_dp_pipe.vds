@@ -1,0 +1,390 @@
+#-----------------------------------------------------------
+# Vivado v2016.1 (64-bit)
+# SW Build 1538259 on Fri Apr  8 15:45:23 MDT 2016
+# IP Build 1537824 on Fri Apr  8 04:28:57 MDT 2016
+# Start of session at: Thu Sep 13 15:25:30 2018
+# Process ID: 8712
+# Current directory: /home/surya/Desktop/FPU/fpga/mkfpu_convert_sp_dp_pipe/mkfpu_convert_sp_dp_pipe.runs/core_synth_1
+# Command line: vivado -log mkfpu_convert_sp_dp_pipe.vds -mode batch -messageDb vivado.pb -notrace -source mkfpu_convert_sp_dp_pipe.tcl
+# Log file: /home/surya/Desktop/FPU/fpga/mkfpu_convert_sp_dp_pipe/mkfpu_convert_sp_dp_pipe.runs/core_synth_1/mkfpu_convert_sp_dp_pipe.vds
+# Journal file: /home/surya/Desktop/FPU/fpga/mkfpu_convert_sp_dp_pipe/mkfpu_convert_sp_dp_pipe.runs/core_synth_1/vivado.jou
+#-----------------------------------------------------------
+source mkfpu_convert_sp_dp_pipe.tcl -notrace
+WARNING: [Board 49-26] cannot add Board Part digilentinc.com:arty-s7-25:part0:1.0 available at /tools/Vivado/Vivado/2016.1/data/boards/board_files/arty-s7-25/E.0/board.xml as part xc7s25csga324-1 specified in board_part file is either invalid or not available
+WARNING: [Board 49-26] cannot add Board Part digilentinc.com:arty-s7-50:part0:1.0 available at /tools/Vivado/Vivado/2016.1/data/boards/board_files/arty-s7-50/B.0/board.xml as part xc7s50csga324-1 specified in board_part file is either invalid or not available
+Command: synth_design -top mkfpu_convert_sp_dp_pipe -part xc7a100tcsg324-1 -flatten_hierarchy none
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xc7a100t'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7a100t'
+INFO: Launching helper process for spawning children vivado processes
+INFO: Helper process launched with PID 8716 
+---------------------------------------------------------------------------------
+Starting RTL Elaboration : Time (s): cpu = 00:00:05 ; elapsed = 00:00:06 . Memory (MB): peak = 1064.852 ; gain = 171.090 ; free physical = 331 ; free virtual = 11619
+---------------------------------------------------------------------------------
+INFO: [Synth 8-638] synthesizing module 'mkfpu_convert_sp_dp_pipe' [/home/surya/Desktop/FPU/verilog/mkfpu_convert_sp_dp_pipe.v:39]
+INFO: [Synth 8-638] synthesizing module 'FIFO2' [/home/surya/Desktop/FPU/verilog/FIFO2.v:51]
+	Parameter width bound to: 69 - type: integer 
+	Parameter guarded bound to: 1 - type: integer 
+INFO: [Synth 8-256] done synthesizing module 'FIFO2' (1#1) [/home/surya/Desktop/FPU/verilog/FIFO2.v:51]
+INFO: [Synth 8-256] done synthesizing module 'mkfpu_convert_sp_dp_pipe' (2#1) [/home/surya/Desktop/FPU/verilog/mkfpu_convert_sp_dp_pipe.v:39]
+WARNING: [Synth 8-3331] design mkfpu_convert_sp_dp_pipe has unconnected port _start_rounding_mode[2]
+WARNING: [Synth 8-3331] design mkfpu_convert_sp_dp_pipe has unconnected port _start_rounding_mode[1]
+WARNING: [Synth 8-3331] design mkfpu_convert_sp_dp_pipe has unconnected port _start_rounding_mode[0]
+---------------------------------------------------------------------------------
+Finished RTL Elaboration : Time (s): cpu = 00:00:06 ; elapsed = 00:00:06 . Memory (MB): peak = 1105.289 ; gain = 211.527 ; free physical = 297 ; free virtual = 11581
+---------------------------------------------------------------------------------
+
+Report Check Netlist: 
++------+------------------+-------+---------+-------+------------------+
+|      |Item              |Errors |Warnings |Status |Description       |
++------+------------------+-------+---------+-------+------------------+
+|1     |multi_driven_nets |      0|        0|Passed |Multi driven nets |
++------+------------------+-------+---------+-------+------------------+
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:06 ; elapsed = 00:00:06 . Memory (MB): peak = 1105.289 ; gain = 211.527 ; free physical = 297 ; free virtual = 11581
+---------------------------------------------------------------------------------
+INFO: [Device 21-403] Loading part xc7a100tcsg324-1
+INFO: [Project 1-570] Preparing netlist for logic optimization
+
+Processing XDC Constraints
+Initializing timing engine
+Parsing XDC File [/home/surya/Desktop/FPU/src/tcl/constraints.xdc]
+INFO: [Vivado 12-2286] Implicit search of objects for pattern 'CLK' matched to 'port' objects. [/home/surya/Desktop/FPU/src/tcl/constraints.xdc:1]
+Resolution: To avoid ambiguous patterns, provide proper objects using get commands e.g. [get_nets xyz].
+Finished Parsing XDC File [/home/surya/Desktop/FPU/src/tcl/constraints.xdc]
+INFO: [Project 1-236] Implementation specific constraints were found while reading constraint file [/home/surya/Desktop/FPU/src/tcl/constraints.xdc]. These constraints will be ignored for synthesis but will be used in implementation. Impacted constraints are listed in the file [.Xil/mkfpu_convert_sp_dp_pipe_propImpl.xdc].
+Resolution: To avoid this warning, move constraints listed in [.Xil/mkfpu_convert_sp_dp_pipe_propImpl.xdc] to another XDC file and exclude this new file from synthesis with the used_in_synthesis property (File Properties dialog in GUI) and re-run elaboration/synthesis.
+Completed Processing XDC Constraints
+
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+Constraint Validation Runtime : Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 1476.023 ; gain = 0.000 ; free physical = 120 ; free virtual = 11405
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:00:12 ; elapsed = 00:00:13 . Memory (MB): peak = 1476.023 ; gain = 582.262 ; free physical = 127 ; free virtual = 11404
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xc7a100tcsg324-1
+---------------------------------------------------------------------------------
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:12 ; elapsed = 00:00:13 . Memory (MB): peak = 1476.023 ; gain = 582.262 ; free physical = 127 ; free virtual = 11404
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying 'set_property' XDC Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:12 ; elapsed = 00:00:13 . Memory (MB): peak = 1476.023 ; gain = 582.262 ; free physical = 127 ; free virtual = 11404
+---------------------------------------------------------------------------------
+INFO: [Synth 8-5544] ROM "result__h271" won't be mapped to Block RAM because address size (1) smaller than threshold (5)
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:13 ; elapsed = 00:00:13 . Memory (MB): peak = 1476.023 ; gain = 582.262 ; free physical = 127 ; free virtual = 11404
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start RTL Component Statistics 
+---------------------------------------------------------------------------------
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input     11 Bit       Adders := 2     
++---Registers : 
+	               69 Bit    Registers := 2     
+	                1 Bit    Registers := 2     
++---Muxes : 
+	   2 Input     69 Bit        Muxes := 2     
+	   2 Input     63 Bit        Muxes := 2     
+	  23 Input      5 Bit        Muxes := 1     
+	   2 Input      5 Bit        Muxes := 1     
+	   2 Input      1 Bit        Muxes := 3     
+---------------------------------------------------------------------------------
+Finished RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start RTL Hierarchical Component Statistics 
+---------------------------------------------------------------------------------
+Hierarchical RTL Component report 
+Module mkfpu_convert_sp_dp_pipe 
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input     11 Bit       Adders := 2     
++---Muxes : 
+	   2 Input     69 Bit        Muxes := 2     
+	   2 Input     63 Bit        Muxes := 2     
+	  23 Input      5 Bit        Muxes := 1     
+	   2 Input      5 Bit        Muxes := 1     
+Module FIFO2 
+Detailed RTL Component Info : 
++---Registers : 
+	               69 Bit    Registers := 2     
+	                1 Bit    Registers := 2     
++---Muxes : 
+	   2 Input      1 Bit        Muxes := 3     
+---------------------------------------------------------------------------------
+Finished RTL Hierarchical Component Statistics
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Part Resource Summary
+---------------------------------------------------------------------------------
+Part Resources:
+DSPs: 240 (col length:80)
+BRAMs: 270 (col length: RAMB18 80 RAMB36 40)
+---------------------------------------------------------------------------------
+Finished Part Resource Summary
+---------------------------------------------------------------------------------
+Start Parallel Synthesis Optimization  : Time (s): cpu = 00:00:13 ; elapsed = 00:00:13 . Memory (MB): peak = 1476.023 ; gain = 582.262 ; free physical = 127 ; free virtual = 11404
+---------------------------------------------------------------------------------
+Start Cross Boundary Optimization
+---------------------------------------------------------------------------------
+WARNING: [Synth 8-3331] design mkfpu_convert_sp_dp_pipe has unconnected port _start_rounding_mode[2]
+WARNING: [Synth 8-3331] design mkfpu_convert_sp_dp_pipe has unconnected port _start_rounding_mode[1]
+WARNING: [Synth 8-3331] design mkfpu_convert_sp_dp_pipe has unconnected port _start_rounding_mode[0]
+---------------------------------------------------------------------------------
+Finished Cross Boundary Optimization : Time (s): cpu = 00:00:13 ; elapsed = 00:00:13 . Memory (MB): peak = 1476.023 ; gain = 582.262 ; free physical = 138 ; free virtual = 11398
+---------------------------------------------------------------------------------
+Finished Parallel Reinference  : Time (s): cpu = 00:00:13 ; elapsed = 00:00:13 . Memory (MB): peak = 1476.023 ; gain = 582.262 ; free physical = 138 ; free virtual = 11398
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start Area Optimization
+---------------------------------------------------------------------------------
+INFO: [Synth 8-3886] merging instance 'ff_output/data1_reg_reg[0]' (FDE) to 'ff_output/data1_reg_reg[1]'
+INFO: [Synth 8-3886] merging instance 'ff_output/data1_reg_reg[1]' (FDE) to 'ff_output/data1_reg_reg[2]'
+INFO: [Synth 8-3886] merging instance 'ff_output/data1_reg_reg[2]' (FDE) to 'ff_output/data1_reg_reg[3]'
+INFO: [Synth 8-3886] merging instance 'ff_output/data1_reg_reg[3]' (FDE) to 'ff_output/data1_reg_reg[5]'
+INFO: [Synth 8-3886] merging instance 'ff_output/data1_reg_reg[5]' (FDE) to 'ff_output/data1_reg_reg[6]'
+INFO: [Synth 8-3886] merging instance 'ff_output/data1_reg_reg[6]' (FDE) to 'ff_output/data1_reg_reg[7]'
+INFO: [Synth 8-3886] merging instance 'ff_output/data1_reg_reg[7]' (FDE) to 'ff_output/data1_reg_reg[8]'
+INFO: [Synth 8-3886] merging instance 'ff_output/data1_reg_reg[8]' (FDE) to 'ff_output/data1_reg_reg[9]'
+INFO: [Synth 8-3886] merging instance 'ff_output/data1_reg_reg[9]' (FDE) to 'ff_output/data1_reg_reg[10]'
+INFO: [Synth 8-3886] merging instance 'ff_output/data1_reg_reg[10]' (FDE) to 'ff_output/data1_reg_reg[11]'
+INFO: [Synth 8-3886] merging instance 'ff_output/data1_reg_reg[11]' (FDE) to 'ff_output/data1_reg_reg[12]'
+INFO: [Synth 8-3886] merging instance 'ff_output/data1_reg_reg[12]' (FDE) to 'ff_output/data1_reg_reg[13]'
+INFO: [Synth 8-3886] merging instance 'ff_output/data1_reg_reg[13]' (FDE) to 'ff_output/data1_reg_reg[14]'
+INFO: [Synth 8-3886] merging instance 'ff_output/data1_reg_reg[14]' (FDE) to 'ff_output/data1_reg_reg[15]'
+INFO: [Synth 8-3886] merging instance 'ff_output/data1_reg_reg[15]' (FDE) to 'ff_output/data1_reg_reg[16]'
+INFO: [Synth 8-3886] merging instance 'ff_output/data1_reg_reg[16]' (FDE) to 'ff_output/data1_reg_reg[17]'
+INFO: [Synth 8-3886] merging instance 'ff_output/data1_reg_reg[17]' (FDE) to 'ff_output/data1_reg_reg[18]'
+INFO: [Synth 8-3886] merging instance 'ff_output/data1_reg_reg[18]' (FDE) to 'ff_output/data1_reg_reg[19]'
+INFO: [Synth 8-3886] merging instance 'ff_output/data1_reg_reg[19]' (FDE) to 'ff_output/data1_reg_reg[20]'
+INFO: [Synth 8-3886] merging instance 'ff_output/data1_reg_reg[20]' (FDE) to 'ff_output/data1_reg_reg[21]'
+INFO: [Synth 8-3886] merging instance 'ff_output/data1_reg_reg[21]' (FDE) to 'ff_output/data1_reg_reg[22]'
+INFO: [Synth 8-3886] merging instance 'ff_output/data1_reg_reg[22]' (FDE) to 'ff_output/data1_reg_reg[23]'
+INFO: [Synth 8-3886] merging instance 'ff_output/data1_reg_reg[23]' (FDE) to 'ff_output/data1_reg_reg[24]'
+INFO: [Synth 8-3886] merging instance 'ff_output/data1_reg_reg[24]' (FDE) to 'ff_output/data1_reg_reg[25]'
+INFO: [Synth 8-3886] merging instance 'ff_output/data1_reg_reg[25]' (FDE) to 'ff_output/data1_reg_reg[26]'
+INFO: [Synth 8-3886] merging instance 'ff_output/data1_reg_reg[26]' (FDE) to 'ff_output/data1_reg_reg[27]'
+INFO: [Synth 8-3886] merging instance 'ff_output/data1_reg_reg[27]' (FDE) to 'ff_output/data1_reg_reg[28]'
+INFO: [Synth 8-3886] merging instance 'ff_output/data1_reg_reg[28]' (FDE) to 'ff_output/data1_reg_reg[29]'
+INFO: [Synth 8-3886] merging instance 'ff_output/data1_reg_reg[29]' (FDE) to 'ff_output/data1_reg_reg[30]'
+INFO: [Synth 8-3886] merging instance 'ff_output/data1_reg_reg[30]' (FDE) to 'ff_output/data1_reg_reg[31]'
+INFO: [Synth 8-3886] merging instance 'ff_output/data1_reg_reg[31]' (FDE) to 'ff_output/data1_reg_reg[32]'
+INFO: [Synth 8-3886] merging instance 'ff_output/data1_reg_reg[32]' (FDE) to 'ff_output/data1_reg_reg[33]'
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (ff_output/\data1_reg_reg[33] )
+INFO: [Synth 8-3886] merging instance 'ff_output/data1_reg_reg[65]' (FDE) to 'ff_output/data1_reg_reg[66]'
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[65]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[33]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[32]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[31]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[30]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[29]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[28]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[27]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[26]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[25]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[24]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[23]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[22]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[21]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[20]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[19]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[18]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[17]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[16]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[15]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[14]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[13]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[12]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[11]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[10]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[9]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[8]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[7]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[6]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[5]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[3]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[2]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[1]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data1_reg_reg[0]) is unused and will be removed from module FIFO2.
+---------------------------------------------------------------------------------
+Finished Area Optimization : Time (s): cpu = 00:00:13 ; elapsed = 00:00:14 . Memory (MB): peak = 1476.023 ; gain = 582.262 ; free physical = 128 ; free virtual = 11380
+---------------------------------------------------------------------------------
+Finished Parallel Area Optimization  : Time (s): cpu = 00:00:13 ; elapsed = 00:00:14 . Memory (MB): peak = 1476.023 ; gain = 582.262 ; free physical = 128 ; free virtual = 11380
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start Timing Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying XDC Timing Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:00:19 ; elapsed = 00:00:19 . Memory (MB): peak = 1476.023 ; gain = 582.262 ; free physical = 126 ; free virtual = 11330
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Timing Optimization : Time (s): cpu = 00:00:19 ; elapsed = 00:00:20 . Memory (MB): peak = 1476.023 ; gain = 582.262 ; free physical = 128 ; free virtual = 11324
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start Technology Mapping
+---------------------------------------------------------------------------------
+WARNING: [Synth 8-3332] Sequential element (data0_reg_reg[33]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data0_reg_reg[32]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data0_reg_reg[31]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data0_reg_reg[30]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data0_reg_reg[29]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data0_reg_reg[28]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data0_reg_reg[27]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data0_reg_reg[26]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data0_reg_reg[25]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data0_reg_reg[24]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data0_reg_reg[23]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data0_reg_reg[22]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data0_reg_reg[21]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data0_reg_reg[20]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data0_reg_reg[19]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data0_reg_reg[18]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data0_reg_reg[17]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data0_reg_reg[16]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data0_reg_reg[15]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data0_reg_reg[14]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data0_reg_reg[13]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data0_reg_reg[12]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data0_reg_reg[11]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data0_reg_reg[10]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data0_reg_reg[9]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data0_reg_reg[8]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data0_reg_reg[7]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data0_reg_reg[6]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data0_reg_reg[5]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data0_reg_reg[3]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data0_reg_reg[2]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data0_reg_reg[1]) is unused and will be removed from module FIFO2.
+WARNING: [Synth 8-3332] Sequential element (data0_reg_reg[0]) is unused and will be removed from module FIFO2.
+---------------------------------------------------------------------------------
+Finished Technology Mapping : Time (s): cpu = 00:00:19 ; elapsed = 00:00:20 . Memory (MB): peak = 1476.023 ; gain = 582.262 ; free physical = 128 ; free virtual = 11316
+---------------------------------------------------------------------------------
+Finished Parallel Technology Mapping Optimization  : Time (s): cpu = 00:00:19 ; elapsed = 00:00:20 . Memory (MB): peak = 1476.023 ; gain = 582.262 ; free physical = 128 ; free virtual = 11316
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+Finished Parallel Synthesis Optimization  : Time (s): cpu = 00:00:19 ; elapsed = 00:00:20 . Memory (MB): peak = 1476.023 ; gain = 582.262 ; free physical = 128 ; free virtual = 11316
+---------------------------------------------------------------------------------
+Start IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished IO Insertion : Time (s): cpu = 00:00:19 ; elapsed = 00:00:20 . Memory (MB): peak = 1476.023 ; gain = 582.262 ; free physical = 128 ; free virtual = 11316
+---------------------------------------------------------------------------------
+
+Report Check Netlist: 
++------+------------------+-------+---------+-------+------------------+
+|      |Item              |Errors |Warnings |Status |Description       |
++------+------------------+-------+---------+-------+------------------+
+|1     |multi_driven_nets |      0|        0|Passed |Multi driven nets |
++------+------------------+-------+---------+-------+------------------+
+---------------------------------------------------------------------------------
+Start Renaming Generated Instances
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Instances : Time (s): cpu = 00:00:19 ; elapsed = 00:00:20 . Memory (MB): peak = 1476.023 ; gain = 582.262 ; free physical = 128 ; free virtual = 11316
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:19 ; elapsed = 00:00:20 . Memory (MB): peak = 1476.023 ; gain = 582.262 ; free physical = 128 ; free virtual = 11316
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Writing Synthesis Report
+---------------------------------------------------------------------------------
+
+Report BlackBoxes: 
++-+--------------+----------+
+| |BlackBox name |Instances |
++-+--------------+----------+
++-+--------------+----------+
+
+Report Cell Usage: 
++------+-----+------+
+|      |Cell |Count |
++------+-----+------+
+|1     |BUFG |     1|
+|2     |LUT2 |    11|
+|3     |LUT3 |    11|
+|4     |LUT4 |    16|
+|5     |LUT5 |    24|
+|6     |LUT6 |    95|
+|7     |FDRE |    73|
+|8     |IBUF |    41|
+|9     |OBUF |    71|
++------+-----+------+
+
+Report Instance Areas: 
++------+------------+-------+------+
+|      |Instance    |Module |Cells |
++------+------------+-------+------+
+|1     |top         |       |   343|
+|2     |  ff_output |FIFO2  |   115|
++------+------------+-------+------+
+---------------------------------------------------------------------------------
+Finished Writing Synthesis Report : Time (s): cpu = 00:00:19 ; elapsed = 00:00:20 . Memory (MB): peak = 1476.023 ; gain = 582.262 ; free physical = 128 ; free virtual = 11316
+---------------------------------------------------------------------------------
+Synthesis finished with 0 errors, 0 critical warnings and 70 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:00:14 ; elapsed = 00:00:14 . Memory (MB): peak = 1476.023 ; gain = 112.434 ; free physical = 128 ; free virtual = 11316
+Synthesis Optimization Complete : Time (s): cpu = 00:00:19 ; elapsed = 00:00:20 . Memory (MB): peak = 1476.023 ; gain = 582.262 ; free physical = 128 ; free virtual = 11316
+INFO: [Project 1-571] Translating synthesized netlist
+INFO: [Netlist 29-17] Analyzing 41 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-570] Preparing netlist for logic optimization
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+INFO: [Common 17-83] Releasing license: Synthesis
+52 Infos, 75 Warnings, 0 Critical Warnings and 0 Errors encountered.
+synth_design completed successfully
+synth_design: Time (s): cpu = 00:00:18 ; elapsed = 00:00:18 . Memory (MB): peak = 1476.023 ; gain = 495.754 ; free physical = 127 ; free virtual = 11316
+report_utilization: Time (s): cpu = 00:00:00.07 ; elapsed = 00:00:00.09 . Memory (MB): peak = 1508.039 ; gain = 0.000 ; free physical = 134 ; free virtual = 11314
+INFO: [Common 17-206] Exiting Vivado at Thu Sep 13 15:25:55 2018...

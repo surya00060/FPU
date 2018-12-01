@@ -599,7 +599,7 @@ endmodule
 		/*		TEST BENCH 		*/
 
 //(*synthesize*)
-/*
+
 module mkTb_fpu_divider_pipe_64(Empty);
 	
     function Tuple2#(Bit#(5), Bit#(5)) condFlags (Tuple2#(Bit#(52), Bit#(11)) x, Tuple2#(Bit#(52), Bit#(11)) y);
@@ -638,7 +638,7 @@ module mkTb_fpu_divider_pipe_64(Empty);
 	Reg#(Bit#(64)) rg_operand2<-mkReg(64'hbff0000000000000);
 
 	Reg#(Bit#(32)) rg_clock<-mkReg(0); 
-	Ifc_fpu_divider_pipe_64#(64,52,11) divider<-mkfpu_divider_pipe_64();
+	Ifc_fpu_divider_pipe_64 divider<-mkfpu_divider_pipe_64();
 
 	Reg#(Bit#(32)) rg_arbit <-mkReg(0);
 
@@ -651,13 +651,15 @@ module mkTb_fpu_divider_pipe_64(Empty);
             let {man1,man2} =  getMantissa(rg_operand1, rg_operand2);
             let {exp1,exp2} =  getExp(rg_operand1, rg_operand2);
             let {x1,x2}           =  condFlags(tuple2(man1,exp1),tuple2(man2,exp2));
-		 `ifdef verbose $display("Giving inputs rg_operand 1 : %h rg_operand 2 : %h through testbench",rg_operand1,rg_operand2,$time); `endif
+         `ifdef verbose $display("Giving inputs rg_operand 1 : %h rg_operand 2 : %h through testbench",rg_operand1,rg_operand2,$time); `endif
+         $display("Giving inputs rg_operand 1 : %h rg_operand 2 : %h through testbench",rg_operand1,rg_operand2,$time);
 		divider._start(rg_operand1[63]^rg_operand2[63],man1,exp1,man2,exp2,3'b100,tuple2(x1,x2));
 	endrule
 
 	rule rl_display_result;
          let abc = divider.final_result_();
          `ifdef verbose $display("output: %h fflags: %h",abc.final_result, abc.fflags); `endif
+         $display("output: %h fflags: %h",abc.final_result, abc.fflags);
 	endrule
 
 	rule rl_finish_(rg_clock=='d60);
@@ -665,7 +667,7 @@ module mkTb_fpu_divider_pipe_64(Empty);
 	endrule
 
 endmodule:mkTb_fpu_divider_pipe_64
-*/
+
 
 //module mkTb_fpu_divider_pipe_64_2(Empty);
 //	

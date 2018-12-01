@@ -1,4 +1,4 @@
-/*
+    /*
 Authors     : Surya.S , Vinod.G, Aditya Govardhan
 Email       : g.vinod1993@gmail.com
 Last Update : 27th November 2017
@@ -20,7 +20,7 @@ import SpecialFIFOs :: * ;
     
 interface Ifc_fpu_fm_add_sub_pipe_64;
     method Action _start(Tuple3#(Bit#(1),Bit#(11),Bit#(52)) _operand1, Tuple3#(Bit#(1),Bit#(11),Bit#(52)) _operand2,Tuple3#(Bit#(1),Bit#(11),Bit#(52)) _operand3, Bit#(3) rounding_mode, bit operation, bit _negate, bit mul,bit muladd, Tuple3#(Bit#(5),Bit#(5),Bit#(5)) flags);
-    method Floating_output#(64) get_result();	
+    method ActionValue#(Floating_output#(64)) get_result();	
     method Action flush;
 endinterface
 
@@ -157,7 +157,58 @@ typedef struct{
     //Bit#(TLog#(TAdd#(TAdd#(TMul#(52,3),4),1))) lv_zeros_on_left;
 }Stage5_data_type  deriving (Bits,Eq);
 
-    
+
+typedef struct{
+    Bit#(13) resultant_exponent;
+    Bit#(160) resultant_mantissa;
+    //Bit#(25) lv_rounded_mantissa;
+    bit lv_resultant_sign;
+    Bit#(3) lv_rounding_mode;
+    Bit#(2) add_sub_is_zero;
+    bit lv_result_is_invalid;
+    Bit#(2) lv_result_is_infinity;
+    Bit#(2) lv_result_is_zero;
+    bit lv_product_overflow;
+    bit lv_product_underflow;
+    bit quiet_nan_two;
+    bit quiet_nan_three;
+    bit lv_product_is_zero;
+    bit lv_inexact;
+    bit ex_overflow;
+    //bit lv_res1 ;               
+    bit lv_sticky  ;            
+    //bit lv_guard   ;           
+    //bit lv_round   ; 
+    bit add_sub_subnormal;          
+        
+}Stage6_data_type  deriving (Bits,Eq);
+
+typedef struct{
+    Bit#(13) resultant_exponent;
+    //Bit#(160) resultant_mantissa;
+    Bit#(54) lv_rounded_mantissa;
+    bit lv_resultant_sign;
+    Bit#(3) lv_rounding_mode;
+    Bit#(2) add_sub_is_zero;
+    bit lv_result_is_invalid;
+    Bit#(2) lv_result_is_infinity;
+    Bit#(2) lv_result_is_zero;
+    bit lv_product_overflow;
+    bit lv_product_underflow;
+    bit quiet_nan_two;
+    bit quiet_nan_three;
+    bit lv_product_is_zero;
+    bit lv_inexact;
+    bit ex_overflow;
+    //bit lv_res1 ;               
+    //bit lv_sticky  ;            
+    //bit lv_guard   ;           
+    //bit lv_round   ; 
+    bit add_sub_subnormal;          
+        
+}Stage7_data_type  deriving (Bits,Eq);
+
+
 module mkfpu_fm_add_sub_pipe_64(Ifc_fpu_fm_add_sub_pipe_64)
     provisos(
         Add#(TAdd#(11,52),1,64),
@@ -194,14 +245,16 @@ module mkfpu_fm_add_sub_pipe_64(Ifc_fpu_fm_add_sub_pipe_64)
 
 
 
-    Wire#(Floating_output#(64))           ff_final_out        <-   mkWire();   
+    //Wire#(Floating_output#(64))           ff_final_out        <-   mkWire();   
     FIFOF#(Input_data_type)               ff_input            <-   mkFIFOF();
     FIFOF#(Stage1_data_type)              ff_stage1           <-   mkFIFOF();
     FIFOF#(Stage3_data_type)              ff_stage3           <-   mkFIFOF();
     FIFOF#(Stage2_data_type)              ff_stage2           <-   mkFIFOF();
     FIFOF#(Stage4_data_type)              ff_stage4           <-   mkFIFOF();
     FIFOF#(Stage5_data_type)              ff_stage5           <-   mkFIFOF();
-    
+    FIFOF#(Stage6_data_type)              ff_stage6           <-   mkFIFOF();
+    FIFOF#(Stage7_data_type)              ff_stage7           <-   mkFIFOF(); 
+    FIFOF#(Floating_output#(64))          ff_final_out        <-   mkFIFOF();  
 
     //Reg#(FMA_states)                      rg_state_handler    <-   mkReg(Begin);
     Reg#(Bool)                           rg_flush_stage2     <-   mkReg(False);
@@ -879,6 +932,56 @@ module mkfpu_fm_add_sub_pipe_64(Ifc_fpu_fm_add_sub_pipe_64)
             end
          end
 
+        let ff_stage6_pipe = Stage6_data_type{
+            resultant_mantissa    : resultant_mantissa,
+            //lv_rounded_mantissa   : lv_rounded_mantissa,
+            lv_resultant_sign     : lv_resultant_sign,
+            lv_result_is_invalid  : lv_result_is_invalid,
+            lv_result_is_infinity : lv_result_is_infinity,
+            lv_result_is_zero     : lv_result_is_zero,
+            add_sub_is_zero       : add_sub_is_zero,
+            resultant_exponent    : resultant_exponent,
+            lv_rounding_mode      : lv_rounding_mode,                                            
+            lv_product_overflow   : lv_product_overflow,
+            quiet_nan_two         : quiet_nan_two,
+            quiet_nan_three       : quiet_nan_three,
+            lv_product_underflow  : lv_product_underflow,
+            lv_product_is_zero    : lv_product_is_zero,
+            //lv_inexact            : lv_inexact ,
+            //ex_overflow           : ex_overflow ,
+            //lv_res1               : lv_res1, 
+            lv_sticky             : lv_sticky,
+            add_sub_subnormal     : add_sub_subnormal
+            //lv_guard              : lv_guard ,
+            //lv_round              : lv_round  
+        };
+        ff_stage6.enq( ff_stage6_pipe );
+
+    endrule
+
+    rule rl_ff_final;
+         
+         let ff_stage6_pipe = ff_stage6.first ; ff_stage6.deq ;
+         
+         Bit#(160) resultant_mantissa    =  ff_stage6_pipe.resultant_mantissa;
+         //let lv_rounded_mantissa        =  ff_stage6_pipe.lv_rounded_mantissa;
+         let lv_resultant_sign          =  ff_stage6_pipe.lv_resultant_sign;
+         let lv_result_is_invalid       =  ff_stage6_pipe.lv_result_is_invalid;
+         let lv_result_is_infinity      =  ff_stage6_pipe.lv_result_is_infinity;
+         let lv_result_is_zero          =  ff_stage6_pipe.lv_result_is_zero;
+         let add_sub_is_zero            =  ff_stage6_pipe.add_sub_is_zero;
+         let resultant_exponent         =  ff_stage6_pipe.resultant_exponent;
+         let lv_rounding_mode           =  ff_stage6_pipe.lv_rounding_mode;                                            
+         let lv_product_overflow        =  ff_stage6_pipe.lv_product_overflow;
+         let quiet_nan_two              =  ff_stage6_pipe.quiet_nan_two;
+         let quiet_nan_three            =  ff_stage6_pipe.quiet_nan_three;
+         let lv_product_underflow       =  ff_stage6_pipe.lv_product_underflow;
+         let lv_product_is_zero         =  ff_stage6_pipe.lv_product_is_zero;
+         let add_sub_subnormal          = ff_stage6_pipe.add_sub_subnormal;
+         //let lv_inexact                 =  ff_stage6_pipe.lv_inexact ;
+         //let ex_overflow                =  ff_stage6_pipe.ex_overflow;
+         //let lv_res1               = ff_stage6_pipe.lv_res1 ; 
+         let lv_sticky             = ff_stage6_pipe.lv_sticky;
 
          `ifdef verbose $display("resultant_exponent : %b",resultant_exponent); `endif
          Bit#(TSub#(11,1)) bias = '1;
@@ -898,7 +1001,9 @@ module mkfpu_fm_add_sub_pipe_64(Ifc_fpu_fm_add_sub_pipe_64)
          end
          /*`ifdef verbose $display("resultant_sign = %b resultant_exponent = %b resultant_mantissa = %b", resultant_sign, resultant_exponent, resultant_mantissa); `endif
          `ifdef verbose $display(); `endif
-    */    
+    */   
+
+
          Bit#(TAdd#(52,2)) lv_rounded_mantissa =   resultant_mantissa[fMAMAN-1:iMPFPMAN2];
          Bit#(2) lv_res_man                       =   resultant_mantissa[fMAMAN-1:fMAMAN-2];
          Bit#(TSub#(106,2)) lv_res1         =   resultant_mantissa[iMPFPMAN2-3:0];
@@ -936,6 +1041,59 @@ module mkfpu_fm_add_sub_pipe_64(Ifc_fpu_fm_add_sub_pipe_64)
          else if(lv_res_man == 'b0 && lv_rounded_mantissa[fPMAN] == 1) begin
             resultant_exponent = resultant_exponent + 1;
          end
+         
+
+         let ff_stage7_pipe = Stage7_data_type{
+            //resultant_mantissa    : resultant_mantissa,
+            lv_rounded_mantissa   : lv_rounded_mantissa,
+            lv_resultant_sign     : lv_resultant_sign,
+            lv_result_is_invalid  : lv_result_is_invalid,
+            lv_result_is_infinity : lv_result_is_infinity,
+            lv_result_is_zero     : lv_result_is_zero,
+            add_sub_is_zero       : add_sub_is_zero,
+            resultant_exponent    : resultant_exponent,
+            lv_rounding_mode      : lv_rounding_mode,                                            
+            lv_product_overflow   : lv_product_overflow,
+            quiet_nan_two         : quiet_nan_two,
+            quiet_nan_three       : quiet_nan_three,
+            lv_product_underflow  : lv_product_underflow,
+            lv_product_is_zero    : lv_product_is_zero,
+            //lv_inexact            : lv_inexact ,
+            ex_overflow           : ex_overflow 
+            //lv_res1               : lv_res1, 
+            //lv_sticky             : lv_sticky,
+            //add_sub_subnormal     : add_sub_subnormal
+            //lv_guard              : lv_guard ,
+            //lv_round              : lv_round  
+        };
+        ff_stage7.enq( ff_stage7_pipe );
+
+    endrule
+
+    rule rl_ff_final_2;
+         
+        let ff_stage7_pipe = ff_stage7.first ; ff_stage7.deq ;
+         
+        //Bit#(160) resultant_mantissa    =  ff_stage6_pipe.resultant_mantissa;
+        Bit#(54) lv_rounded_mantissa   =  ff_stage7_pipe.lv_rounded_mantissa;
+        let lv_resultant_sign          =  ff_stage7_pipe.lv_resultant_sign;
+        let lv_result_is_invalid       =  ff_stage7_pipe.lv_result_is_invalid;
+        let lv_result_is_infinity      =  ff_stage7_pipe.lv_result_is_infinity;
+        let lv_result_is_zero          =  ff_stage7_pipe.lv_result_is_zero;
+        let add_sub_is_zero            =  ff_stage7_pipe.add_sub_is_zero;
+        let resultant_exponent         =  ff_stage7_pipe.resultant_exponent;
+        let lv_rounding_mode           =  ff_stage7_pipe.lv_rounding_mode;                                            
+        let lv_product_overflow        =  ff_stage7_pipe.lv_product_overflow;
+        let quiet_nan_two              =  ff_stage7_pipe.quiet_nan_two;
+        let quiet_nan_three            =  ff_stage7_pipe.quiet_nan_three;
+        let lv_product_underflow       =  ff_stage7_pipe.lv_product_underflow;
+        let lv_product_is_zero         =  ff_stage7_pipe.lv_product_is_zero;
+        //let add_sub_subnormal          = ff_stage6_pipe.add_sub_subnormal;
+        let lv_inexact                 =  ff_stage7_pipe.lv_inexact ;
+        let ex_overflow                =  ff_stage7_pipe.ex_overflow;
+        //let lv_res1               = ff_stage6_pipe.lv_res1 ; 
+        //let lv_sticky             = ff_stage6_pipe.lv_sticky;
+
 
          Bit#(11) lv_res_exp_temp         = resultant_exponent[fPEXP-1:0];
          Bit#(52) man_all_zeros           = '0;
@@ -993,10 +1151,11 @@ module mkfpu_fm_add_sub_pipe_64(Ifc_fpu_fm_add_sub_pipe_64)
 
          Bit#(5) fflags={lv_result_is_invalid,1'b0,ex_overflow,lv_product_underflow,lv_inexact};
          `ifdef verbose $display("lv_inv : %b ex_overflow: %b lv_inexact : %b",lv_result_is_invalid,ex_overflow,lv_inexact); `endif
-         ff_final_out <= Floating_output{
+          let ff_final = Floating_output{
                                  final_result   :        lv_final_output,
                                  fflags         :        fflags
                                         };
+            ff_final_out.enq( ff_final);
 
          `ifdef verbose $display("FMA: Result: %h fflags: %8h",lv_final_output, {24'b0,fflags}); `endif
     endrule
@@ -1082,8 +1241,9 @@ module mkfpu_fm_add_sub_pipe_64(Ifc_fpu_fm_add_sub_pipe_64)
     endmethod
 
 
-    method Floating_output#(64) get_result();
-       return ff_final_out;
+    method ActionValue#(Floating_output#(64)) get_result();
+       let ff_final = ff_final_out.first ; ff_final_out.deq ;
+        return ff_final;
     endmethod
     method Action flush;
         ff_input.clear;
@@ -1187,7 +1347,7 @@ $display("giving inputs at %0d", rg_clock);
     endrule
 
     rule rl_finish;
-        let res = uut.get_result();
+        let res <- uut.get_result();
         `ifdef verbose $display("Output = %h at %0d",res.final_result[31:0], rg_clock); `endif
         $display("                              Output = %h at %0d",res.final_result[31:0], rg_clock);
     endrule

@@ -1,7 +1,7 @@
 Copyright 1986-2016 Xilinx, Inc. All Rights Reserved.
 -------------------------------------------------------------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2016.1 (lin64) Build 1538259 Fri Apr  8 15:45:23 MDT 2016
-| Date         : Thu Aug  2 19:23:03 2018
+| Date         : Tue Nov 27 10:54:34 2018
 | Host         : surya-HP-Pavilion-Power-Laptop-15-cb0xx running 64-bit Ubuntu 16.04.4 LTS
 | Command      : report_utilization -file mkfpu_fm_add_sub_pipe_32_utilization_synth.rpt -pb mkfpu_fm_add_sub_pipe_32_utilization_synth.pb
 | Design       : mkfpu_fm_add_sub_pipe_32
@@ -30,13 +30,13 @@ Table of Contents
 +-------------------------+------+-------+-----------+-------+
 |        Site Type        | Used | Fixed | Available | Util% |
 +-------------------------+------+-------+-----------+-------+
-| Slice LUTs*             | 3426 |     0 |     63400 |  5.40 |
-|   LUT as Logic          | 3426 |     0 |     63400 |  5.40 |
+| Slice LUTs*             | 3476 |     0 |     63400 |  5.48 |
+|   LUT as Logic          | 3476 |     0 |     63400 |  5.48 |
 |   LUT as Memory         |    0 |     0 |     19000 |  0.00 |
-| Slice Registers         | 1728 |     0 |    126800 |  1.36 |
-|   Register as Flip Flop | 1728 |     0 |    126800 |  1.36 |
+| Slice Registers         | 2000 |     0 |    126800 |  1.58 |
+|   Register as Flip Flop | 2000 |     0 |    126800 |  1.58 |
 |   Register as Latch     |    0 |     0 |    126800 |  0.00 |
-| F7 Muxes                |   40 |     0 |     31700 |  0.13 |
+| F7 Muxes                |    1 |     0 |     31700 | <0.01 |
 | F8 Muxes                |    0 |     0 |     15850 |  0.00 |
 +-------------------------+------+-------+-----------+-------+
 * Warning! The Final LUT count, after physical optimizations and full implementation, is typically lower. Run opt_design after synthesis, if not already completed, for a more realistic count.
@@ -57,7 +57,7 @@ Table of Contents
 | 0     |          Yes |           - |          Set |
 | 0     |          Yes |           - |        Reset |
 | 0     |          Yes |         Set |            - |
-| 1728  |          Yes |       Reset |            - |
+| 2000  |          Yes |       Reset |            - |
 +-------+--------------+-------------+--------------+
 
 
@@ -91,7 +91,7 @@ Table of Contents
 +-----------------------------+------+-------+-----------+-------+
 |          Site Type          | Used | Fixed | Available | Util% |
 +-----------------------------+------+-------+-----------+-------+
-| Bonded IOB                  |  162 |     0 |       210 | 77.14 |
+| Bonded IOB                  |  163 |     0 |       210 | 77.62 |
 | Bonded IPADs                |    0 |     0 |         2 |  0.00 |
 | PHY_CONTROL                 |    0 |     0 |         6 |  0.00 |
 | PHASER_REF                  |    0 |     0 |         6 |  0.00 |
@@ -148,18 +148,18 @@ Table of Contents
 +----------+------+---------------------+
 | Ref Name | Used | Functional Category |
 +----------+------+---------------------+
-| LUT6     | 2155 |                 LUT |
-| FDRE     | 1728 |        Flop & Latch |
-| LUT5     |  720 |                 LUT |
-| LUT3     |  409 |                 LUT |
-| LUT4     |  396 |                 LUT |
-| LUT2     |  242 |                 LUT |
-| IBUF     |  122 |                  IO |
+| LUT6     | 2249 |                 LUT |
+| FDRE     | 2000 |        Flop & Latch |
+| LUT5     |  702 |                 LUT |
+| LUT4     |  439 |                 LUT |
+| LUT3     |  356 |                 LUT |
+| LUT2     |  244 |                 LUT |
+| IBUF     |  123 |                  IO |
 | CARRY4   |   73 |          CarryLogic |
 | OBUF     |   40 |                  IO |
-| MUXF7    |   40 |               MuxFx |
-| LUT1     |    3 |                 LUT |
+| LUT1     |    4 |                 LUT |
 | DSP48E1  |    2 |    Block Arithmetic |
+| MUXF7    |    1 |               MuxFx |
 | BUFG     |    1 |               Clock |
 +----------+------+---------------------+
 

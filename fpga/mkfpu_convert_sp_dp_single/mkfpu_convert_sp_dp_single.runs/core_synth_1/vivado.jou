@@ -1,0 +1,12 @@
+#-----------------------------------------------------------
+# Vivado v2016.1 (64-bit)
+# SW Build 1538259 on Fri Apr  8 15:45:23 MDT 2016
+# IP Build 1537824 on Fri Apr  8 04:28:57 MDT 2016
+# Start of session at: Thu Sep 13 15:17:52 2018
+# Process ID: 7415
+# Current directory: /home/surya/Desktop/FPU/fpga/mkfpu_convert_sp_dp_single/mkfpu_convert_sp_dp_single.runs/core_synth_1
+# Command line: vivado -log FIFO2.vds -mode batch -messageDb vivado.pb -notrace -source FIFO2.tcl
+# Log file: /home/surya/Desktop/FPU/fpga/mkfpu_convert_sp_dp_single/mkfpu_convert_sp_dp_single.runs/core_synth_1/FIFO2.vds
+# Journal file: /home/surya/Desktop/FPU/fpga/mkfpu_convert_sp_dp_single/mkfpu_convert_sp_dp_single.runs/core_synth_1/vivado.jou
+#-----------------------------------------------------------
+source FIFO2.tcl -notrace

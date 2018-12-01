@@ -1,7 +1,7 @@
 Copyright 1986-2016 Xilinx, Inc. All Rights Reserved.
 ---------------------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2016.1 (lin64) Build 1538259 Fri Apr  8 15:45:23 MDT 2016
-| Date         : Sat Aug 18 13:26:30 2018
+| Date         : Sat Aug 25 11:57:15 2018
 | Host         : surya-HP-Pavilion-Power-Laptop-15-cb0xx running 64-bit Ubuntu 16.04.4 LTS
 | Command      : report_utilization -hierarchical -file .//fpga/mkfpu_divider_pipe_64/syn_area.txt
 | Design       : mkfpu_divider_pipe_64

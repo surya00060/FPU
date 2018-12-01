@@ -1,5 +1,5 @@
 /*
-Authors     : Surya.S , Vinod.G, Aditya Govardhan 
+Authors     : Vinod.G, Aditya Govardhan 
 Email       : g.vinod1993@gmail.com
 Last Update : 27th November 2017
 See LICENSE for more details
@@ -22,7 +22,7 @@ import SpecialFIFOs :: * ;
 
 interface Ifc_fpu_fm_add_sub_pipe_32;
     method Action _start(Tuple3#(Bit#(1),Bit#(8),Bit#(23)) _operand1, Tuple3#(Bit#(1),Bit#(8),Bit#(23)) _operand2,Tuple3#(Bit#(1),Bit#(8),Bit#(23)) _operand3, Bit#(3) rounding_mode, bit operation, bit _negate, bit mul, bit muladd, Tuple3#(Bit#(5),Bit#(5),Bit#(5)) flags);
-    method Floating_output#(32) get_result();
+    method ActionValue#(Floating_output#(32)) get_result();
     method Action flush;
 endinterface
     
@@ -160,6 +160,50 @@ typedef struct{
 }Stage5_data_type  deriving (Bits,Eq);
 
 
+typedef struct{
+    Bit#(10) resultant_exponent;
+    Bit#(73) resultant_mantissa;
+    //Bit#(25) lv_rounded_mantissa;
+    bit lv_resultant_sign;
+    Bit#(3) lv_rounding_mode;
+    Bit#(2) add_sub_is_zero;
+    bit lv_result_is_invalid;
+    Bit#(2) lv_result_is_infinity;
+    Bit#(2) lv_result_is_zero;
+    bit lv_product_overflow;
+    bit lv_product_underflow;
+    bit quiet_nan_two;
+    bit quiet_nan_three;
+    bit lv_product_is_zero;
+    bit lv_inexact;
+    bit ex_overflow;
+    //bit lv_res1 ;               
+    bit lv_sticky  ;            
+    //bit lv_guard   ;           
+    //bit lv_round   ; 
+    bit add_sub_subnormal;          
+        
+}Stage6_data_type  deriving (Bits,Eq);
+
+                                                    //resultant_mantissa    : resultant_mantissa,
+                                                    //lv_rounded_mantissa   : lv_rounded_mantissa,
+                                                    //lv_resultant_sign     : lv_resultant_sign,
+                                                    //lv_result_is_invalid  : lv_result_is_invalid,
+                                                    //lv_result_is_infinity : lv_result_is_infinity,
+                                                    //lv_result_is_zero     : lv_result_is_zero,
+                                                    //add_sub_is_zero       : add_sub_is_zero,
+                                                    //resultant_exponent    : resultant_exponent,
+                                                    //lv_rounding_mode      : lv_rounding_mode,                                            
+                                                    //lv_product_overflow   : lv_product_overflow,
+                                                    //quiet_nan_two         : quiet_nan_two,
+                                                    //quiet_nan_three       : quiet_nan_three,
+                                                    //lv_product_underflow  : lv_product_underflow,
+                                                    //lv_product_is_zero    : lv_product_is_zero,
+                                                    //lv_inexact            : lv_inexact ,
+                                                    //lv_res_exp_temp       : lv_res_exp_temp ,
+                                                    //ex_overflow           : ex_overflow,
+                                                    //lv_resultant_sign     : lv_resultant_sign ,
+                                                    //lv_product_underflow  : lv_product_underflow 
 module mkfpu_fm_add_sub_pipe_32(Ifc_fpu_fm_add_sub_pipe_32)
     provisos(
              Add#(b__,32,64),
@@ -185,13 +229,16 @@ module mkfpu_fm_add_sub_pipe_32(Ifc_fpu_fm_add_sub_pipe_32)
 						 Add#(r__, TAdd#(1, TAdd#(8, f__)), 73)
              );
 
-    Wire#(Floating_output#(32))           ff_final_out        <-   mkWire();
+    //Wire#(Floating_output#(32))           ff_final_out        <-   mkWire();
+    //Reg#(Floating_output#(32))          ff_final_out          <- mkReg(unpack(0));
     FIFOF#(Stage1_data_type)              ff_stage1           <-   mkFIFOF();   
     FIFOF#(Stage2_data_type)              ff_stage2           <-   mkFIFOF();
     FIFOF#(Stage4_data_type)              ff_stage4           <-   mkFIFOF();
     FIFOF#(Stage5_data_type)              ff_stage5           <-   mkFIFOF();
     FIFOF#(Input_data_type)               ff_input            <-   mkFIFOF();
     FIFOF#(Stage3_data_type)              ff_stage3           <-   mkFIFOF();
+    FIFOF#(Stage6_data_type)              ff_stage6           <-   mkFIFOF();
+    FIFOF#(Floating_output#(32))          ff_final_out          <- mkFIFOF();
     //Reg#(FMA_states)                      rg_state_handler    <-   mkReg(Begin);
     Reg#(Bool)                           rg_flush_stage2     <-   mkReg(False);
     
@@ -387,8 +434,8 @@ module mkfpu_fm_add_sub_pipe_32(Ifc_fpu_fm_add_sub_pipe_32)
         Int#(10) possible_shift                      =  ff_stage1_pipe.possible_shift;
         let lsb_zeros                           =  ff_stage1_pipe.lsb_zeros;
         //let shift_neg                           =  ff_stage1_pipe.shift_neg;
-        //let lv_product_mantissa_shiftR          =  ff_stage1_pipe.lv_product_mantissa_shiftR;
-        //let lv_product_exponent_inc_shift       =  ff_stage1_pipe.lv_product_exponent_inc_shift;
+        let lv_product_mantissa_shiftR          =  ff_stage1_pipe.lv_product_mantissa_shiftR;
+        let lv_product_exponent_inc_shift       =  ff_stage1_pipe.lv_product_exponent_inc_shift;
         //let lv_product_mantissa_shiftL_expo     =  ff_stage1_pipe.lv_product_mantissa_shiftL_expo;
         //let lv_product_exponent_sub_shift       =  ff_stage1_pipe.lv_product_exponent_sub_shift;
         //let lv_product_mantissa_shiftL_zerosMSB =  ff_stage1_pipe.lv_product_mantissa_shiftL_zerosMSB;
@@ -858,6 +905,59 @@ module mkfpu_fm_add_sub_pipe_32(Ifc_fpu_fm_add_sub_pipe_32)
          /*`ifdef verbose $display("resultant_sign = %b resultant_exponent = %b resultant_mantissa = %b", resultant_sign, resultant_exponent, resultant_mantissa); `endif
          `ifdef verbose $display(); `endif
     */    
+         
+
+         let ff_stage6_pipe = Stage6_data_type{
+                                                    resultant_mantissa    : resultant_mantissa,
+                                                    //lv_rounded_mantissa   : lv_rounded_mantissa,
+                                                    lv_resultant_sign     : lv_resultant_sign,
+                                                    lv_result_is_invalid  : lv_result_is_invalid,
+                                                    lv_result_is_infinity : lv_result_is_infinity,
+                                                    lv_result_is_zero     : lv_result_is_zero,
+                                                    add_sub_is_zero       : add_sub_is_zero,
+                                                    resultant_exponent    : resultant_exponent,
+                                                    lv_rounding_mode      : lv_rounding_mode,                                            
+                                                    lv_product_overflow   : lv_product_overflow,
+                                                    quiet_nan_two         : quiet_nan_two,
+                                                    quiet_nan_three       : quiet_nan_three,
+                                                    lv_product_underflow  : lv_product_underflow,
+                                                    lv_product_is_zero    : lv_product_is_zero,
+                                                    //lv_inexact            : lv_inexact ,
+                                                    ex_overflow           : ex_overflow ,
+                                                    //lv_res1               : lv_res1, 
+                                                    lv_sticky             : lv_sticky,
+                                                    add_sub_subnormal     : add_sub_subnormal
+                                                    //lv_guard              : lv_guard ,
+                                                    //lv_round              : lv_round  
+                                                };
+         ff_stage6.enq( ff_stage6_pipe );
+
+    endrule
+
+    rule rl_ff_final;
+
+        let ff_stage6_pipe = ff_stage6.first ; ff_stage6.deq ;
+
+         Bit#(73) resultant_mantissa    =  ff_stage6_pipe.resultant_mantissa;
+         //let lv_rounded_mantissa        =  ff_stage6_pipe.lv_rounded_mantissa;
+         let lv_resultant_sign          =  ff_stage6_pipe.lv_resultant_sign;
+         let lv_result_is_invalid       =  ff_stage6_pipe.lv_result_is_invalid;
+         let lv_result_is_infinity      =  ff_stage6_pipe.lv_result_is_infinity;
+         let lv_result_is_zero          =  ff_stage6_pipe.lv_result_is_zero;
+         let add_sub_is_zero            =  ff_stage6_pipe.add_sub_is_zero;
+         let resultant_exponent         =  ff_stage6_pipe.resultant_exponent;
+         let lv_rounding_mode           =  ff_stage6_pipe.lv_rounding_mode;                                            
+         let lv_product_overflow        =  ff_stage6_pipe.lv_product_overflow;
+         let quiet_nan_two              =  ff_stage6_pipe.quiet_nan_two;
+         let quiet_nan_three            =  ff_stage6_pipe.quiet_nan_three;
+         let lv_product_underflow       =  ff_stage6_pipe.lv_product_underflow;
+         let lv_product_is_zero         =  ff_stage6_pipe.lv_product_is_zero;
+         let add_sub_subnormal          = ff_stage6_pipe.add_sub_subnormal;
+         //let lv_inexact                 =  ff_stage6_pipe.lv_inexact ;
+         let ex_overflow                =  ff_stage6_pipe.ex_overflow;
+         //let lv_res1               = ff_stage6_pipe.lv_res1 ; 
+         let lv_sticky             = ff_stage6_pipe.lv_sticky;
+
          Bit#(TAdd#(23,2)) lv_rounded_mantissa =   resultant_mantissa[fMAMAN-1:iMPFPMAN2];
          Bit#(2) lv_res_man                       =   resultant_mantissa[fMAMAN-1:fMAMAN-2];
          Bit#(TSub#(48,2)) lv_res1         =   resultant_mantissa[iMPFPMAN2-3:0];
@@ -952,12 +1052,13 @@ module mkfpu_fm_add_sub_pipe_32(Ifc_fpu_fm_add_sub_pipe_32)
 
          Bit#(5) fflags={lv_result_is_invalid,1'b0,ex_overflow,lv_product_underflow,lv_inexact};
          `ifdef verbose $display("lv_inv : %b ex_overflow: %b lv_inexact : %b",lv_result_is_invalid,ex_overflow,lv_inexact); `endif
-          ff_final_out <= Floating_output{
+          let ff_final = Floating_output{
                                  final_result   :        lv_final_output,
                                  fflags         :        fflags
                                         };
+           ff_final_out.enq( ff_final );     
 
-         `ifdef verbose $display("FMA: Result: %h fflags: %8h",lv_final_output, {24'b0,fflags}); `endif
+            `ifdef verbose $display("FMA: Result: %h fflags: %8h",lv_final_output, {24'b0,fflags}); `endif
     endrule
 	
     method Action _start(Tuple3#(Bit#(1),Bit#(8),Bit#(23)) _operand1, Tuple3#(Bit#(1),Bit#(8),Bit#(23)) _operand2,Tuple3#(Bit#(1),Bit#(8),Bit#(23)) _operand3, Bit#(3) rounding_mode, bit operation, bit _negate, bit mul, bit muladd, Tuple3#(Bit#(5),Bit#(5),Bit#(5)) flags);
@@ -1041,8 +1142,9 @@ module mkfpu_fm_add_sub_pipe_32(Ifc_fpu_fm_add_sub_pipe_32)
     endmethod
 
 
-    method Floating_output#(32) get_result();
-       return ff_final_out;
+    method ActionValue#(Floating_output#(32)) get_result();
+       let  ff_final = ff_final_out.first ; ff_final_out.deq ;
+       return ff_final ;
    endmethod
     
    method Action flush;
@@ -1151,55 +1253,127 @@ module mkTb_fpu_fm_add_sub_pipe_32(Empty);
     endrule
 
     rule rl_finish;
-        let res = uut.get_result();
+        let res <- uut.get_result();
         $display("                                                                                   Output = %h at %0d",res.final_result[31:0], rg_clock);
     endrule
 
 endmodule
 
-//module mkTb_fpu_fm_add_sub_2 (Empty);
-//	
-////	RegFile #(Bit #(16), Bit #(100))  input_data <- mkRegFileFullLoad("./testcases/fma_inp_nor.txt");
-////    RegFile #(Bit #(16), Bit #(68))  input_data <- mkRegFileFullLoad("./testcases/mul_denormal_testcases.txt");
-//    RegFile #(Bit #(16), Bit #(68))  input_data <- mkRegFileFullLoad("./testcases/Add_normal_testcases.hex");
-//	Reg #(Bit #(16)) index <- mkReg(0);
-// 
-//	Ifc_fpu_fm_add_sub#(32,23,8,16) multiplier <- mkfpu_fm_add_sub();
-//	Reg #(Bit #(32)) state_clock <- mkReg(1);
-//    Reg #(Bit #(1))  rg_state <- mkReg(0);
-//
-//	Reg#(int) cnt <- mkReg(0);                  //File Variable
-//	let fh <- mkReg(InvalidFile) ;				//File handler		
-//
-//	//rule for file creation
-//	rule open (cnt == 0 ) ;
-//		File tb_mul_output <- $fopen("tb_madd_output.hex", "w+"); 
-//		fh <= tb_mul_output;
-//		cnt <= 1 ;
-//	endrule
-//
-//	rule state_clock_count;
-//		state_clock <= state_clock + 1;
-//	endrule
-//
-//	rule take_input_in (rg_state == 0);
-//	//	multiplier._start(input_data.sub(index)[99:68],input_data.sub(index)[67:36],input_data.sub(index)[35:4],0,input_data.sub(index)[2:0],0,0);
-//	//	multiplier._start(input_data.sub(index)[67:36],input_data.sub(index)[35:4],32'b0,0,input_data.sub(index)[2:0],0,0);
-//		multiplier._start(32'h3f800000, input_data.sub(index)[67:36],input_data.sub(index)[35:4],0,input_data.sub(index)[2:0],0,0);
-//		index <= index + 1;
-//	    rg_state <= 1;
-//	endrule
-//
-//	rule display_output (rg_state == 1);
-//        let abc = multiplier.get_result();
-//		$fwrite(fh, "%h\n", abc.final_result[31:0]);
-//		rg_state <= 0;
-//	endrule
-//
-//	rule end_testing (index == 16562);
-//		$finish(0);
-//	endrule : end_testing
-//
-//endmodule
+module mkTb_fpu_fm_add_sub_pipe_32_2 (Empty);
+    
+    RegFile #(Bit #(16), Bit #(100))  input_data <- mkRegFileFullLoad("./testcases/FMA_testcases.hex");
+    //RegFile #(Bit #(16), Bit #(68))  input_data <- mkRegFileFullLoad("./testcases/mul_denormal_testcases.txt");
+    //RegFile #(Bit #(16), Bit #(100))  input_data <- mkRegFileFullLoad("~/Desktop/FPU/FPU_TESTCASES/FP_FMA/Fused_Testcases.hex");
+	Reg #(Bit #(16)) index <- mkReg(0);
+
+	Ifc_fpu_fm_add_sub_pipe_32 multiplier <- mkfpu_fm_add_sub_pipe_32();
+	Reg #(Bit #(32)) state_clock <- mkReg(1);
+    Reg #(Bit #(1))  rg_state <- mkReg(0);
+
+	Reg#(int) cnt <- mkReg(0);                  //File Variable
+	let fh <- mkReg(InvalidFile) ;				//File handler		
+    
+
+    function Tuple3#(Bit#(5), Bit#(5), Bit#(5)) condFlags (Tuple2#(Bit#(m), Bit#(e)) x, Tuple2#(Bit#(m), Bit#(e)) y, Tuple2#(Bit#(m),Bit#(e)) z);
+        let s = valueOf(m);
+        let man1  = tpl_1(x);
+        let expo1 = tpl_2(x);
+        let man2  = tpl_1(y);
+        let expo2 = tpl_2(y);
+        let man3  = tpl_1(z);
+        let expo3 = tpl_2(z);
+        Bit#(5) flags1, flags2,flags3;
+        Bool expZ1 = (expo1 == 0);
+        Bool manZ1 = (man1  == 0);
+        Bool expO1 = (expo1 == '1);
+        Bool manO1 = (man1  == '1);
+        Bool topB1 = (man1[s-1] == 1);
+        Bool expZ2 = (expo2 == 0);
+        Bool manZ2 = (man2  == 0);
+        Bool expO2 = (expo2 == '1);
+        Bool manO2 = (man2  == '1);
+        Bool topB2 = (man2[s-1] == 1 && man2 !=0);
+        Bool expZ3 = (expo3 == 0);
+        Bool manZ3 = (man3  == 0);
+        Bool expO3 = (expo3 == '1);
+        Bool manO3 = (man3  == '1);
+        Bool topB3 = (man3[s-1] == 1 && man3 !=0);
+        flags1 = {pack(expZ1 && !manZ1),pack(manZ1 && expZ1),pack(expO1 && topB1),pack(expO1 && manZ1),pack(expO1 && !topB1 && !manZ1)}; //Denormal, isZero, QNaN, Infinity, SNaN
+        flags2 = {pack(expZ2 && !manZ2),pack(manZ2 && expZ2),pack(expO2 && topB2),pack(expO2 && manZ2),pack(expO2 && !topB2 && !manZ2)}; //Denormal, isZero, QNaN, Infinity, SNaN
+        flags3 = {pack(expZ3 && !manZ3),pack(manZ3 && expZ3),pack(expO3 && topB3),pack(expO3 && manZ3),pack(expO3 && !topB3 && !manZ3)}; //Denormal, isZero, QNaN, Infinity, SNaN
+        return tuple3(flags1,flags2,flags3);
+    endfunction
+
+    function Tuple3#(Bit#(m),Bit#(m), Bit#(m)) getMantissa (Bit#(n) op1, Bit#(n) op2, Bit#(n) op3)
+        provisos(Add#(TAdd#(m,1),e,n),
+                 Add#(7,a__,e)
+                );
+        let expo = valueOf(e);
+        let man  = valueOf(m);
+        return tuple3(op1[man-1:0],op2[man-1:0],op3[man-1:0]);
+    endfunction
+
+    function Tuple3#(Bit#(e), Bit#(e), Bit#(e)) getExp (Bit#(n) op1, Bit#(n) op2, Bit#(n) op3)
+        provisos(Add#(TAdd#(m,1),e,n),
+                 Add#(7,a__,e)
+                );
+        let inp = valueOf(n);
+        let man  = valueOf(m);
+        return tuple3(op1[inp-2:man], op2[inp-2:man], op3[inp-2:man]);
+    endfunction
+
+    function Bool isNaNBox(Bit#(64) op);
+        return (op[63:32]=='1);
+    endfunction
+
+    function Tuple3#(Bit#(32),Bit#(32),Bit#(32)) setCanNaN (Bit#(64) op1, Bit#(64) op2, Bit#(64) op3);
+        return tuple3(isNaNBox(op1)? truncate(op1) : 32'h7fc00000, isNaNBox(op2)? truncate(op2) : 32'h7fc00000, isNaNBox(op3)? truncate(op3) : 32'h7fc00000);
+    endfunction
+    
+    Wrapper3#(Tuple2#(Bit#(23), Bit#(8)),Tuple2#(Bit#(23), Bit#(8)), Tuple2#(Bit#(23), Bit#(8)),  Tuple3#(Bit#(5),Bit#(5),Bit#(5)))    condFlags32     <- mkUniqueWrapper3(condFlags);
+    Wrapper3#(Tuple2#(Bit#(52), Bit#(11)),Tuple2#(Bit#(52), Bit#(11)),Tuple2#(Bit#(52), Bit#(11)), Tuple3#(Bit#(5),Bit#(5),Bit#(5)))   condFlags64     <- mkUniqueWrapper3(condFlags);
+    Wrapper3#(Bit#(32),Bit#(32),Bit#(32),Tuple3#(Bit#(23),Bit#(23),Bit#(23)))                                                          getMant32       <- mkUniqueWrapper3(getMantissa);
+    Wrapper3#(Bit#(32),Bit#(32),Bit#(32),Tuple3#(Bit#(8),Bit#(8),Bit#(8)))                                                             getExp32        <- mkUniqueWrapper3(getExp);
+    Wrapper3#(Bit#(64),Bit#(64),Bit#(64),Tuple3#(Bit#(52),Bit#(52),Bit#(52)))                                                          getMant64       <- mkUniqueWrapper3(getMantissa);
+    Wrapper3#(Bit#(64),Bit#(64),Bit#(64),Tuple3#(Bit#(11),Bit#(11),Bit#(11)))                                                          getExp64        <- mkUniqueWrapper3(getExp);
+    Wrapper3#(Bit#(64),Bit#(64),Bit#(64),Tuple3#(Bit#(32),Bit#(32),Bit#(32)))                                                          setCanonicalNaN <- mkUniqueWrapper3(setCanNaN);
+
+	//rule for file creation
+	rule open (cnt == 0 ) ;
+		File tb_mul_output <- $fopen("tb_fmadd_output.txt", "w+"); 
+		fh <= tb_mul_output;
+		cnt <= 1 ;
+	endrule
+
+	rule state_clock_count;
+		state_clock <= state_clock + 1;
+	endrule
+
+    rule take_input_in (rg_state == 0);
+        let {man1,man2,man3}   <- getMant32.func(input_data.sub(index)[99:68], input_data.sub(index)[67:36], input_data.sub(index)[35:4]);
+        let {exp1,exp2,exp3}   <- getExp32.func(input_data.sub(index)[99:68] , input_data.sub(index)[67:36], input_data.sub(index)[35:4]);
+        let x <- condFlags32.func(tuple2(man1,exp1),tuple2(man2,exp2),tuple2(man3,exp3));
+        let sign1 = input_data.sub(index)[99];
+        let sign2 = input_data.sub(index)[67];
+        let sign3 = input_data.sub(index)[35];
+        multiplier._start(tuple3(sign1,exp1,man1),tuple3(sign2,exp2,man2),tuple3(sign3,exp3,man3),input_data.sub(index)[2:0],1'b0,1'b0,1'b0,1'b1,x);
+
+        //multiplier._start(input_data.sub(index)[99:68],input_data.sub(index)[67:36],input_data.sub(index)[35:4],input_data.sub(index)[2:0],input_data.sub(index)[3],0,0,1,0);
+        //method Action _start(Tuple3#(Bit#(1),Bit#(8),Bit#(23)) _operand1, Tuple3#(Bit#(1),Bit#(8),Bit#(23)) _operand2,Tuple3#(Bit#(1),Bit#(8),Bit#(23)) _operand3, Bit#(3) rounding_mode, bit operation, bit _negate, bit mul, bit muladd, Tuple3#(Bit#(5),Bit#(5),Bit#(5)) flags);
+        index <= index + 1;
+	    rg_state <= 1;
+	endrule
+
+	rule display_output (rg_state == 1);
+        let abc <- multiplier.get_result();
+	    $fwrite(fh, "%h\n", abc.final_result[31:0]);
+		rg_state <= 0;
+	endrule
+
+	rule end_testing (index == 18733);
+		$finish(0);
+	endrule : end_testing
+
+endmodule
 
 endpackage

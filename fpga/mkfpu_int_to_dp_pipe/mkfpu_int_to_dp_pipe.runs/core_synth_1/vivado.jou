@@ -1,0 +1,12 @@
+#-----------------------------------------------------------
+# Vivado v2016.1 (64-bit)
+# SW Build 1538259 on Fri Apr  8 15:45:23 MDT 2016
+# IP Build 1537824 on Fri Apr  8 04:28:57 MDT 2016
+# Start of session at: Wed Sep 12 19:59:18 2018
+# Process ID: 5651
+# Current directory: /home/surya/Desktop/FPU/fpga/mkfpu_int_to_dp_pipe/mkfpu_int_to_dp_pipe.runs/core_synth_1
+# Command line: vivado -log mkfpu_int_to_dp_pipe.vds -mode batch -messageDb vivado.pb -notrace -source mkfpu_int_to_dp_pipe.tcl
+# Log file: /home/surya/Desktop/FPU/fpga/mkfpu_int_to_dp_pipe/mkfpu_int_to_dp_pipe.runs/core_synth_1/mkfpu_int_to_dp_pipe.vds
+# Journal file: /home/surya/Desktop/FPU/fpga/mkfpu_int_to_dp_pipe/mkfpu_int_to_dp_pipe.runs/core_synth_1/vivado.jou
+#-----------------------------------------------------------
+source mkfpu_int_to_dp_pipe.tcl -notrace

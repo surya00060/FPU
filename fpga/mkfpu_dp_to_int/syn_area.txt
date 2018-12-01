@@ -1,0 +1,31 @@
+Copyright 1986-2016 Xilinx, Inc. All Rights Reserved.
+---------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2016.1 (lin64) Build 1538259 Fri Apr  8 15:45:23 MDT 2016
+| Date         : Thu Sep 13 17:27:17 2018
+| Host         : surya-HP-Pavilion-Power-Laptop-15-cb0xx running 64-bit Ubuntu 16.04.4 LTS
+| Command      : report_utilization -hierarchical -file .//fpga/mkfpu_dp_to_int/syn_area.txt
+| Design       : mkfpu_dp_to_int
+| Device       : 7a100tcsg324-1
+| Design State : Synthesized
+---------------------------------------------------------------------------------------------
+
+Utilization Design Information
+
+Table of Contents
+-----------------
+1. Utilization by Hierarchy
+
+1. Utilization by Hierarchy
+---------------------------
+
++---------------------+-----------------------+------------+------------+---------+------+-----+--------+--------+--------------+
+|       Instance      |         Module        | Total LUTs | Logic LUTs | LUTRAMs | SRLs | FFs | RAMB36 | RAMB18 | DSP48 Blocks |
++---------------------+-----------------------+------------+------------+---------+------+-----+--------+--------+--------------+
+| mkfpu_dp_to_int     |                 (top) |       1170 |       1170 |       0 |    0 | 563 |      0 |      0 |            0 |
+|   (mkfpu_dp_to_int) |                 (top) |        876 |        876 |       0 |    0 |   0 |      0 |      0 |            0 |
+|   ff_input          |                 FIFO2 |         79 |         79 |       0 |    0 | 150 |      0 |      0 |            0 |
+|   ff_out            | FIFO2__parameterized0 |         72 |         72 |       0 |    0 | 135 |      0 |      0 |            0 |
+|   ff_stage1         | FIFO2__parameterized1 |        143 |        143 |       0 |    0 | 278 |      0 |      0 |            0 |
++---------------------+-----------------------+------------+------------+---------+------+-----+--------+--------+--------------+
+
+

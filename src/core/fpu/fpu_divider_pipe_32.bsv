@@ -585,10 +585,10 @@ endmodule
 		/*		TEST BENCH 		*/
 
 //(*synthesize*)
-/*
+
 module mkTb_fpu_divider_pipe_32(Empty);
 	
-    function Tuple2#(Bit#(5), Bit#(5)) condFlags (Tuple2#(Bit#(52), Bit#(11)) x, Tuple2#(Bit#(52), Bit#(11)) y);
+    function Tuple2#(Bit#(5), Bit#(5)) condFlags (Tuple2#(Bit#(23), Bit#(8)) x, Tuple2#(Bit#(23), Bit#(8)) y);
         let man1  = tpl_1(x);
         let expo1 = tpl_2(x);
         let man2  = tpl_1(y);
@@ -598,33 +598,33 @@ module mkTb_fpu_divider_pipe_32(Empty);
         Bool manZ1 = (man1  == 0);
         Bool expO1 = (expo1 == '1);
         Bool manO1 = (man1  == '1);
-        Bool topB1 = (man1[51] == 1);
+        Bool topB1 = (man1[22] == 1);
         Bool expZ2 = (expo2 == 0);
         Bool manZ2 = (man2  == 0);
         Bool expO2 = (expo2 == '1);
         Bool manO2 = (man2  == '1);
-        Bool topB2 = (man2[51] == 1);
+        Bool topB2 = (man2[22] == 1);
         flags1 = {pack(expZ1 && !manZ1),pack(manZ1 && expZ1),pack(expO1 && topB1),pack(expO1 && manZ1),pack(expO1 && !topB1)}; //Denormal, isZero, QNaN, Infinity, SNaN
         flags2 = {pack(expZ2 && !manZ2),pack(manZ2 && expZ2),pack(expO2 && topB2),pack(expO2 && manZ2),pack(expO2 && !topB2)}; //Denormal, isZero, QNaN, Infinity, SNaN
         return tuple2(flags1,flags2);
     endfunction
 
-    function Tuple2#(Bit#(52),Bit#(52)) getMantissa (Bit#(64) op1, Bit#(64) op2);
-        return tuple2(op1[51:0],op2[51:0]);
+    function Tuple2#(Bit#(23),Bit#(23)) getMantissa (Bit#(32) op1, Bit#(32) op2);
+        return tuple2(op1[22:0],op2[22:0]);
     endfunction
 
-    function Tuple2#(Bit#(11), Bit#(11)) getExp (Bit#(64) op1, Bit#(64) op2);
-        return tuple2(op1[62:52], op2[62:52]);
+    function Tuple2#(Bit#(8), Bit#(8)) getExp (Bit#(32) op1, Bit#(32) op2);
+        return tuple2(op1[30:23], op2[30:23]);
     endfunction
 
 
 //    Reg#(Bit#(64)) rg_operand1<-mkReg(64'h006069e454c8dc70); 
 //	Reg#(Bit#(64)) rg_operand2<-mkReg(64'h41e4864ef5800000);
-    Reg#(Bit#(64)) rg_operand1<-mkReg(64'h00000000fffff89d); 
-	Reg#(Bit#(64)) rg_operand2<-mkReg(64'hbff0000000000000);
+    Reg#(Bit#(32)) rg_operand1<-mkReg(32'h00000000); 
+	Reg#(Bit#(32)) rg_operand2<-mkReg(32'hbff00000);
 
 	Reg#(Bit#(32)) rg_clock<-mkReg(0); 
-	Ifc_fpu_divider_pipe_32#(64,52,11) divider<-mkfpu_divider_pipe_32();
+	Ifc_fpu_divider_pipe_32 divider<-mkfpu_divider_pipe_32();
 
 	Reg#(Bit#(32)) rg_arbit <-mkReg(0);
 
@@ -636,14 +636,16 @@ module mkTb_fpu_divider_pipe_32(Empty);
 	rule rl_start_1(rg_clock=='d0);
             let {man1,man2} =  getMantissa(rg_operand1, rg_operand2);
             let {exp1,exp2} =  getExp(rg_operand1, rg_operand2);
-            let {x1,x2}           =  condFlags(tuple2(man1,exp1),tuple2(man2,exp2));
-		 `ifdef verbose $display("Giving inputs rg_operand 1 : %h rg_operand 2 : %h through testbench",rg_operand1,rg_operand2,$time); `endif
-		divider._start(rg_operand1[63]^rg_operand2[63],man1,exp1,man2,exp2,3'b100,tuple2(x1,x2));
+            let {x1,x2}     =  condFlags(tuple2(man1,exp1),tuple2(man2,exp2));
+         `ifdef verbose $display("Giving inputs rg_operand 1 : %h rg_operand 2 : %h through testbench",rg_operand1,rg_operand2,$time); `endif
+         $display("%d  Giving inputs rg_operand 1 : %h rg_operand 2 : %h through testbench",rg_clock , rg_operand1,rg_operand2,$time);
+		divider._start(rg_operand1[31]^rg_operand2[31],man1,exp1,man2,exp2,3'b100,tuple2(x1,x2));
 	endrule
 
 	rule rl_display_result;
          let abc = divider.final_result_();
          `ifdef verbose $display("output: %h fflags: %h",abc.final_result, abc.fflags); `endif
+         $display("%d  output: %h fflags: %h", rg_clock , abc.final_result, abc.fflags);
 	endrule
 
 	rule rl_finish_(rg_clock=='d60);
@@ -651,7 +653,7 @@ module mkTb_fpu_divider_pipe_32(Empty);
 	endrule
 
 endmodule:mkTb_fpu_divider_pipe_32
-*/
+
 //module mkTb_fpu_divider_pipe_32_2(Empty);
 //	
 //	RegFile #(Bit #(10), Bit #(68))  input_data <- mkRegFileFullLoad("./testcases/Div_denormal_testcases.hex");

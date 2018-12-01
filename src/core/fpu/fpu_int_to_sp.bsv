@@ -10,11 +10,21 @@ package fpu_int_to_sp;
 
 import defined_types ::*;
 import UniqueWrappers::*;
+import FIFOF        :: *;
 `include "defined_parameters.bsv"	
 interface Ifc_fpu_int_to_sp;
-    method ActionValue#(Floating_output#(32)) _start(Bit#(64) inp_int, Bit#(1) unsigned_bit, Bit#(1) long, Bit#(3) rounding_mode);
+    method Action _start(Bit#(64) inp_int, Bit#(1) unsigned_bit, Bit#(1) long, Bit#(3) rounding_mode);
+    method ActionValue#(Floating_output#(32)) get_result();
 endinterface
-    
+
+typedef struct{
+    Bit#(64) inp_int;
+    Bit#(1) unsigned_bit; 
+    Bit#(1) long;
+    Bit#(3) rounding_mode;
+}Input_data_type  deriving (Bits,Eq);
+
+
 
     function Bit#(37) roundFunc(Bit#(n) unrounded, Bit#(8) expo, Bit#(3) rounding_mode)
           provisos(
@@ -79,11 +89,20 @@ endinterface
 `endif
 module mkfpu_int_to_sp(Ifc_fpu_int_to_sp);
 
-        
+    FIFOF#(Input_data_type) ff_input <- mkFIFOF();
+    FIFOF#(Floating_output#(32)) ff_out <- mkFIFOF();
+
     Wrapper3#(Bit#(32), Bit#(1), Bit#(3),Bit#(37)) fcvt_s_wwu <- mkUniqueWrapper3(fcvt_s_w_l);
     Wrapper3#(Bit#(64), Bit#(1), Bit#(3),Bit#(37)) fcvt_s_llu <- mkUniqueWrapper3(fcvt_s_w_l);
 
-    method ActionValue#(Floating_output#(32)) _start(Bit#(64) inp_int, Bit#(1) unsigned_bit, Bit#(1) long, Bit#(3) rounding_mode);
+    rule rl_int_to_sp;
+        let ff_input_pipe = ff_input.first ; ff_input.deq ;
+
+        let inp_int         = ff_input_pipe.inp_int ;
+        let unsigned_bit    = ff_input_pipe.unsigned_bit ;
+        let long            = ff_input_pipe.long ;
+        let rounding_mode   = ff_input_pipe.rounding_mode ;
+
         `ifdef verbose $display($time,"\tGiving inputs: %h unsigned %b long %b rounding %b", inp_int, unsigned_bit, long, rounding_mode); `endif
 		  Floating_output#(32) wr_final_out=?;
         if((inp_int == 0 && long==1) || (inp_int[31:0] == 0 && long == 0))
@@ -126,8 +145,25 @@ module mkfpu_int_to_sp(Ifc_fpu_int_to_sp);
                                             };
 
         end
-		return wr_final_out;
+        ff_out.enq(wr_final_out);
+    endrule
+
+    method Action _start(Bit#(64) inp_int, Bit#(1) unsigned_bit, Bit#(1) long, Bit#(3) rounding_mode);
+        let ff_input_pipe = Input_data_type{
+                                        inp_int : inp_int ,
+                                        unsigned_bit : unsigned_bit ,
+                                        long : long ,
+                                        rounding_mode : rounding_mode
+                                        };
+        ff_input.enq( ff_input_pipe );
+
     endmethod
+
+    method ActionValue#(Floating_output#(32)) get_result();
+        let  ff_final = ff_out.first ; ff_out.deq ;
+        return ff_final ;
+    endmethod
+
 endmodule
 
 module mkTb(Empty);
@@ -139,14 +175,21 @@ module mkTb(Empty);
 
    rule rl_clk_count;
       rg_clock<=rg_clock+1;
+      if(rg_clock=='d25) $finish(0);
    endrule
 
-   rule rl_start_1(rg_clock=='d0);
+   rule rl_start_1(rg_clock <='d10);
        `ifdef verbose $display("Giving inputs rg_operand 1 : %h through testbench",rg_operand1,$time); `endif
-      let abc<-itof._start(zeroExtend(rg_operand1),1'b1,1'b0,3'b000);
-       `ifdef verbose $display("Final result= %h fflags= %h", abc.final_result, abc.fflags, $time); `endif
-       $finish(0);
+       $display("Giving inputs rg_operand 1 : %h through testbench %d ",rg_operand1,rg_clock);
+       itof._start(zeroExtend(rg_operand1),1'b1,1'b0,3'b000);
    endrule
+
+   rule rl_out ;
+        let abc <- itof.get_result();
+        `ifdef verbose $display("Final result= %h fflags= %h", abc.final_result, abc.fflags, $time); `endif
+        $display("                          Final result= %h  %d", abc.final_result[31:0], rg_clock);
+    endrule
+       
 
 endmodule
 endpackage

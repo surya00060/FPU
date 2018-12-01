@@ -12,16 +12,64 @@ package fpu_dp_to_int;
 import defined_types::*;
 import UniqueWrappers::*;
 `include "defined_parameters.bsv"
+import FIFOF        :: *;
 interface Ifc_fpu_dp_to_int;
-	method ActionValue#(Floating_output#(`Reg_width)) _start(Bit#(1) sign,Bit#(11) exponent, Bit#(52) mantissa,  bit convert_unsigned, bit convert_long, Bit#(3) rounding_mode, Bit#(5) flags);
+    method Action _start(Bit#(1) sign,Bit#(11) exponent, Bit#(52) mantissa,  bit convert_unsigned, bit convert_long, Bit#(3) rounding_mode, Bit#(5) flags);
+    method ActionValue#(Floating_output#(`Reg_width)) get_result();
 endinterface
 
-`ifdef fpu_hierarchical
-(*synthesize*)
-`endif
+
+typedef struct{
+    Bit#(1) lv_sign;
+    Bit#(11) lv_exponent; 
+    Bit#(52) lv_mantissa;
+    bit convert_unsigned; 
+    bit convert_long; 
+    Bit#(3) rounding_mode;
+    Bit#(5) flags;
+}Input_data_type  deriving (Bits,Eq);
+
+
+typedef struct{
+    Bit#(1)     lv_sign;
+    Bit#(11)     lv_exponent; 
+    Bit#(52)    lv_mantissa;
+    bit         convert_unsigned; 
+    bit         convert_long; 
+    Bit#(3)     rounding_mode;
+    bit         lv_overflow;
+    bit         lv_inexact;
+    bit         lv_invalid;
+    bit         lv_infinity;
+    Bit#(`Reg_width) final_result;
+    Int#(11) lv_original_exponent;
+    Bool to_round;
+    Bool rmm ;
+    Bool rdn ;
+    Bool rup ;
+    Bool rne ;
+}Stage1_data_type  deriving (Bits,Eq);
+
 module mkfpu_dp_to_int(Ifc_fpu_dp_to_int);
-	method ActionValue#(Floating_output#(`Reg_width)) _start(Bit#(1) lv_sign,Bit#(11) lv_exponent, Bit#(52) lv_mantissa,  bit convert_unsigned, bit convert_long, Bit#(3) rounding_mode, Bit#(5) flags);
-		bit lv_overflow = 0;
+
+    FIFOF#(Input_data_type) ff_input <- mkFIFOF();
+    FIFOF#(Stage1_data_type) ff_stage1 <- mkFIFOF();
+    FIFOF#(Floating_output#(`Reg_width)) ff_out <- mkFIFOF();
+
+    rule rl_stage1;
+        
+        let ff_input_pipe = ff_input.first ; ff_input.deq ;
+        
+        let lv_sign = ff_input_pipe.lv_sign ;
+        let lv_exponent = ff_input_pipe.lv_exponent ;
+        let lv_mantissa = ff_input_pipe.lv_mantissa ;
+        let convert_long = ff_input_pipe.convert_long ;
+        let convert_unsigned = ff_input_pipe.convert_unsigned ;
+        let rounding_mode = ff_input_pipe.rounding_mode ;
+        let flags =  ff_input_pipe.flags ;
+
+
+        bit lv_overflow = 0;
 		bit lv_zero = flags[3];
 		bit lv_infinity = flags[1];
         bit lv_invalid = flags[0] | flags[2];
@@ -162,7 +210,50 @@ module mkfpu_dp_to_int(Ifc_fpu_dp_to_int);
             end
 
         end
- 
+        let ff_stage1_pipe = Stage1_data_type{
+                                                    lv_sign             : lv_sign ,
+                                                    lv_exponent         : lv_exponent ,
+                                                    lv_mantissa         : lv_mantissa ,
+                                                    convert_unsigned    : convert_unsigned ,
+                                                    convert_long        :  convert_long ,
+                                                    rounding_mode       : rounding_mode ,
+                                                    lv_overflow         :   lv_overflow ,
+                                                    lv_inexact          :    lv_inexact ,
+                                                    lv_invalid          :    lv_invalid ,
+                                                    lv_infinity         :   lv_infinity ,
+                                                    final_result        :  final_result ,
+                                                    to_round            : to_round,
+                                                    rmm                 : rmm ,   
+                                                    rdn                 : rdn ,
+                                                    rup                 : rup ,
+                                                    rne                 : rne ,
+                                                    lv_original_exponent: lv_original_exponent
+                                            };
+        ff_stage1.enq(ff_stage1_pipe);
+
+    endrule
+
+    rule rl_stage2;
+        
+        let ff_stage1_pipe = ff_stage1.first ; ff_stage1.deq ;
+
+        let lv_sign             = ff_stage1_pipe.lv_sign ;
+        let lv_exponent         = ff_stage1_pipe.lv_exponent ;
+        let lv_mantissa         = ff_stage1_pipe.lv_mantissa ;
+        let convert_unsigned    = ff_stage1_pipe.convert_unsigned ;
+        let convert_long        = ff_stage1_pipe. convert_long ;
+        let rounding_mode       = ff_stage1_pipe.rounding_mode ;
+        let lv_overflow         = ff_stage1_pipe.  lv_overflow ;
+        let lv_inexact          = ff_stage1_pipe.   lv_inexact ;
+        let lv_invalid          = ff_stage1_pipe.   lv_invalid ;
+        let lv_infinity         = ff_stage1_pipe.  lv_infinity ;
+        let final_result        = ff_stage1_pipe. final_result ;
+        let lv_original_exponent= ff_stage1_pipe.lv_original_exponent ;
+        let to_round            = ff_stage1_pipe.to_round;
+        let rmm                 = ff_stage1_pipe.rmm ;                
+        let rdn                 = ff_stage1_pipe.rdn ;
+        let rup                 = ff_stage1_pipe.rup ;
+        let rne                 = ff_stage1_pipe.rne ;
 		bit lv_guard = lv_mantissa[51];	        //MSB of the already shifted mantissa is guard bit
     	bit lv_round = lv_mantissa[50];	        //next bit is round bit
     	bit lv_sticky = |(lv_mantissa<<2);		//remaining bits determine the sticky bit
@@ -210,14 +301,32 @@ module mkfpu_dp_to_int(Ifc_fpu_dp_to_int);
             lv_overflow = 0;
             lv_inexact = 0;
     end
-Bit#(5) fflags={lv_invalid|lv_infinity,1'b0,lv_overflow,1'b0,lv_inexact};
-		return  Floating_output{
+        Bit#(5) fflags={lv_invalid|lv_infinity,1'b0,lv_overflow,1'b0,lv_inexact};
+		let f = Floating_output{
 										final_result: final_result,
-										fflags: fflags};
-
-
+                                        fflags: fflags};
+        ff_out.enq(f);
+    endrule
+	method Action _start(Bit#(1) lv_sign,Bit#(11) lv_exponent, Bit#(52) lv_mantissa,  bit convert_unsigned, bit convert_long, Bit#(3) rounding_mode, Bit#(5) flags);
+		let ff_input_pipe = Input_data_type{
+                                                lv_sign : lv_sign ,
+                                                lv_exponent : lv_exponent ,
+                                                lv_mantissa : lv_mantissa ,
+                                                convert_long : convert_long ,
+                                                convert_unsigned : convert_unsigned ,
+                                                rounding_mode : rounding_mode ,
+                                                flags : flags 
+        };
+        ff_input.enq( ff_input_pipe );
     endmethod
+
+    method ActionValue#(Floating_output#(`Reg_width)) get_result();
+        let  ff_final = ff_out.first ; ff_out.deq ;
+        return ff_final ;
+    endmethod
+
 endmodule
+/*
 module mkTb(Empty);
 
     function Tuple3#(Bit#(5), Bit#(5), Bit#(5)) condFlags (Tuple2#(Bit#(m), Bit#(e)) x, Tuple2#(Bit#(m), Bit#(e)) y, Tuple2#(Bit#(m),Bit#(e)) z);
@@ -308,4 +417,5 @@ Wrapper3#(Tuple2#(Bit#(23), Bit#(8)),Tuple2#(Bit#(23), Bit#(8)), Tuple2#(Bit#(23
 
 
  endmodule
+ */
 endpackage

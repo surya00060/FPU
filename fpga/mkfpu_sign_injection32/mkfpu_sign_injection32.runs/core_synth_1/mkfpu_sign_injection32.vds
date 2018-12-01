@@ -1,0 +1,334 @@
+#-----------------------------------------------------------
+# Vivado v2016.1 (64-bit)
+# SW Build 1538259 on Fri Apr  8 15:45:23 MDT 2016
+# IP Build 1537824 on Fri Apr  8 04:28:57 MDT 2016
+# Start of session at: Tue Sep  4 14:13:54 2018
+# Process ID: 6376
+# Current directory: /home/surya/Desktop/FPU/fpga/mkfpu_sign_injection32/mkfpu_sign_injection32.runs/core_synth_1
+# Command line: vivado -log mkfpu_sign_injection32.vds -mode batch -messageDb vivado.pb -notrace -source mkfpu_sign_injection32.tcl
+# Log file: /home/surya/Desktop/FPU/fpga/mkfpu_sign_injection32/mkfpu_sign_injection32.runs/core_synth_1/mkfpu_sign_injection32.vds
+# Journal file: /home/surya/Desktop/FPU/fpga/mkfpu_sign_injection32/mkfpu_sign_injection32.runs/core_synth_1/vivado.jou
+#-----------------------------------------------------------
+source mkfpu_sign_injection32.tcl -notrace
+WARNING: [Board 49-26] cannot add Board Part digilentinc.com:arty-s7-25:part0:1.0 available at /tools/Vivado/Vivado/2016.1/data/boards/board_files/arty-s7-25/E.0/board.xml as part xc7s25csga324-1 specified in board_part file is either invalid or not available
+WARNING: [Board 49-26] cannot add Board Part digilentinc.com:arty-s7-50:part0:1.0 available at /tools/Vivado/Vivado/2016.1/data/boards/board_files/arty-s7-50/B.0/board.xml as part xc7s50csga324-1 specified in board_part file is either invalid or not available
+Command: synth_design -top mkfpu_sign_injection32 -part xc7a100tcsg324-1 -flatten_hierarchy none
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xc7a100t'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7a100t'
+INFO: Launching helper process for spawning children vivado processes
+INFO: Helper process launched with PID 6382 
+---------------------------------------------------------------------------------
+Starting RTL Elaboration : Time (s): cpu = 00:00:05 ; elapsed = 00:00:06 . Memory (MB): peak = 1064.852 ; gain = 171.090 ; free physical = 3586 ; free virtual = 13441
+---------------------------------------------------------------------------------
+INFO: [Synth 8-638] synthesizing module 'mkfpu_sign_injection32' [/home/surya/Desktop/FPU/verilog/mkfpu_sign_injection32.v:36]
+INFO: [Synth 8-256] done synthesizing module 'mkfpu_sign_injection32' (1#1) [/home/surya/Desktop/FPU/verilog/mkfpu_sign_injection32.v:36]
+WARNING: [Synth 8-3917] design mkfpu_sign_injection32 has port _start[4] driven by constant 0
+WARNING: [Synth 8-3917] design mkfpu_sign_injection32 has port _start[3] driven by constant 0
+WARNING: [Synth 8-3917] design mkfpu_sign_injection32 has port _start[2] driven by constant 0
+WARNING: [Synth 8-3917] design mkfpu_sign_injection32 has port _start[1] driven by constant 0
+WARNING: [Synth 8-3917] design mkfpu_sign_injection32 has port _start[0] driven by constant 0
+WARNING: [Synth 8-3917] design mkfpu_sign_injection32 has port RDY__start driven by constant 1
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port CLK
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port RST_N
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[30]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[29]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[28]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[27]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[26]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[25]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[24]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[23]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[22]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[21]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[20]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[19]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[18]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[17]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[16]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[15]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[14]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[13]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[12]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[11]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[10]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[9]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[8]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[7]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[6]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[5]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[4]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[3]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[2]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[1]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[0]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port EN__start
+---------------------------------------------------------------------------------
+Finished RTL Elaboration : Time (s): cpu = 00:00:06 ; elapsed = 00:00:06 . Memory (MB): peak = 1105.289 ; gain = 211.527 ; free physical = 3544 ; free virtual = 13399
+---------------------------------------------------------------------------------
+
+Report Check Netlist: 
++------+------------------+-------+---------+-------+------------------+
+|      |Item              |Errors |Warnings |Status |Description       |
++------+------------------+-------+---------+-------+------------------+
+|1     |multi_driven_nets |      0|        0|Passed |Multi driven nets |
++------+------------------+-------+---------+-------+------------------+
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:06 ; elapsed = 00:00:06 . Memory (MB): peak = 1105.289 ; gain = 211.527 ; free physical = 3544 ; free virtual = 13399
+---------------------------------------------------------------------------------
+INFO: [Device 21-403] Loading part xc7a100tcsg324-1
+INFO: [Project 1-570] Preparing netlist for logic optimization
+
+Processing XDC Constraints
+Initializing timing engine
+Parsing XDC File [/home/surya/Desktop/FPU/src/tcl/constraints.xdc]
+INFO: [Vivado 12-2286] Implicit search of objects for pattern 'CLK' matched to 'port' objects. [/home/surya/Desktop/FPU/src/tcl/constraints.xdc:1]
+Resolution: To avoid ambiguous patterns, provide proper objects using get commands e.g. [get_nets xyz].
+Finished Parsing XDC File [/home/surya/Desktop/FPU/src/tcl/constraints.xdc]
+INFO: [Project 1-236] Implementation specific constraints were found while reading constraint file [/home/surya/Desktop/FPU/src/tcl/constraints.xdc]. These constraints will be ignored for synthesis but will be used in implementation. Impacted constraints are listed in the file [.Xil/mkfpu_sign_injection32_propImpl.xdc].
+Resolution: To avoid this warning, move constraints listed in [.Xil/mkfpu_sign_injection32_propImpl.xdc] to another XDC file and exclude this new file from synthesis with the used_in_synthesis property (File Properties dialog in GUI) and re-run elaboration/synthesis.
+Completed Processing XDC Constraints
+
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+Constraint Validation Runtime : Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 1403.789 ; gain = 0.000 ; free physical = 3369 ; free virtual = 13224
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:00:11 ; elapsed = 00:00:12 . Memory (MB): peak = 1403.789 ; gain = 510.027 ; free physical = 3367 ; free virtual = 13223
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xc7a100tcsg324-1
+---------------------------------------------------------------------------------
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:11 ; elapsed = 00:00:12 . Memory (MB): peak = 1403.789 ; gain = 510.027 ; free physical = 3367 ; free virtual = 13223
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying 'set_property' XDC Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:11 ; elapsed = 00:00:12 . Memory (MB): peak = 1403.789 ; gain = 510.027 ; free physical = 3367 ; free virtual = 13223
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:11 ; elapsed = 00:00:12 . Memory (MB): peak = 1403.789 ; gain = 510.027 ; free physical = 3359 ; free virtual = 13215
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start RTL Component Statistics 
+---------------------------------------------------------------------------------
+Detailed RTL Component Info : 
++---XORs : 
+	   2 Input      1 Bit         XORs := 1     
++---Muxes : 
+	   2 Input      1 Bit        Muxes := 2     
+---------------------------------------------------------------------------------
+Finished RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start RTL Hierarchical Component Statistics 
+---------------------------------------------------------------------------------
+Hierarchical RTL Component report 
+Module mkfpu_sign_injection32 
+Detailed RTL Component Info : 
++---XORs : 
+	   2 Input      1 Bit         XORs := 1     
++---Muxes : 
+	   2 Input      1 Bit        Muxes := 2     
+---------------------------------------------------------------------------------
+Finished RTL Hierarchical Component Statistics
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Part Resource Summary
+---------------------------------------------------------------------------------
+Part Resources:
+DSPs: 240 (col length:80)
+BRAMs: 270 (col length: RAMB18 80 RAMB36 40)
+---------------------------------------------------------------------------------
+Finished Part Resource Summary
+---------------------------------------------------------------------------------
+Start Parallel Synthesis Optimization  : Time (s): cpu = 00:00:12 ; elapsed = 00:00:12 . Memory (MB): peak = 1403.789 ; gain = 510.027 ; free physical = 3359 ; free virtual = 13215
+---------------------------------------------------------------------------------
+Start Cross Boundary Optimization
+---------------------------------------------------------------------------------
+WARNING: [Synth 8-3917] design mkfpu_sign_injection32 has port _start[4] driven by constant 0
+WARNING: [Synth 8-3917] design mkfpu_sign_injection32 has port _start[3] driven by constant 0
+WARNING: [Synth 8-3917] design mkfpu_sign_injection32 has port _start[2] driven by constant 0
+WARNING: [Synth 8-3917] design mkfpu_sign_injection32 has port _start[1] driven by constant 0
+WARNING: [Synth 8-3917] design mkfpu_sign_injection32 has port _start[0] driven by constant 0
+WARNING: [Synth 8-3917] design mkfpu_sign_injection32 has port RDY__start driven by constant 1
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port CLK
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port RST_N
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[30]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[29]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[28]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[27]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[26]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[25]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[24]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[23]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[22]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[21]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[20]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[19]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[18]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[17]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[16]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[15]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[14]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[13]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[12]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[11]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[10]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[9]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[8]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[7]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[6]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[5]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[4]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[3]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[2]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[1]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port _start_operand2[0]
+WARNING: [Synth 8-3331] design mkfpu_sign_injection32 has unconnected port EN__start
+---------------------------------------------------------------------------------
+Finished Cross Boundary Optimization : Time (s): cpu = 00:00:12 ; elapsed = 00:00:12 . Memory (MB): peak = 1403.789 ; gain = 510.027 ; free physical = 3351 ; free virtual = 13207
+---------------------------------------------------------------------------------
+Finished Parallel Reinference  : Time (s): cpu = 00:00:12 ; elapsed = 00:00:12 . Memory (MB): peak = 1403.789 ; gain = 510.027 ; free physical = 3351 ; free virtual = 13207
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start Area Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Area Optimization : Time (s): cpu = 00:00:12 ; elapsed = 00:00:12 . Memory (MB): peak = 1403.789 ; gain = 510.027 ; free physical = 3344 ; free virtual = 13199
+---------------------------------------------------------------------------------
+Finished Parallel Area Optimization  : Time (s): cpu = 00:00:12 ; elapsed = 00:00:12 . Memory (MB): peak = 1403.789 ; gain = 510.027 ; free physical = 3344 ; free virtual = 13199
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start Timing Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying XDC Timing Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:00:16 ; elapsed = 00:00:17 . Memory (MB): peak = 1407.773 ; gain = 514.012 ; free physical = 3304 ; free virtual = 13160
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Timing Optimization : Time (s): cpu = 00:00:16 ; elapsed = 00:00:17 . Memory (MB): peak = 1407.773 ; gain = 514.012 ; free physical = 3304 ; free virtual = 13160
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start Technology Mapping
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Technology Mapping : Time (s): cpu = 00:00:16 ; elapsed = 00:00:17 . Memory (MB): peak = 1416.789 ; gain = 523.027 ; free physical = 3296 ; free virtual = 13152
+---------------------------------------------------------------------------------
+Finished Parallel Technology Mapping Optimization  : Time (s): cpu = 00:00:16 ; elapsed = 00:00:17 . Memory (MB): peak = 1416.789 ; gain = 523.027 ; free physical = 3296 ; free virtual = 13152
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+Finished Parallel Synthesis Optimization  : Time (s): cpu = 00:00:16 ; elapsed = 00:00:17 . Memory (MB): peak = 1416.789 ; gain = 523.027 ; free physical = 3296 ; free virtual = 13152
+---------------------------------------------------------------------------------
+Start IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished IO Insertion : Time (s): cpu = 00:00:17 ; elapsed = 00:00:17 . Memory (MB): peak = 1416.789 ; gain = 523.027 ; free physical = 3296 ; free virtual = 13151
+---------------------------------------------------------------------------------
+
+Report Check Netlist: 
++------+------------------+-------+---------+-------+------------------+
+|      |Item              |Errors |Warnings |Status |Description       |
++------+------------------+-------+---------+-------+------------------+
+|1     |multi_driven_nets |      0|        0|Passed |Multi driven nets |
++------+------------------+-------+---------+-------+------------------+
+---------------------------------------------------------------------------------
+Start Renaming Generated Instances
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Instances : Time (s): cpu = 00:00:17 ; elapsed = 00:00:17 . Memory (MB): peak = 1416.789 ; gain = 523.027 ; free physical = 3296 ; free virtual = 13151
+---------------------------------------------------------------------------------
+
+Report RTL Partitions: 
++-+--------------+------------+----------+
+| |RTL Partition |Replication |Instances |
++-+--------------+------------+----------+
++-+--------------+------------+----------+
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:17 ; elapsed = 00:00:17 . Memory (MB): peak = 1416.789 ; gain = 523.027 ; free physical = 3296 ; free virtual = 13151
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Writing Synthesis Report
+---------------------------------------------------------------------------------
+
+Report BlackBoxes: 
++-+--------------+----------+
+| |BlackBox name |Instances |
++-+--------------+----------+
++-+--------------+----------+
+
+Report Cell Usage: 
++------+-----+------+
+|      |Cell |Count |
++------+-----+------+
+|1     |LUT5 |     1|
+|2     |IBUF |    36|
+|3     |OBUF |    38|
++------+-----+------+
+
+Report Instance Areas: 
++------+---------+-------+------+
+|      |Instance |Module |Cells |
++------+---------+-------+------+
+|1     |top      |       |    75|
++------+---------+-------+------+
+---------------------------------------------------------------------------------
+Finished Writing Synthesis Report : Time (s): cpu = 00:00:17 ; elapsed = 00:00:17 . Memory (MB): peak = 1416.789 ; gain = 523.027 ; free physical = 3296 ; free virtual = 13151
+---------------------------------------------------------------------------------
+Synthesis finished with 0 errors, 0 critical warnings and 40 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:00:11 ; elapsed = 00:00:11 . Memory (MB): peak = 1416.789 ; gain = 125.434 ; free physical = 3296 ; free virtual = 13151
+Synthesis Optimization Complete : Time (s): cpu = 00:00:17 ; elapsed = 00:00:17 . Memory (MB): peak = 1416.797 ; gain = 523.035 ; free physical = 3296 ; free virtual = 13151
+INFO: [Project 1-571] Translating synthesized netlist
+INFO: [Netlist 29-17] Analyzing 36 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-570] Preparing netlist for logic optimization
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+INFO: [Common 17-83] Releasing license: Synthesis
+15 Infos, 82 Warnings, 0 Critical Warnings and 0 Errors encountered.
+synth_design completed successfully
+synth_design: Time (s): cpu = 00:00:15 ; elapsed = 00:00:15 . Memory (MB): peak = 1422.789 ; gain = 442.520 ; free physical = 3292 ; free virtual = 13147
+report_utilization: Time (s): cpu = 00:00:00.06 ; elapsed = 00:00:00.07 . Memory (MB): peak = 1430.793 ; gain = 0.000 ; free physical = 3291 ; free virtual = 13146
+INFO: [Common 17-206] Exiting Vivado at Tue Sep  4 14:14:16 2018...

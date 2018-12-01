@@ -1,7 +1,7 @@
 Copyright 1986-2016 Xilinx, Inc. All Rights Reserved.
 ------------------------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2016.1 (lin64) Build 1538259 Fri Apr  8 15:45:23 MDT 2016
-| Date         : Thu Aug  2 19:23:09 2018
+| Date         : Tue Nov 27 10:54:39 2018
 | Host         : surya-HP-Pavilion-Power-Laptop-15-cb0xx running 64-bit Ubuntu 16.04.4 LTS
 | Command      : report_utilization -hierarchical -file .//fpga/mkfpu_fm_add_sub_pipe_32/syn_area.txt
 | Design       : mkfpu_fm_add_sub_pipe_32
@@ -21,14 +21,16 @@ Table of Contents
 +------------------------------+-----------------------+------------+------------+---------+------+------+--------+--------+--------------+
 |           Instance           |         Module        | Total LUTs | Logic LUTs | LUTRAMs | SRLs |  FFs | RAMB36 | RAMB18 | DSP48 Blocks |
 +------------------------------+-----------------------+------------+------------+---------+------+------+--------+--------+--------------+
-| mkfpu_fm_add_sub_pipe_32     |                 (top) |       3426 |       3426 |       0 |    0 | 1728 |      0 |      0 |            2 |
-|   (mkfpu_fm_add_sub_pipe_32) |                 (top) |       2537 |       2537 |       0 |    0 |    0 |      0 |      0 |            2 |
-|   ff_input                   |                 FIFO2 |        113 |        113 |       0 |    0 |  216 |      0 |      0 |            0 |
-|   ff_stage1                  | FIFO2__parameterized0 |        207 |        207 |       0 |    0 |  400 |      0 |      0 |            0 |
-|   ff_stage2                  | FIFO2__parameterized1 |        114 |        114 |       0 |    0 |  220 |      0 |      0 |            0 |
-|   ff_stage3                  | FIFO2__parameterized2 |        172 |        172 |       0 |    0 |  336 |      0 |      0 |            0 |
-|   ff_stage4                  | FIFO2__parameterized3 |        177 |        177 |       0 |    0 |  346 |      0 |      0 |            0 |
-|   ff_stage5                  | FIFO2__parameterized4 |        106 |        106 |       0 |    0 |  210 |      0 |      0 |            0 |
+| mkfpu_fm_add_sub_pipe_32     |                 (top) |       3476 |       3476 |       0 |    0 | 2000 |      0 |      0 |            2 |
+|   (mkfpu_fm_add_sub_pipe_32) |                 (top) |       2440 |       2440 |       0 |    0 |    0 |      0 |      0 |            2 |
+|   ff_final_out               |                 FIFO2 |         41 |         41 |       0 |    0 |   74 |      0 |      0 |            0 |
+|   ff_input                   | FIFO2__parameterized0 |        113 |        113 |       0 |    0 |  216 |      0 |      0 |            0 |
+|   ff_stage1                  | FIFO2__parameterized1 |        207 |        207 |       0 |    0 |  400 |      0 |      0 |            0 |
+|   ff_stage2                  | FIFO2__parameterized2 |        114 |        114 |       0 |    0 |  220 |      0 |      0 |            0 |
+|   ff_stage3                  | FIFO2__parameterized3 |        172 |        172 |       0 |    0 |  336 |      0 |      0 |            0 |
+|   ff_stage4                  | FIFO2__parameterized4 |        177 |        177 |       0 |    0 |  346 |      0 |      0 |            0 |
+|   ff_stage5                  | FIFO2__parameterized5 |        109 |        109 |       0 |    0 |  210 |      0 |      0 |            0 |
+|   ff_stage6                  | FIFO2__parameterized6 |        103 |        103 |       0 |    0 |  198 |      0 |      0 |            0 |
 +------------------------------+-----------------------+------------+------------+---------+------+------+--------+--------+--------------+
 
 
