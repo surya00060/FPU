@@ -25,6 +25,18 @@ interface Ifc_fpu_fm_add_sub_pipe_64;
 endinterface
 
 typedef struct{
+    Tuple3#(Bit#(1),Bit#(11),Bit#(52)) _operand1;
+    Tuple3#(Bit#(1),Bit#(11),Bit#(52)) _operand2;
+    Tuple3#(Bit#(1),Bit#(11),Bit#(52)) _operand3;
+    Bit#(3) rounding_mode;
+    bit operation;
+    bit _negate;
+    bit mul;
+    bit muladd;
+    Tuple3#(Bit#(5),Bit#(5),Bit#(5)) flags;
+}Stage0_data_type deriving (Bits,Eq);
+
+typedef struct{
     Bit#(TMul#(2,TAdd#(52,1))) product_mantissa;
     Bit#(TAdd#(11,2)) lv_summed_exponent;           // exponent of the resultant
     bit sign;                                          // sign bit of the result
@@ -245,7 +257,8 @@ module mkfpu_fm_add_sub_pipe_64(Ifc_fpu_fm_add_sub_pipe_64)
 
 
 
-    //Wire#(Floating_output#(64))           ff_final_out        <-   mkWire();   
+    //Wire#(Floating_output#(64))           ff_final_out        <-   mkWire();
+    FIFOF#(Stage0_data_type)              ff_stage0           <-   mkFIFOF();   
     FIFOF#(Input_data_type)               ff_input            <-   mkFIFOF();
     FIFOF#(Stage1_data_type)              ff_stage1           <-   mkFIFOF();
     FIFOF#(Stage3_data_type)              ff_stage3           <-   mkFIFOF();
@@ -287,6 +300,96 @@ module mkfpu_fm_add_sub_pipe_64(Ifc_fpu_fm_add_sub_pipe_64)
    //     rg_flush_stage5 <= False ;
    //endrule
     
+   rule rl_stage0;
+
+        let ff_stage0_pipe = ff_stage0.first ; ff_stage0.deq ;
+        let _operand1 = ff_stage0_pipe._operand1 ; 
+        let _operand2 = ff_stage0_pipe._operand2 ;
+        let _operand3 = ff_stage0_pipe._operand3 ;
+        let rounding_mode = ff_stage0_pipe.rounding_mode;
+        let operation = ff_stage0_pipe.operation ;
+        let _negate   = ff_stage0_pipe._negate ;
+        let mul       = ff_stage0_pipe.mul ;
+        let muladd    = ff_stage0_pipe.muladd;
+        let flags     = ff_stage0_pipe.flags;
+
+        Bit#(TSub#(11,1)) bias       =  '1;                                   //Bias for the exponent: 127 for SP and 1023 for DP
+        Bit#(1) sign1                   =  tpl_1(_operand1);
+        Bit#(1) sign2                   =  tpl_1(_operand2);
+        Bit#(1) sign3                   =  tpl_1(_operand3);
+        Bit#(11) lv_exponent1        =  tpl_2(_operand1);
+        Bit#(11) lv_exponent2        =  tpl_2(_operand2);
+        Bit#(11) lv_exponent3        =  tpl_2(_operand3);
+        Bit#(52) lv_mantissa1        =  tpl_3(_operand1);
+        Bit#(52) lv_mantissa2        =  tpl_3(_operand2);
+        Bit#(52) lv_mantissa3        =  tpl_3(_operand3);
+        Bit#(5) flags1                  =  tpl_1(flags);
+        Bit#(5) flags2                  =  tpl_2(flags);
+        Bit#(5) flags3                  =  tpl_3(flags);
+        Bit#(1) lv_op1_is_zero          =  flags1[3];                             //1 when operand1=0
+        Bit#(1) lv_op2_is_zero          =  flags2[3];                             //1 when operand2=0
+        Bit#(1) lv_op1_infinity         =  flags1[1];                             //1 when operand1=inf
+        Bit#(1) lv_op2_infinity         =  flags2[1];                             //1 when operand2=inf
+        Bit#(1) lv_op1_subnormal        =  flags1[4] | flags1[3];                 //1 when operand1 is subnormal
+        Bit#(1) lv_op2_subnormal        =  flags2[4] | flags2[3];                 //1 when operand2 is subnormal
+        Bit#(1) lv_inf                  =  0;                                     //Bit indicating infinity
+        Bit#(1) lv_inv                  =  0;                                     //Invalid Bit
+        Bit#(1) lv_zero                 =  0;                                     //Zero bit
+        bit quiet_nan_two               = (flags1[2] & ~flags2[0]) | (flags2[2] & ~flags1[0]);
+
+        if((((flags1[0] | flags1[2])==1) || (flags2[0] | flags2[2])==1))  //If either of the operands are NaN's (Quiet or Signalling - Not distinguishing between them here) 
+            lv_inv = 1;
+        else if(lv_op1_infinity==1 || lv_op2_infinity==1) begin           //If either of the operands are Infinity
+            if(lv_op1_is_zero == 1 || lv_op2_is_zero ==1) begin                 //Provided atleast one of the operands are infinity, if either of them are zero, then res is NaN (0*inf)
+                lv_inv = 1;
+            end
+            else begin
+                lv_inf = 1;                                                //Else result is infinity - inf +/- op2 = inf
+                quiet_nan_two = 0;
+            end
+        end
+        else if(lv_op1_is_zero == 1 || lv_op2_is_zero == 1)
+            lv_zero = 1;                                                  //If they are not infinity - Checked for Zero, if it is then product is zero (0*x = 0)
+
+
+        `ifdef verbose $display("lv_inv : %h lv_inf : %h lv_zero : %h",lv_inv,lv_inf,lv_zero);  `endif
+        `ifdef verbose $display("flags1 : %b flags2 : %b flags3 : %b",flags1,flags2,flags3); `endif
+
+        /*
+           When normal and denormal number is multiplied, exponent is
+           (biased_exponent - bias) + (1 - bias) + bias = biased_exponent - bias + 1;
+           either _operand1[30:23] == 0 or _operand2[30:23] == 0 for the above if condition so no harm in adding both
+        */
+
+        Bit#(13) exp1_temp          =  {2'b0,lv_exponent1};
+        Bit#(13) exp2_temp          =  {2'b0,lv_exponent2};
+        Bit#(13) lv_summed_exponent =  exp1_temp + exp2_temp - zeroExtend(bias) + zeroExtend(lv_op1_subnormal) + zeroExtend(lv_op2_subnormal);
+        Bit#(1) lv_sign                 =  sign1 ^ sign2;
+
+        `ifdef verbose $display("lv_summed_exponent = %b", lv_summed_exponent/*, lv_actual_exponent*/); `endif
+
+        Bit#(106) x = zeroExtend({~lv_op1_subnormal, lv_mantissa1})*zeroExtend({~lv_op2_subnormal, lv_mantissa2});    //Single Cycle Int Mul
+    //rg_state_handler <= Stage1;
+        let ff_input_pipe = Input_data_type{  
+                                                      product_mantissa    :          x,
+                                                      lv_summed_exponent  :          lv_summed_exponent,
+                                                      sign                :          lv_sign,
+                                                      _operand3           :          {sign3,lv_exponent3,lv_mantissa3},
+                                                      rounding_mode       :          rounding_mode,
+                                                      infinity            :          lv_inf,
+                                                      add_flags           :          flags3,
+                                                      invalid             :          lv_inv,
+                                                      zero                :          lv_zero,
+                                                      _operation          :          operation,
+                                                      _negate             :          _negate,
+                                                      mul                 :          mul,
+                                                      muladd              :          muladd,
+                                                      quiet_nan_two       :          quiet_nan_two,
+                                                      inp_denormal        :          lv_op1_subnormal | lv_op2_subnormal
+                                                    };
+        ff_input.enq( ff_input_pipe);
+    endrule
+
     rule rl_stage1_after_input_stage;
         
         let ff_input_pipe = ff_input.first ; ff_input.deq;
@@ -1161,85 +1264,22 @@ module mkfpu_fm_add_sub_pipe_64(Ifc_fpu_fm_add_sub_pipe_64)
     endrule
 	
     method Action _start(Tuple3#(Bit#(1),Bit#(11),Bit#(52)) _operand1, Tuple3#(Bit#(1),Bit#(11),Bit#(52)) _operand2,Tuple3#(Bit#(1),Bit#(11),Bit#(52)) _operand3, Bit#(3) rounding_mode, bit operation, bit _negate, bit mul, bit muladd, Tuple3#(Bit#(5),Bit#(5),Bit#(5)) flags);
-		
+        
+        let ff_stage0_pipe = Stage0_data_type{
 
-         Bit#(TSub#(11,1)) bias       =  '1;                                   //Bias for the exponent: 127 for SP and 1023 for DP
-         Bit#(1) sign1                   =  tpl_1(_operand1);
-         Bit#(1) sign2                   =  tpl_1(_operand2);
-         Bit#(1) sign3                   =  tpl_1(_operand3);
-         Bit#(11) lv_exponent1        =  tpl_2(_operand1);
-         Bit#(11) lv_exponent2        =  tpl_2(_operand2);
-         Bit#(11) lv_exponent3        =  tpl_2(_operand3);
-         Bit#(52) lv_mantissa1        =  tpl_3(_operand1);
-         Bit#(52) lv_mantissa2        =  tpl_3(_operand2);
-         Bit#(52) lv_mantissa3        =  tpl_3(_operand3);
-         Bit#(5) flags1                  =  tpl_1(flags);
-         Bit#(5) flags2                  =  tpl_2(flags);
-         Bit#(5) flags3                  =  tpl_3(flags);
-         Bit#(1) lv_op1_is_zero          =  flags1[3];                             //1 when operand1=0
-         Bit#(1) lv_op2_is_zero          =  flags2[3];                             //1 when operand2=0
-         Bit#(1) lv_op1_infinity         =  flags1[1];                             //1 when operand1=inf
-         Bit#(1) lv_op2_infinity         =  flags2[1];                             //1 when operand2=inf
-         Bit#(1) lv_op1_subnormal        =  flags1[4] | flags1[3];                 //1 when operand1 is subnormal
-         Bit#(1) lv_op2_subnormal        =  flags2[4] | flags2[3];                 //1 when operand2 is subnormal
-         Bit#(1) lv_inf                  =  0;                                     //Bit indicating infinity
-         Bit#(1) lv_inv                  =  0;                                     //Invalid Bit
-         Bit#(1) lv_zero                 =  0;                                     //Zero bit
-         bit quiet_nan_two               = (flags1[2] & ~flags2[0]) | (flags2[2] & ~flags1[0]);
-
-         if((((flags1[0] | flags1[2])==1) || (flags2[0] | flags2[2])==1))  //If either of the operands are NaN's (Quiet or Signalling - Not distinguishing between them here) 
-             lv_inv = 1;
-         else if(lv_op1_infinity==1 || lv_op2_infinity==1) begin           //If either of the operands are Infinity
-             if(lv_op1_is_zero == 1 || lv_op2_is_zero ==1) begin                 //Provided atleast one of the operands are infinity, if either of them are zero, then res is NaN (0*inf)
-                 lv_inv = 1;
-             end
-             else begin
-                 lv_inf = 1;                                                //Else result is infinity - inf +/- op2 = inf
-                 quiet_nan_two = 0;
-             end
-         end
-         else if(lv_op1_is_zero == 1 || lv_op2_is_zero == 1)
-             lv_zero = 1;                                                  //If they are not infinity - Checked for Zero, if it is then product is zero (0*x = 0)
-
-
-         `ifdef verbose $display("lv_inv : %h lv_inf : %h lv_zero : %h",lv_inv,lv_inf,lv_zero);  `endif
-         `ifdef verbose $display("flags1 : %b flags2 : %b flags3 : %b",flags1,flags2,flags3); `endif
-   
-         /*
-            When normal and denormal number is multiplied, exponent is
-            (biased_exponent - bias) + (1 - bias) + bias = biased_exponent - bias + 1;
-            either _operand1[30:23] == 0 or _operand2[30:23] == 0 for the above if condition so no harm in adding both
-         */
-
-         Bit#(13) exp1_temp          =  {2'b0,lv_exponent1};
-         Bit#(13) exp2_temp          =  {2'b0,lv_exponent2};
-         Bit#(13) lv_summed_exponent =  exp1_temp + exp2_temp - zeroExtend(bias) + zeroExtend(lv_op1_subnormal) + zeroExtend(lv_op2_subnormal);
-         Bit#(1) lv_sign                 =  sign1 ^ sign2;
-
-         `ifdef verbose $display("lv_summed_exponent = %b", lv_summed_exponent/*, lv_actual_exponent*/); `endif
-
-         Bit#(106) x = zeroExtend({~lv_op1_subnormal, lv_mantissa1})*zeroExtend({~lv_op2_subnormal, lv_mantissa2});    //Single Cycle Int Mul
-         //rg_state_handler <= Stage1;
-         let ff_input_pipe = Input_data_type{  
-                                                           product_mantissa    :          x,
-                                                           lv_summed_exponent  :          lv_summed_exponent,
-                                                           sign                :          lv_sign,
-                                                           _operand3           :          {sign3,lv_exponent3,lv_mantissa3},
-                                                           rounding_mode       :          rounding_mode,
-                                                           infinity            :          lv_inf,
-                                                           add_flags           :          flags3,
-                                                           invalid             :          lv_inv,
-                                                           zero                :          lv_zero,
-                                                           _operation          :          operation,
-                                                           _negate             :          _negate,
-                                                           mul                 :          mul,
-                                                           muladd              :          muladd,
-                                                           quiet_nan_two       :          quiet_nan_two,
-                                                           inp_denormal        :          lv_op1_subnormal | lv_op2_subnormal
-                                                         };
-        ff_input.enq( ff_input_pipe);
+            _operand1       : _operand1,
+            _operand2       : _operand2,
+            _operand3       : _operand3,
+            rounding_mode   : rounding_mode,
+            operation       : operation,
+            _negate         : _negate,
+            mul             : mul,
+            muladd          : muladd,
+            flags           : flags      
+        };
+        ff_stage0.enq(ff_stage0_pipe);
+    
     endmethod
-
 
     method ActionValue#(Floating_output#(64)) get_result();
        let ff_final = ff_final_out.first ; ff_final_out.deq ;

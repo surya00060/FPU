@@ -17,6 +17,7 @@ set_property include_dirs /home/surya/Desktop/FPU/verilog [current_fileset]
 read_verilog -library xil_defaultlib {
   /home/surya/Desktop/FPU/verilog/FIFO2.v
   /home/surya/Desktop/FPU/verilog/mkfpu_fm_add_sub_pipe_64.v
+  /home/surya/Desktop/FPU/verilog/mkfpu_fm_add_sub_pipe_32.v
 }
 foreach dcp [get_files -quiet -all *.dcp] {
   set_property used_in_implementation false $dcp

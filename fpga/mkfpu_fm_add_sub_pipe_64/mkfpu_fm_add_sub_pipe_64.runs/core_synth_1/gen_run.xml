@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<GenRun Id="core_synth_1" LaunchPart="xc7a100tcsg324-1" LaunchTime="1536659930">
+<GenRun Id="core_synth_1" LaunchPart="xc7a100tcsg324-1" LaunchTime="1545303162">
   <File Type="VDS-TIMING-PB" Name="mkfpu_fm_add_sub_pipe_64_timing_summary_synth.pb"/>
   <File Type="VDS-TIMINGSUMMARY" Name="mkfpu_fm_add_sub_pipe_64_timing_summary_synth.rpt"/>
   <File Type="RDS-RDS" Name="mkfpu_fm_add_sub_pipe_64.vds"/>
@@ -18,6 +18,13 @@
       </FileInfo>
     </File>
     <File Path="$PPRDIR/../../verilog/mkfpu_fm_add_sub_pipe_64.v">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PPRDIR/../../verilog/mkfpu_fm_add_sub_pipe_32.v">
       <FileInfo>
         <Attr Name="UsedIn" Val="synthesis"/>
         <Attr Name="UsedIn" Val="implementation"/>

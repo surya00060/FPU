@@ -1,5 +1,0 @@
-<?xml version="1.0"?>
-<Runs Version="1" Minor="0">
-	<Run Id="core_synth_1" LaunchDir="/home/surya/Desktop/FPU/fpga/mkfpu_fm_add_sub_pipe_64_opt/mkfpu_fm_add_sub_pipe_64_opt.runs/core_synth_1" FlowId="Vivado_Synthesis" FromStepId="vivado" ToStepId="vivado"/>
-</Runs>
-
